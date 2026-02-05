@@ -8,7 +8,7 @@ A narrative game built with Twine.
 2. Import the story file from `src/`
 
 ## Team Members
-- [List your team members]
+- Eswar Talasila, Zachary Boston, Mokshagna Kadiyala, Nishil Rally
 
 ## Story Format
-[e.g., Harlowe, SugarCube, Snowman]
+Sugar Cube
