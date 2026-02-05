@@ -8,11 +8,11 @@ Service Suspended
   "format": "Harlowe",
   "format-version": "3.3.9",
   "start": "Entry Point",
-  "zoom": 0.6
+  "zoom": 0.3
 }
 
 
-:: \ Boarding - Second Loop {"position":"350,1850","size":"100,100"}
+:: \ Boarding - Second Loop {"position":"350,2000","size":"100,100"}
 The doors hiss open. You board quickly, clutching the strange ticket in your pocket.
 
 You find the same seat. Middle of the carriage. Blue and gray fabric.
@@ -46,7 +46,7 @@ You try to look away, but you can't. He stops in front of you.
 [[Say nothing -> Silent Refusal]]
 
 
-:: \ Boarding - Second Loop No Ticket {"position":"625,1850","size":"100,100"}
+:: \ Boarding - Second Loop No Ticket {"position":"625,2000","size":"100,100"}
 The doors hiss open. You board quickly, clutching the strange ticket in your pocket.
 You find the same seat. Middle of the carriage. Blue and gray fabric.
 But something's different.
@@ -78,7 +78,7 @@ You know it before you pick it up, placing it in your pocket. And somewhere behi
 [[Say nothing -> Silent Refusal]]
 
 
-:: \ Breaking the Pattern {"position":"525,1525","size":"100,100"}
+:: \ Breaking the Pattern {"position":"450,1600","size":"100,100"}
 You approach the woman in the red coat.
 
 "Excuse me, can I ask you something?"
@@ -117,7 +117,7 @@ The message cuts off.
 [[Pick up the ticket -> The Strange Ticket]]
 
 
-:: \ Denial {"position":"400,1275","size":"100,100"}
+:: \ Denial {"position":"325,1350","size":"100,100"}
 This is just a weird dream. Stress from work. You've been pulling too many late nights.
 
 You go through the routine on autopilot. Shower. Dress. Bag.
@@ -127,7 +127,7 @@ But your hands are shaking when you tie your shoes.
 [[Head to station -> Platform 7B - Second Time]]
 
 
-:: \ Forcing the Issue {"position":"650,1400","size":"100,100"}
+:: \ Forcing the Issue {"position":"575,1475","size":"100,100"}
 You rip the alarm clock from out of the wall.
 
 The beeping continues. It's coming from inside your head now.
@@ -143,7 +143,7 @@ The thought isn't yours, but it's absolute.
 [[Run to the station -> Platform 7B - Second Time]]
 
 
-:: \ Investigation Path {"position":"650,1275","size":"100,100"}
+:: \ Investigation Path {"position":"575,1350","size":"100,100"}
 Okay. Think rationally.
 
 Either you're losing your mind, or something genuinely impossible is happening. Either way, you need information.
@@ -161,7 +161,7 @@ But the metadata says the photo was taken "Tomorrow."
 [[Go to station anyway - you need answers -> Platform 7B - Second Time]]
 
 
-:: \ Platform 7B - Second Time {"position":"525,1400","size":"100,100"}
+:: \ Platform 7B - Second Time {"position":"450,1475","size":"100,100"}
 Platform 7B.
 
 Everything is the same. The woman in the red coat. The businessman. The teenager with headphones.
@@ -186,7 +186,49 @@ The same voice. Same inflection. Same static crackle.
 [[Just get on the train when it arrives -> Boarding - Second Loop No Ticket]]
 
 
-:: \ Rebellion {"position":"525,1275","size":"100,100"}
+:: \ Punching Now {"position":"575,2650","size":"100,100"}
+No. You're not waiting. You need to END this. NOW.
+
+You grab the ticket punch, position it over the strange ticket, and—
+
+*CHUNK*
+
+The moment the punch goes through, everything stops.
+
+The train. The sound. Your breathing. The ticket begins to smoke.
+
+Then burn.
+
+Black flames that don't give off heat, consuming the paper from the punch hole outward.
+
+The ash doesn't fall. It floats upward, swirling around you, faster and faster until—
+
+*BEEP BEEP BEEP BEEP*
+
+No.
+
+Wait.
+
+That's not the alarm. That's the train departure chime.
+
+You open your eyes.
+
+You're sitting in the same seat. Middle of the carriage. Blue and gray fabric.
+
+The ticket is gone. Burned away completely.
+
+But you never left the train.
+
+You never arrived at Millbank.
+
+You never went to bed.
+
+The loop has CHANGED.
+
+[[Look around -> The New Loop]]
+
+
+:: \ Rebellion {"position":"450,1350","size":"100,100"}
 No. You're not doing this.
 
 You stay in bed. Pull the covers up. Close your eyes.
@@ -254,7 +296,7 @@ No, you already...
 [[What the hell is happening? -> Recognition]]
 
 
-:: \ Scanning for Differences {"position":"675,1525","size":"100,100"}
+:: \ Scanning for Differences {"position":"600,1600","size":"100,100"}
 You look around frantically. There has to be something different. Something that changed.
 
 The digital board: "7:15 - MILLBANK - ON TIME"
@@ -291,7 +333,7 @@ The message cuts off.
 [[Pick up the ticket -> The Strange Ticket]]
 
 
-:: \ Silent Refusal {"position":"325,2050","size":"100,100"}
+:: \ Silent Refusal {"position":"300,2325","size":"100,100"}
 You say nothing. Just stare straight ahead.
 
 The conductor tilts his head. An inhuman angle.
@@ -307,7 +349,117 @@ You jerk away.
 [[Show him the ticket -> The Strange Ticket Revealed]]
 
 
-:: \ The Strange Ticket {"position":"500,1675","size":"100,100"}
+:: \ The Burning {"position":"875,2775","size":"100,100"}
+Text:
+Your hand moves on its own.
+
+*CHUNK*
+
+The punch goes through.
+
+The ticket ignites. Black flames.
+
+The ash spirals around your bedroom, faster and faster, and you're falling—
+
+No, not falling.
+
+Traveling.
+
+Through darkness.
+
+Through the space between loops.
+
+Until—
+
+You open your eyes.
+
+You're sitting in the same seat. Middle of the carriage. Blue and gray fabric.
+
+Not your bedroom.
+
+The train.
+
+You're on the train.
+
+And you don't remember boarding.
+
+[[Stand up, panicking -> The New Loop]] 
+
+
+:: \ The New Loop {"position":"700,3050","size":"100,100"}
+You stand quickly, looking around frantically.
+
+The other passengers ignore you. Moving in their patterns.
+
+You check your phone: 7:03 AM.
+
+Eight minutes into the journey.
+
+You look out the window. The familiar industrial wasteland blurs past.
+
+But something's wrong.
+
+You look for the conductor—the normal one, or the creepy one, either.
+
+Gone.
+
+The carriage is longer than it should be. More passengers than before. All of them moving in perfect synchronization.
+
+You rush to the door between carriages.
+
+Locked.
+
+You try the emergency stop.
+
+Nothing.
+
+A voice crackles over the intercom. Not the usual announcer.
+
+The creepy conductor's static-filled voice:
+
+"Welcome to your new normal. The loop has changed. You punched the ticket. You committed.
+
+From this moment forward, you don't wake up in bed anymore.
+
+You wake up HERE. On the train. At 7:03 AM. Eight minutes into the journey.
+
+Every loop. Forever.
+
+Unless you find another way out.
+
+Good luck, passenger.
+
+The 7:15 service to Millbank will arrive in 20 minutes."
+
+The intercom cuts out.
+
+You sink back into your seat, shaking.
+
+The businessman across from you checks his watch.
+
+The woman in the red coat turns a page of her newspaper.
+
+The teenager bobs to music.
+
+Clack-clack. Clack-clack.
+
+And you realize:
+
+You've made everything worse.
+
+*BEEP BEEP BEEP BEEP*
+
+The train's departure chime echoes.
+
+And you're back in the seat.
+
+7:03 AM.
+
+Again.
+
+
+
+:: \ The Strange Ticket {"position":"500,1825","size":"100,100"}
 You pocket the ticket quickly, heart pounding.
 
 The moment it's in your hand, you feel it. A weight. A significance.
@@ -321,12 +473,98 @@ The train screeches to a halt in front of you.
 [[Board the train -> Boarding - Second Loop]]
 
 
-:: \ The Strange Ticket Revealed {"position":"650,2075","size":"100,100"}
+:: \ The Strange Ticket Revealed {"position":"750,2325","size":"100,100"}
+You pull out the strange ticket with trembling hands.
+
+The conductor's expressionless face doesn't change, but something shifts in his too-still eyes – recognition.
+
+He reaches into his coat and pulls out something: a ticket punch. Old-fashioned. Brass and black. The kind that creates a specific shaped hole.
+
+He sets it on the armrest next to you with a soft *click*.
+
+Then he places something else beside it.
+Not a folded note.
+A torn piece of the same yellowed ticket paper. The edges are burned black, like someone tried to destroy it but gave up halfway.
+The conductor's fingers, too long, too pale, tap the fragment twice. 
+
+Without a word, he turns and walks back down the carriage, disappearing through the door at the far end.
+
+You unfold the fragment. The handwriting shifts mid-sentence, like multiple people wrote it across different times. Some parts are in your handwriting. Some aren't. Some you can't identify.
+“I don’t know if this will help. It’s the only thing I could think to leave.
+This ticket isn’t about where the train goes. It’s about what happens to you afterward. If you leave it alone, the day keeps restarting. You still wake up somewhere familiar. If you punch it, the train stops letting go.
+I thought making a choice would end this. It didn’t. It only changed where it starts. Now I wake up here. There’s no fixing it once it’s done. I tried.
+If you’re reading this, you still have time. Once you don’t, it won’t give it back.
+I don’t know how to explain it better than this.
+—Someone who stayed”
+You look at the ticket punch. Then at the strange ticket in your hand.
+
+[[Punch the ticket now -> Punching Now]]
+[[Wait. Don't punch it yet -> Waiting (Attempting to Escape)]]
 
 
+:: \ Waiting (Attempting to Escape) {"position":"875,2650","size":"100,100"}
+No. The note is a warning. A real warning.
 
-:: \ Wrong Ticket {"position":"500,2150","size":"100,100"}
+You slip the ticket and the punch into your pocket carefully.
 
+The train lurches forward. The frozen passengers suddenly animate, moving in their loops.
+
+The journey continues. 23 minutes. The tunnel. The lights flickering.
+
+You arrive at Millbank.
+
+This time, you don't go to the office. You go home. Lock the door. Unplug your alarm.
+
+You WON'T take the train tomorrow. You'll call in sick. Stay home. Break the loop that way.
+
+You set the ticket and punch on your nightstand and force yourself to sleep.
+
+Hours pass.
+
+Then—
+
+*BEEP BEEP BEEP BEEP*
+
+6:47 AM.
+
+NO.
+
+You didn't set an alarm. You UNPLUGGED it.
+
+But there it is. Beeping. Screaming.
+
+And on your nightstand: the ticket and punch are GLOWING.
+
+A whisper, from nowhere and everywhere:
+
+"You can't escape by hiding. You can only escape by choosing."
+
+The ticket floats up, hovering in the air in front of you. The punch appears in your hand.
+
+You understand now.
+
+There's no way out but through.
+
+[[Punch the ticket -> The Burning]]
+
+
+:: \ Wrong Ticket {"position":"500,2300","size":"100,100"}
+You fumble for your regular ticket. The one you bought.
+
+STANDARD SINGLE
+FROM: ASHFORD JUNCTION
+TO: MILLBANK
+VALID: TODAY ONLY
+
+He stares at it.
+
+Then at you.
+
+"Wrong ticket," he says flatly. He knows you have the other one.
+
+You can feel the strange ticket burning in your other pocket.
+
+[[Fine. Show him the strange ticket -> The Strange Ticket Revealed]]
 
 
 :: Arrival at Millbank {"position":"525,900","size":"100,100"}
