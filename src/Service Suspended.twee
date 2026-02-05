@@ -12,7 +12,215 @@ Service Suspended
 }
 
 
+:: \ Boarding - Second Loop {"position":"350,1850","size":"100,100"}
+The doors hiss open. You board quickly, clutching the strange ticket in your pocket.
+
+You find the same seat. Middle of the carriage. Blue and gray fabric.
+
+But something's different.
+
+The other passengers are frozen. Completely still. The businessman mid-gesture. The woman mid-page-turn.
+
+Like mannequins.
+
+Then, movement.
+
+Footsteps.
+
+Heavy. Deliberate.
+
+From the far end of the carriage, a conductor approaches.
+
+But not the tall, thin one from before.
+
+Something’s not right with this conductor.
+
+His uniform is too dark. Almost black. His face is pale, waxy, expressionless. His eyes don't blink as he walks down the aisle toward you.
+
+You try to look away, but you can't. He stops in front of you.
+
+"Ticket," he says. His voice sounds like static between radio stations.
+
+[[Show him your regular ticket -> Wrong Ticket]]
+[[Show him the strange ticket -> The Strange Ticket Revealed]]
+[[Say nothing -> Silent Refusal]]
+
+
+:: \ Boarding - Second Loop No Ticket {"position":"625,1850","size":"100,100"}
+The doors hiss open. You board quickly, clutching the strange ticket in your pocket.
+You find the same seat. Middle of the carriage. Blue and gray fabric.
+But something's different.
+The other passengers are frozen. Completely still. The businessman mid-gesture. The woman mid-page-turn.
+Like mannequins.
+Then, movement.
+Footsteps. Heavy. Deliberate.
+From the far end of the carriage, a conductor approaches. But not the tall, thin one from before. Something’s not right with this conductor.
+His uniform is too dark. Almost black. His face is pale, waxy, expressionless. His eyes don't blink as he walks down the aisle toward you.
+You try to look away, but you can't. He stops in front of you.
+"Ticket," he says. His voice sounds like static between radio stations.
+You hand him your regular ticket.
+For a long moment, he just looks at it. Then he smiles. It’s slow. Unnatural. Like his face is remembering how.
+“Good,” he says softly, folding the ticket once. Then twice. The paper makes a sound too loud in the silent carriage.
+“Still choosing the marked path.”
+He slips the ticket into his pocket—not punching it, not scanning it.
+“Don’t worry,” he adds, leaning closer. You smell cold metal and dust.
+“You’ll get another.”
+The conductor turns and walks away. His footsteps fade, though he never reaches the end of the car.
+The lights flicker.
+You exhale—only now realizing you’d been holding your breath.
+Something brushes your foot.
+You look down.
+On the floor, just inside the yellow safety strip painted along the carriage edge, lies a ticket.
+Old. Yellowed. Creased with age.
+You know it before you pick it up, placing it in your pocket. And somewhere behind you, very softly, the conductor chuckles, walking towards you.
+
+[[Show him the strange ticket -> The Strange Ticket Revealed]]
+[[Say nothing -> Silent Refusal]]
+
+
+:: \ Breaking the Pattern {"position":"525,1525","size":"100,100"}
+You approach the woman in the red coat.
+
+"Excuse me, can I ask you something?"
+
+“Yes?”
+
+“Do you feel like we’re in a loop”
+
+The woman looks at you in disgust and confused
+
+“Another crazy man, get away from me!”, as she briskly hurries away from you.
+
+You look around for anything else out of the ordinary, anything that might give you a comfort that you’re not alone in this crazy loop. 
+
+Then you see it. On the platform ground, near the yellow line, you see something that definitely wasn't there before (or was it?):
+
+A single ticket.
+
+But not YOUR ticket. This one is different.
+
+It's older. Yellowed at the edges. The text is hand-written in faded ink:
+
+SPECIAL TRANSFER
+FROM: [BLANK]
+TO: [BLANK]
+VALID: INDEFINITELY
+PLATFORM: 7B
+PRICE: PAID IN FULL
+
+At the bottom, in newer handwriting, YOUR handwriting, it says:
+
+"Don't punch the ticket. Whatever you do, DON'T—"
+
+The message cuts off.
+
+[[Pick up the ticket -> The Strange Ticket]]
+
+
+:: \ Denial {"position":"400,1275","size":"100,100"}
+This is just a weird dream. Stress from work. You've been pulling too many late nights.
+
+You go through the routine on autopilot. Shower. Dress. Bag.
+
+But your hands are shaking when you tie your shoes.
+
+[[Head to station -> Platform 7B - Second Time]]
+
+
+:: \ Forcing the Issue {"position":"650,1400","size":"100,100"}
+You rip the alarm clock from out of the wall.
+
+The beeping continues. It's coming from inside your head now.
+
+The bedroom begins to *fold*, walls bending inward, ceiling lowering. The crack in the corner opens wider, like a mouth.
+
+You smell train oil and electrical burning.
+
+*You need to get to the station.*
+
+The thought isn't yours, but it's absolute.
+
+[[Run to the station -> Platform 7B - Second Time]]
+
+
+:: \ Investigation Path {"position":"650,1275","size":"100,100"}
+Okay. Think rationally.
+
+Either you're losing your mind, or something genuinely impossible is happening. Either way, you need information.
+
+You get ready methodically, paying attention to every detail. The toothpaste tube is at the same position. Your clothes are in the same spot. The weather outside is identical.
+
+When you check your phone, you notice something new:
+
+In your photos, there's an image you don't remember taking. It's blurry—taken on the train. You can see the reflection in the window, and there's something written on the glass:
+
+"DON'T TAKE THE TRAIN"
+
+But the metadata says the photo was taken "Tomorrow."
+
+[[Go to station anyway - you need answers -> Platform 7B - Second Time]]
+
+
+:: \ Platform 7B - Second Time {"position":"525,1400","size":"100,100"}
+Platform 7B.
+
+Everything is the same. The woman in the red coat. The businessman. The teenager with headphones.
+
+But now you're *looking*.
+
+The woman's newspaper—you can see the headline again:
+"TRANSPORT DELAYS CONTINUE FOR THIRD CONSECUTIVE YEAR"
+
+The same article about the "Missing Tuesday."
+
+She's holding it at the exact same angle. The businessman checks his watch—the same gesture, same timing.
+
+The teenager bobs to music. Same rhythm. Same pattern.
+
+The announcement: "The 7:15 service to Millbank will arrive in two minutes. Please stand behind the yellow line."
+
+The same voice. Same inflection. Same static crackle.
+
+[[Try to talk to someone -> Breaking the Pattern]]
+[[Look for something different -> Scanning for Differences]]
+[[Just get on the train when it arrives -> Boarding - Second Loop No Ticket]]
+
+
+:: \ Rebellion {"position":"525,1275","size":"100,100"}
+No. You're not doing this.
+
+You stay in bed. Pull the covers up. Close your eyes.
+
+The alarm keeps beeping. 6:47. 6:47. 6:47.
+
+It doesn't stop.
+
+The beeping gets louder. Sharper. Almost angry. The walls of your bedroom seem to darken at the edges.
+
+Something feels *wrong* about staying here.
+
+
+[[Fine. Get up and go to the station -> Platform 7B - Second Time]]
+[[Unplug the alarm and stay put -> Forcing the Issue]]
+
+
+
 :: \ Recognition {"position":"525,1150","size":"100,100"}
+6:47 AM. Again.
+
+Your heart is racing. This isn't - this can't be —
+
+You sit up quickly, breathing hard. Check your phone. Same email. Same timestamp: "Tomorrow, 6:47 AM."
+
+You specifically remember going to the station. Getting on the train. Arriving at work.
+
+This is impossible.
+
+But here you are.
+
+[[Try to stay home - refuse the routine -> Rebellion]]
+[[Go to station but pay closer attention -> Investigation Path]]
+[[This is just a dream. Go through the motions -> Denial]]
 
 
 
@@ -44,6 +252,81 @@ No.
 No, you already...
 
 [[What the hell is happening? -> Recognition]]
+
+
+:: \ Scanning for Differences {"position":"675,1525","size":"100,100"}
+You look around frantically. There has to be something different. Something that changed.
+
+The digital board: "7:15 - MILLBANK - ON TIME"
+
+Wait.
+
+You squint. Behind the text, for just a frame, you see something else flicker:
+
+"7:15 - CANCELLED"
+
+Then it's back to normal.
+
+And on the platform ground, near the yellow line, you see something that definitely wasn't there before (or was it?):
+
+A single ticket.
+
+But not YOUR ticket. This one is different.
+
+It's older. Yellowed at the edges. The text is hand-written in faded ink:
+
+SPECIAL TRANSFER
+FROM: [BLANK]
+TO: [BLANK]
+VALID: INDEFINITELY
+PLATFORM: 7B
+PRICE: PAID IN FULL
+
+At the bottom, in newer handwriting, YOUR handwriting, it says:
+
+"Don't punch the ticket. Whatever you do, DON'T—"
+
+The message cuts off.
+
+[[Pick up the ticket -> The Strange Ticket]]
+
+
+:: \ Silent Refusal {"position":"325,2050","size":"100,100"}
+You say nothing. Just stare straight ahead.
+
+The conductor tilts his head. An inhuman angle.
+
+"You have something that belongs to the train," he says.
+
+His hand reaches toward your pocket—the one with the strange ticket.
+
+Ice-cold fingers, even through the fabric.
+
+You jerk away.
+
+[[Show him the ticket -> The Strange Ticket Revealed]]
+
+
+:: \ The Strange Ticket {"position":"500,1675","size":"100,100"}
+You pocket the ticket quickly, heart pounding.
+
+The moment it's in your hand, you feel it. A weight. A significance.
+
+This ticket is important. You don't know how you know, but you KNOW.
+
+The announcement crackles: "The 7:15 service to Millbank is now arriving. Please stand behind the yellow line."
+
+The train screeches to a halt in front of you.
+
+[[Board the train -> Boarding - Second Loop]]
+
+
+:: \ The Strange Ticket Revealed {"position":"650,2075","size":"100,100"}
+
+
+
+:: \ Wrong Ticket {"position":"500,2150","size":"100,100"}
+
 
 
 :: Arrival at Millbank {"position":"525,900","size":"100,100"}
@@ -93,7 +376,6 @@ Of course it is, you groan.
 [[Ignore it and get ready->Quick Route]]
 
 
-
 :: Journey Observation {"position":"525,775","size":"100,100"}
 The rhythm of the rails is hypnotic. Clack-clack. Clack-clack.
 
@@ -129,8 +411,6 @@ You wait. The crowd shuffles. Someone's coffee smells burnt.
 The train arrives exactly on time.
 
 [[Board the train->Boarding the Train]]
-
-
 
 
 :: Phone Check {"position":"525,275","size":"100,100"}
