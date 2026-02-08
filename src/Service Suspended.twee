@@ -7,6 +7,7 @@ Service Suspended
   "ifid": "68fb59ba-571d-4153-a9fc-7106bf49740a",
   "format": "Harlowe",
   "format-version": "3.3.9",
+  "start": "Entry Point",
   "zoom": 0.6
 }
 
@@ -436,19 +437,6 @@ But here you are.
 </div>
 
 
-:: \ Reset {"position":"525,1025","size":"100,100"}
-The elevator doors close.
-
-The lights go out.
-
-For a moment, stretching, infinite, there is only darkness and the sound of your breathing.
-
-
-Then:
-
-[[... -> Reset cont.]]
-
-
 :: \ Reset cont. {"position":"675,1125","size":"100,100"}
 <div class="scene">
   <img src="https://i.pinimg.com/736x/6c/53/9a/6c539acb16ee42c1fcc3f58c68401e5d.jpg">
@@ -751,7 +739,7 @@ You frown. Must have already read it. Déjà vu, maybe.
 
 You head into the building.
 
-[[Enter the office -> Reset]]
+[[Enter the office ->Reset]]
 </div>
 </div>
 
@@ -899,6 +887,19 @@ The routine is comforting. Predictable. Safe.
 [[Head to station->Platform 7B]]
 </div>
 </div>
+
+
+:: Reset {"position":"525,1025","size":"100,100"}
+The elevator doors close.
+
+The lights go out.
+
+For a moment, stretching, infinite, there is only darkness and the sound of your breathing.
+
+
+Then:
+
+[[... -> Reset cont.]]
 
 
 :: Ticket Check {"position":"650,525","size":"100,100"}
