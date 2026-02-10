@@ -12,6 +12,43 @@ Service Suspended
 }
 
 
+:: \ New Loop Cont. 3 {"position":"700,4050","size":"100,100"}
+<div class="scene">
+  <img src="https://i.pinimg.com/1200x/cd/7d/71/cd7d71709ffdac99656ec3a4339ead9e.jpg">
+  <div class="text">
+     A pause. You hear something that might be breathing.
+    
+    //"Unless you find another way out."//
+    
+    //"Good luck, passenger."//
+    
+    //"The 7:15 service to Millbank will arrive in 20 minutes."//
+    
+    Static. Then silence.
+    
+    Your legs give out. You sink back into the seat.
+    
+    Shaking.
+    
+    The businessman across from you checks his watch.
+    
+    The woman in the red coat turns a page.
+    
+    The teenager bobs to music you can't hear.
+    
+    //Clack-clack. Clack-clack.//
+    
+    And you understand.
+    
+    You've made everything worse.
+    
+    TO BE CONTINUED...
+    
+     [[Credits->Credits]]
+  </div>
+</div>
+
+
 :: \ Platform 7B - Second Time Cont. {"position":"475,1925","size":"100,100"}
 <div class="scene">
   <img src="https://i.pinimg.com/736x/06/c0/25/06c025fe03e0300397ffa7297a41d5f8.jpg">
@@ -39,6 +76,39 @@ Service Suspended
     [[Board the train->Boarding - Second Loop No Ticket]]
   </div>
 </div>
+
+
+:: \ The New Loop {"position":"325,3175","size":"100,100"}
+<div class="scene">
+  <img src="https://i.pinimg.com/1200x/cd/7d/71/cd7d71709ffdac99656ec3a4339ead9e.jpg">
+  <div class="text">
+	*BEEP BEEP BEEP BEEP*
+    
+    No.
+    
+    Wait.
+    
+    That's not your alarm.
+    
+    That's the train departure chime.
+    
+    You open your eyes.
+    
+    Same seat. Middle of the carriage. Blue and gray fabric.
+    
+    The ticket—gone. Burned to nothing.
+    
+    But you never left the train.
+    
+    Never arrived at Millbank.
+    
+    Never went home. Never went to bed.
+    
+    The loop has changed.
+
+        [[look around->The New Loop Cont]]
+      </div>
+</div>  
 
 
 :: Arrival at Millbank {"position":"525,900","size":"100,100"}
@@ -220,7 +290,7 @@ Service Suspended
 </div>
 
 
-:: Credits {"position":"575,4050","size":"100,100"}
+:: Credits {"position":"700,4225","size":"100,100"}
 -------------------------
         (align:"===><===")[CREDITS]
 -------------------------
@@ -359,7 +429,7 @@ Image Credit: Richard Bryan, "Subway Pixel Art", https://www.artstation.com/artw
     
     Your heart hammers. You lean forward, staring—
     
-    He's normal. Of course he's normal. Reading his phone, completely ordinary.
+    He's normal. Of course he's normal. Reading something on his phone, completely ordinary.
     
     You slump back in your seat. Rub your eyes.
     
@@ -398,7 +468,7 @@ Image Credit: Richard Bryan, "Subway Pixel Art", https://www.artstation.com/artw
     
     You woke up on the train.
     
-    [[Continue->The New Loop]]
+    [[Continue->The New Loop Cont]]
   </div>
 </div>
 
@@ -427,35 +497,7 @@ Image Credit: Richard Bryan, "Subway Pixel Art", https://www.artstation.com/artw
     
     //"Forever."//
     
-    A pause. You hear something that might be breathing.
-    
-    //"Unless you find another way out."//
-    
-    //"Good luck, passenger."//
-    
-    //"The 7:15 service to Millbank will arrive in 20 minutes."//
-    
-    Static. Then silence.
-    
-    Your legs give out. You sink back into the seat.
-    
-    Shaking.
-    
-    The businessman across from you checks his watch.
-    
-    The woman in the red coat turns a page.
-    
-    The teenager bobs to music you can't hear.
-    
-    //Clack-clack. Clack-clack.//
-    
-    And you understand.
-    
-    You've made everything worse.
-    
-    TO BE CONTINUED...
-    
-    [[Credits->Credits]]
+    [[... -> New Loop Cont. 3]]
   </div>
 </div>
 
@@ -661,32 +703,8 @@ Image Credit: Richard Bryan, "Subway Pixel Art", https://www.artstation.com/artw
     It rises. Swirls around you. Faster. Faster. Tighter.
     
     Until—
-    
-    *BEEP BEEP BEEP BEEP*
-    
-    No.
-    
-    Wait.
-    
-    That's not your alarm.
-    
-    That's the train departure chime.
-    
-    You open your eyes.
-    
-    Same seat. Middle of the carriage. Blue and gray fabric.
-    
-    The ticket—gone. Burned to nothing.
-    
-    But you never left the train.
-    
-    Never arrived at Millbank.
-    
-    Never went home. Never went to bed.
-    
-    The loop has changed.
 
-    [[Look around->The New Loop]]
+    [[... -> The New Loop]]
   </div>
 </div>
 
@@ -957,7 +975,7 @@ Image Credit: Richard Bryan, "Subway Pixel Art", https://www.artstation.com/artw
 </div>
 
 
-:: The New Loop {"position":"575,3750","size":"100,100"}
+:: The New Loop Cont {"position":"575,3750","size":"100,100"}
 <div class="scene">
   <img src="https://i.pinimg.com/1200x/cd/7d/71/cd7d71709ffdac99656ec3a4339ead9e.jpg">
   <div class="text">
@@ -1049,7 +1067,7 @@ Image Credit: Richard Bryan, "Subway Pixel Art", https://www.artstation.com/artw
     
     A torn piece of paper. Same yellowed texture as the ticket. The edges are burned black—someone tried to destroy it. Gave up halfway.
     
-    His fingers—too long, too pale, joints bending wrong—tap the fragment.
+    His fingers—too long, too pale, joints bending wrong—tapping the fragment.
     
     Once.
     
