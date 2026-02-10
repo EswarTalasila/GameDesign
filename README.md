@@ -4,6 +4,8 @@
 An interactive narrative game playing as a setup as a part of a 4 part series of how your mundane life gets thrown in a **loop** when you find a ominous ticket on the floor. What is the ticket about? Why am I living through the same day? All will be revealed in due time...
 
 ## Setup
+
+**Source File:**
 1. Install Twine from https://twinery.org/
 2. Import the story file from `src/`
 3. Open the story labelled "Service Suspended"
@@ -12,11 +14,17 @@ An interactive narrative game playing as a setup as a part of a 4 part series of
 6. Interactive Narrative should open in your browser
 7. Enjoy!
 
+**HTML File:**
+1. Open the story file file from `docs/`
+2. Open the file labelled "Service Suspended.html"
+3. Interactive Narrative should open in your browser
+4. Enjoy!
+
 ## Team Members
 Eswar Talasila, Zachary Boston, Mokshagna Kadiyala, Nishil Rally
 
 ## Story Format
-Harlowe
+Harlowe 3.3.9
 
 ## Controls
 Mouse to scroll and click choice options
