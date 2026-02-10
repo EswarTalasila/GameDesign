@@ -27,11 +27,17 @@ All choices lead to the same ending as this game is a setup for the coming games
 ## Image Citations
 
 <img src="https://i.pinimg.com/736x/6c/53/9a/6c539acb16ee42c1fcc3f58c68401e5d.jpg" width=400px height=auto>
-Image Credit: @pixelchill, "a little solitude doesn't hurt", https://www.tumblr.com/pixelchill/739315749244518400/a-little-solitude-doesnt-hurt
+
+Image Credit: @pixelchill, "a little solitude doesn't hurt", 
+https://www.tumblr.com/pixelchill/739315749244518400/a-little-solitude-doesnt-hurt
 
 <img src="https://i.pinimg.com/736x/06/c0/25/06c025fe03e0300397ffa7297a41d5f8.jpg" width=400px height=auto>
-Image Credit: Xienne, "Unnamed", https://xienneart.tumblr.com/post/629336083507953664
+
+Image Credit: Xienne, "Unnamed", 
+https://xienneart.tumblr.com/post/629336083507953664
 
 
 <img src="https://i.pinimg.com/1200x/cd/7d/71/cd7d71709ffdac99656ec3a4339ead9e.jpg" width=400px height=auto>
-Image Credit: Richard Bryan, "Subway Pixel Art", https://www.artstation.com/artwork/W2reO2
+
+Image Credit: Richard Bryan, "Subway Pixel Art", 
+https://www.artstation.com/artwork/W2reO2
