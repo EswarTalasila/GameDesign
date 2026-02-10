@@ -12,6 +12,35 @@ Service Suspended
 }
 
 
+:: \ Platform 7B - Second Time Cont. {"position":"475,1925","size":"100,100"}
+<div class="scene">
+  <img src="https://i.pinimg.com/736x/06/c0/25/06c025fe03e0300397ffa7297a41d5f8.jpg">
+  <div class="text">
+    Same angle. Same fold in the page.
+    
+    The businessman checks his watch. You count. Three seconds. He does it again.
+    
+    Exact same gesture. Exact same timing.
+    
+    The teenager bobs their head. One-two-three-four. One-two-three-four.
+    
+    Same rhythm. Like a loop.
+    
+    The PA crackles: "The 7:15 service to Millbank will arrive in two minutes. Please stand behind the yellow line."
+    
+    Same voice. Same inflection. Same static pop at the end.
+    
+    Everything identical.
+    
+    Not similar. Identical.
+
+    [[Talk to someone->Breaking the Pattern]]
+    [[Search for differences->Scanning for Differences]]
+    [[Board the train->Boarding - Second Loop No Ticket]]
+  </div>
+</div>
+
+
 :: Arrival at Millbank {"position":"525,900","size":"100,100"}
 <div class="scene">
   <img src="https://preview.redd.it/pximnodv3in21.png?width=1080&crop=smart&auto=webp&s=178e3f80d263a3ccd86c52f44949ea45e9636174">
@@ -170,7 +199,7 @@ Service Suspended
     
     She looks up. "Yes?"
     
-    "Do you—do you feel like we're stuck? Like this keeps happening?"
+    "Do you- do you feel like we're stuck? Like this keeps happening?"
     
     Her face twists. Disgust. Confusion.
     
@@ -186,29 +215,34 @@ Service Suspended
     
     Or was it?
     
-    A ticket.
-    
-    Not yours. Different.
-    
-    You kneel down. Pick it up carefully.
-    
-    Old. Yellowed at the edges. The paper feels wrong—too thick, too rough. The text is handwritten in faded ink:
-    
-    SPECIAL TRANSFER
-    FROM: [BLANK]
-    TO: [BLANK]
-    VALID: INDEFINITELY
-    PLATFORM: 7B
-    PRICE: PAID IN FULL
-    
-    At the bottom, in fresher ink—//your// handwriting:
-    
-    "Don't punch the ticket. Whatever you do, DON'T—"
-    
-    The message cuts off mid-word. Like someone was interrupted.
-    
-    [[Pick it up->The Strange Ticket]]
+    [[What is that? ->The Ticket]]
   </div>
+</div>
+
+
+:: Credits {"position":"575,4050","size":"100,100"}
+-------------------------
+        (align:"===><===")[CREDITS]
+-------------------------
+
+(align:"=><=")[A Game By
+''The Uncanny Valley'']
+
+Images sourced:
+
+<img src="https://i.pinimg.com/736x/6c/53/9a/6c539acb16ee42c1fcc3f58c68401e5d.jpg">
+<div class="text">
+Image Credit: @pixelchill, "a little solitude doesn't hurt", https://www.tumblr.com/pixelchill/739315749244518400/a-little-solitude-doesnt-hurt
+</div>
+
+<img src="https://i.pinimg.com/736x/06/c0/25/06c025fe03e0300397ffa7297a41d5f8.jpg">
+<div class="text">
+Image Credit: Xienne, "Unnamed", https://xienneart.tumblr.com/post/629336083507953664
+</div>
+
+<img src="https://i.pinimg.com/1200x/cd/7d/71/cd7d71709ffdac99656ec3a4339ead9e.jpg">
+<div class="text">
+Image Credit: Richard Bryan, "Subway Pixel Art", https://www.artstation.com/artwork/W2reO2
 </div>
 
 
@@ -336,7 +370,7 @@ Service Suspended
 </div>
 
 
-:: New Loop Cont. {"position":"575,3575","size":"100,100"}
+:: New Loop Cont. {"position":"675,3575","size":"100,100"}
 <div class="scene">
   <img src="https://i.pinimg.com/1200x/cd/7d/71/cd7d71709ffdac99656ec3a4339ead9e.jpg">
   <div class="text">
@@ -420,6 +454,8 @@ Service Suspended
     You've made everything worse.
     
     TO BE CONTINUED...
+    
+    [[Credits->Credits]]
   </div>
 </div>
 
@@ -579,7 +615,7 @@ Service Suspended
 </div>
 
 
-:: Platform 7B - Second Time {"position":"475,1825","size":"100,100"}
+:: Platform 7B - Second Time {"position":"475,1775","size":"100,100"}
 <div class="scene">
   <img src="https://i.pinimg.com/736x/06/c0/25/06c025fe03e0300397ffa7297a41d5f8.jpg">
   <div class="text">
@@ -591,29 +627,9 @@ Service Suspended
     
     But this time you're //looking.//
     
-    The woman's newspaper—same headline. TRANSPORT DELAYS CONTINUE FOR THIRD CONSECUTIVE YEAR. Same article below it: "Local Man Reports 'Missing Tuesday.'"
-    
-    Same angle. Same fold in the page.
-    
-    The businessman checks his watch. You count. Three seconds. He does it again.
-    
-    Exact same gesture. Exact same timing.
-    
-    The teenager bobs their head. One-two-three-four. One-two-three-four.
-    
-    Same rhythm. Like a loop.
-    
-    The PA crackles: "The 7:15 service to Millbank will arrive in two minutes. Please stand behind the yellow line."
-    
-    Same voice. Same inflection. Same static pop at the end.
-    
-    Everything identical.
-    
-    Not similar. Identical.
+    The woman's newspaper: same headline. TRANSPORT DELAYS CONTINUE FOR THIRD CONSECUTIVE YEAR. Same article below it: "Local Man Reports 'Missing Tuesday.'"
 
-    [[Talk to someone->Breaking the Pattern]]
-    [[Search for differences->Scanning for Differences]]
-    [[Board the train->Boarding - Second Loop No Ticket]]
+[[Everything looks the same-> Platform 7B - Second Time Cont.]]
   </div>
 </div>
 
@@ -749,7 +765,6 @@ Service Suspended
 
 :: Reset {"position":"525,1025","size":"100,100"}
 <div class="scene">
-  <img src="https://i.pinimg.com/736x/6c/53/9a/6c539acb16ee42c1fcc3f58c68401e5d.jpg">
   <div class="text">
     The elevator doors close.
     
@@ -821,30 +836,7 @@ Service Suspended
     
     On the platform ground, near the yellow line. Something that wasn't there a moment ago.
     
-    A ticket.
-    
-    Not yours. Different.
-    
-    You crouch down, reach for it slowly.
-    
-    Old. Yellowed at the edges. The paper feels brittle, like it might crumble. The text is handwritten in faded brown ink:
-    
-    SPECIAL TRANSFER
-    FROM: [BLANK]
-    TO: [BLANK]
-    VALID: INDEFINITELY
-    PLATFORM: 7B
-    PRICE: PAID IN FULL
-    
-    At the bottom, newer ink—darker, fresher.
-    
-    Your handwriting.
-    
-    "Don't punch the ticket. Whatever you do, DON'T—"
-    
-    The sentence cuts off. Incomplete. Urgent.
-    
-    [[Pick it up->The Strange Ticket]]
+    [[What is that?->The Ticket]]
   </div>
 </div>
 
@@ -924,7 +916,7 @@ Service Suspended
 </div>
 
 
-:: The Burning {"position":"525,3400","size":"100,100"}
+:: The Burning {"position":"650,3400","size":"100,100"}
 <div class="scene">
   <img src="https://i.pinimg.com/736x/6c/53/9a/6c539acb16ee42c1fcc3f58c68401e5d.jpg">
   <div class="text">
@@ -1012,7 +1004,7 @@ Service Suspended
 </div>
 
 
-:: The Strange Ticket {"position":"475,2175","size":"100,100"}
+:: The Strange Ticket {"position":"475,2225","size":"100,100"}
 <div class="scene">
   <img src="https://i.pinimg.com/736x/06/c0/25/06c025fe03e0300397ffa7297a41d5f8.jpg">
   <div class="text">
@@ -1072,6 +1064,36 @@ Service Suspended
     Gone.
     
     [[Read the fragment->Strange Ticket cont.]]
+  </div>
+</div>
+
+
+:: The Ticket {"position":"475,2075","size":"100,100"}
+<div class="scene">
+  <img src="https://i.pinimg.com/736x/06/c0/25/06c025fe03e0300397ffa7297a41d5f8.jpg">
+  <div class="text">
+    A ticket.
+    
+    Not yours. Different.
+    
+    You kneel down. Pick it up carefully.
+    
+    Old. Yellowed at the edges. The paper feels wrong—too thick, too rough. The text is handwritten in faded ink:
+    
+    SPECIAL TRANSFER
+    FROM: [BLANK]
+    TO: [BLANK]
+    VALID: INDEFINITELY
+    PLATFORM: 7B
+    PRICE: PAID IN FULL
+    
+    At the bottom, in fresher ink—//your// handwriting:
+    
+    "Don't punch the ticket. Whatever you do, DON'T—"
+    
+    The message cuts off mid-word. Like someone was interrupted.
+    
+    [[Pick it up->The Strange Ticket]]
   </div>
 </div>
 
@@ -1143,7 +1165,7 @@ Service Suspended
 </div>
 
 
-:: Waiting Cont. {"position":"525,3225","size":"100,100"}
+:: Waiting Cont. {"position":"550,3225","size":"100,100"}
 <div class="scene">
   <img src="https://i.pinimg.com/736x/6c/53/9a/6c539acb16ee42c1fcc3f58c68401e5d.jpg">
   <div class="text">
@@ -1229,7 +1251,7 @@ tw-story, #passages {
   font-family: "DotGothic16", sans-serif !important;
   background-color: #000;
   color: white;
-  font-size: 22px;
+  font-size: 21px;
 }
 
 .scene {
@@ -1239,7 +1261,7 @@ tw-story, #passages {
 }
 
 .scene img {
-  width: 320px;
+  width: 400px;
   height: auto;
   flex-shrink: 0;
 }
