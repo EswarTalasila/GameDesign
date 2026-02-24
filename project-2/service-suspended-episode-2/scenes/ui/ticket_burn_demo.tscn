@@ -1,0 +1,47 @@
+[gd_scene format=3 uid="uid://olasl2tf4at2"]
+
+[ext_resource type="Script" uid="uid://cgm2rx3xv40yr" path="res://scenes/ui/ticket_burn_demo.gd" id="1_script"]
+[ext_resource type="Texture2D" uid="uid://cwahwcsrk3jpk" path="res://assets/ui/Ticket_Asset.png" id="2_ticket"]
+[ext_resource type="Shader" uid="uid://djf2e4tijdslg" path="res://shaders/burn_dissolve.gdshader" id="3_shader"]
+[ext_resource type="Texture2D" uid="uid://4botcurc8xld" path="res://assets/ui/Hole_Punch_UI_Opened.png" id="4_puncher"]
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_1"]
+noise_type = 3
+frequency = 0.03
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_1"]
+noise = SubResource("FastNoiseLite_1")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_1"]
+shader = ExtResource("3_shader")
+shader_parameter/position = Vector2(0.5, 0.5)
+shader_parameter/radius = 0.0
+shader_parameter/borderWidth = 0.02
+shader_parameter/burnMult = 0.135
+shader_parameter/noiseTexture = SubResource("NoiseTexture2D_1")
+shader_parameter/burnColor = Color(0.9, 0.4, 0.1, 1)
+
+[node name="TicketBurnDemo" type="Node2D" unique_id=716258516]
+script = ExtResource("1_script")
+
+[node name="ColorRect" type="ColorRect" parent="." unique_id=1412026362]
+offset_right = 640.0
+offset_bottom = 480.0
+color = Color(0.15, 0.15, 0.2, 1)
+
+[node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=774586134]
+
+[node name="Puncher" type="TextureButton" parent="CanvasLayer" unique_id=1644496064]
+offset_left = 16.0
+offset_top = 16.0
+offset_right = 223.0
+offset_bottom = 185.0
+texture_normal = ExtResource("4_puncher")
+ignore_texture_size = true
+stretch_mode = 0
+
+[node name="Ticket" type="Sprite2D" parent="CanvasLayer" unique_id=1207503568]
+material = SubResource("ShaderMaterial_1")
+position = Vector2(320, 240)
+scale = Vector2(4, 4)
+texture = ExtResource("2_ticket")
