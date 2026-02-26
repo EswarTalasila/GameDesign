@@ -15,6 +15,10 @@ run/main_scene="res://scenes/rooms/test_cart.tscn"
 config/features=PackedStringArray("4.6", "GL Compatibility")
 config/icon="res://icon.svg"
 
+[autoload]
+
+CustomCursor="*res://scripts/custom_cursor.gd"
+
 [editor_plugins]
 
 enabled=PackedStringArray("res://addons/gdai-mcp-plugin-godot/plugin.cfg")
