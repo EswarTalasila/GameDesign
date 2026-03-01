@@ -11,7 +11,6 @@
 [ext_resource type="Texture2D" uid="uid://mg88sb5sa7mf" path="res://assets/ui/death_screen/frame_7.png" id="9_d7"]
 [ext_resource type="Texture2D" uid="uid://riyheljn1xo2" path="res://assets/ui/death_screen/frame_8.png" id="10_d8"]
 [ext_resource type="Texture2D" uid="uid://dvqikmqoduihp" path="res://assets/ui/death_screen/frame_9.png" id="11_d9"]
-[ext_resource type="Texture2D" uid="uid://c6vsm0lde843c" path="res://assets/ui/reload_button/frame_0.png" id="12_btn"]
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_1"]
 animations = [{
@@ -70,9 +69,7 @@ animation = &"death"
 autoplay = "death"
 
 [node name="ReloadButton" type="TextureButton" parent="." unique_id=1228282763]
-offset_left = 229.0
-offset_top = 114.0
-offset_right = 293.21075
-offset_bottom = 130.0
-scale = Vector2(4.0180182, 3.9175258)
-texture_normal = ExtResource("12_btn")
+visible = false
+
+[node name="RespawnButton" type="TextureButton" parent="." unique_id=1423519984]
+visible = false
