@@ -21,36 +21,45 @@ var _cursor_clicked = preload("res://assets/ui/cursor/frame_0.png")
 # --- Shader ---
 var _burn_shader = preload("res://shaders/burn_dissolve.gdshader")
 
-# --- Walls spritesheet (for door frame overlays) ---
+# --- Walls spritesheet (for exit door overlay) ---
 var _walls_tex = preload("res://assets/tilesets/dungeon/dungeon_tileset_walls.png")
 
 # --- Scenes ---
 var _ticket_scene = preload("res://scenes/pickups/ticket_pickup.tscn")
-var _trap_scene = preload("res://scenes/traps/trap_spikes.tscn")
 
-# --- Door config ---
-# Paint the closed door tile (7,4) on the tilemap — the script auto-detects it.
-@export var door_source_id: int = 1
-@export var door_closed_tile: Vector2i = Vector2i(7, 4)
-@export var door_open_tile: Vector2i = Vector2i(10, 4)
-@export var trap_count: int = 4
+# --- Tile entity table ---
+# Each entry: { source, marker, scene, size } — size is Vector2i(cols, rows)
+# source 0 = floor, source 1 = walls (terrain layer), source 2 = decorations (furniture layer)
+var _tile_entities = [
+	# Torches
+	{ "source": 1, "marker": Vector2i(13, 6), "scene": preload("res://scenes/torches/torch.tscn"), "size": Vector2i(1, 1) },
+	{ "source": 2, "marker": Vector2i(2, 3), "scene": preload("res://scenes/torches/torch_pillar2.tscn"), "size": Vector2i(1, 1) },
+	{ "source": 2, "marker": Vector2i(5, 7), "scene": preload("res://scenes/torches/torch_wall.tscn"), "size": Vector2i(1, 2) },
+	# Spikes
+	{ "source": 0, "marker": Vector2i(8, 0), "scene": preload("res://scenes/traps/trap_spikes.tscn"), "size": Vector2i(1, 1) },
+	# Doors
+	{ "source": 1, "marker": Vector2i(7, 4), "scene": preload("res://scenes/doors/door_framed_wood.tscn"), "size": Vector2i(1, 1) },
+	{ "source": 1, "marker": Vector2i(13, 4), "scene": preload("res://scenes/doors/door_framed_cell.tscn"), "size": Vector2i(1, 1) },
+	{ "source": 2, "marker": Vector2i(0, 0), "scene": preload("res://scenes/doors/door_wood.tscn"), "size": Vector2i(1, 2) },
+	{ "source": 2, "marker": Vector2i(2, 0), "scene": preload("res://scenes/doors/door_cell.tscn"), "size": Vector2i(1, 2) },
+	# Lever
+	{ "source": 2, "marker": Vector2i(9, 3), "scene": preload("res://scenes/interactables/lever.tscn"), "size": Vector2i(1, 1) },
+	# Chest
+	{ "source": 2, "marker": Vector2i(5, 5), "scene": preload("res://scenes/interactables/chest.tscn"), "size": Vector2i(3, 2) },
+]
 
 # --- Nodes ---
-@onready var player: CharacterBody2D = $GameWorld/TileMapLayer/Player
+@onready var player: CharacterBody2D = $Player
 @onready var punch_btn: TextureButton = $UILayer/PunchButton
 @onready var ticket_btn: TextureButton = $UILayer/TicketButton
 @onready var flying_ticket: AnimatedSprite2D = $UILayer/FlyingTicket
 @onready var cursor_sprite: Sprite2D = $CursorLayer/CursorSprite
-@onready var tilemap: TileMapLayer = $GameWorld/TileMapLayer
+@onready var tilemap: TileMapLayer = $"GameWorld/Dungeon Terrain #1"
 
 # --- State ---
 var punch_mode: bool = false
 var is_animating: bool = false
 var _dead: bool = false
-
-# --- Door state ---
-var _doors: Array[Dictionary] = []
-var _nearest_door: Dictionary = {}
 
 # --- Exit door state ---
 var _exit_door_data: Dictionary = {}
@@ -113,15 +122,15 @@ func _ready() -> void:
 	cursor_sprite.scale = Vector2(2, 2)
 	cursor_sprite.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
 
-	# Add collision to wall tiles
+	# Add collision to wall and furniture tiles
 	_setup_wall_collision()
+	_setup_furniture_collision()
 
-	# Find painted door tiles and make them interactive
-	_setup_doors()
+	# Convert all painted marker tiles into entity instances
+	_setup_tile_entities()
 
-	# Scatter ticket pickups and traps on random floor tiles
+	# Scatter ticket pickups on random floor tiles
 	_spawn_tickets()
-	_spawn_traps()
 
 	# Connect GameState signals so UI updates on pickup and exit door spawns
 	GameState.ticket_collected.connect(_on_ticket_collected)
@@ -150,10 +159,6 @@ func _input(event: InputEvent) -> void:
 			var ticket_pos = flying_ticket.get_global_transform_with_canvas().origin
 			if click.distance_to(ticket_pos) < 100:
 				_punch_ticket()
-
-	# Door interaction — open the nearest closed door
-	if event.is_action_pressed("interact") and not _nearest_door.is_empty() and not _nearest_door.open:
-		_open_door(_nearest_door)
 
 	# Exit door interaction
 	if event.is_action_pressed("interact") and _near_exit_door and not _exit_door_data.is_empty():
@@ -252,20 +257,43 @@ func _setup_wall_collision() -> void:
 			td.add_collision_polygon(0)
 			td.set_collision_polygon_points(0, 0, polygon)
 
+# ── Furniture collision (decorations source, skip carpets) ──
+
+func _setup_furniture_collision() -> void:
+	var ts = tilemap.tile_set
+	if ts == null:
+		return
+
+	var half = Vector2(ts.tile_size) / 2.0
+	var polygon = PackedVector2Array([
+		Vector2(-half.x, -half.y),
+		Vector2(half.x, -half.y),
+		Vector2(half.x, half.y),
+		Vector2(-half.x, half.y)
+	])
+
+	var deco_source_id := 2
+	var src = ts.get_source(deco_source_id) as TileSetAtlasSource
+	if src == null:
+		return
+	for tile_idx in range(src.get_tiles_count()):
+		var tile_id = src.get_tile_id(tile_idx)
+		# Skip carpet tiles (cols >= 14, rows >= 5)
+		if tile_id.x >= 14 and tile_id.y >= 5:
+			continue
+		var td = src.get_tile_data(tile_id, 0)
+		if td.get_collision_polygons_count(0) == 0:
+			td.add_collision_polygon(0)
+			td.set_collision_polygon_points(0, 0, polygon)
+
 # ── Floor cell helpers ──
 
 func _get_floor_cells(exclude_near_player: float = 3.0) -> Array[Vector2i]:
 	var cells: Array[Vector2i] = []
 	var player_cell = tilemap.local_to_map(player.position)
-	var door_set: Dictionary = {}
-	for door in _doors:
-		door_set[door.cell] = true
-
 	for cell in tilemap.get_used_cells():
 		if tilemap.get_cell_source_id(cell) == 0:
 			if cell.distance_to(player_cell) < exclude_near_player:
-				continue
-			if door_set.has(cell):
 				continue
 			cells.append(cell)
 	return cells
@@ -282,111 +310,38 @@ func _spawn_tickets() -> void:
 		ticket.position = world_pos
 		$GameWorld.add_child(ticket)
 
-# ── Trap spawning ──
+# ── Generalized tile entity spawner ──
 
-func _spawn_traps() -> void:
-	var floor_cells = _get_floor_cells(4.0)
-	floor_cells.shuffle()
-	var count = mini(trap_count, floor_cells.size())
-	for i in range(count):
-		var world_pos = tilemap.map_to_local(floor_cells[i])
-		var trap = _trap_scene.instantiate()
-		trap.position = world_pos
-		trap.cycle_time = 1.5  # blink on/off
-		$GameWorld.add_child(trap)
+func _setup_tile_entities() -> void:
+	# Gather all tilemap layers to scan
+	var tilemaps: Array[TileMapLayer] = [tilemap]
+	var furniture = tilemap.get_node_or_null("Dungeon Furniture #1")
+	if furniture:
+		tilemaps.append(furniture)
 
-# ── Door system (auto-detected from tilemap) ──
+	for entry in _tile_entities:
+		var count := 0
+		var size: Vector2i = entry.get("size", Vector2i(1, 1))
+		for tm in tilemaps:
+			# Collect matching cells first, then process (avoid modifying while iterating)
+			var matched_cells: Array[Vector2i] = []
+			for cell in tm.get_used_cells():
+				if tm.get_cell_source_id(cell) == entry.source and tm.get_cell_atlas_coords(cell) == entry.marker:
+					matched_cells.append(cell)
 
-func _make_door_atlas(tile_coord: Vector2i) -> AtlasTexture:
-	var tex = AtlasTexture.new()
-	tex.atlas = _walls_tex
-	tex.region = Rect2(tile_coord.x * 16, tile_coord.y * 16, 16, 16)
-	return tex
-
-func _setup_doors() -> void:
-	var tile_size = Vector2(tilemap.tile_set.tile_size)
-	var closed_tex = _make_door_atlas(door_closed_tile)
-	var open_tex = _make_door_atlas(door_open_tile)
-
-	var door_cells: Array[Vector2i] = []
-	for cell in tilemap.get_used_cells():
-		if tilemap.get_cell_source_id(cell) == door_source_id and tilemap.get_cell_atlas_coords(cell) == door_closed_tile:
-			door_cells.append(cell)
-
-	for cell in door_cells:
-		tilemap.erase_cell(cell)
-
-	for cell in door_cells:
-		var world_pos = tilemap.map_to_local(cell)
-
-		var sprite = Sprite2D.new()
-		sprite.texture = closed_tex.duplicate()
-		sprite.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
-		sprite.position = world_pos
-		$GameWorld.add_child(sprite)
-
-		var body = StaticBody2D.new()
-		body.position = world_pos
-		var body_col = CollisionShape2D.new()
-		var body_shape = RectangleShape2D.new()
-		body_shape.size = tile_size
-		body_col.shape = body_shape
-		body.add_child(body_col)
-		$GameWorld.add_child(body)
-
-		var zone = Area2D.new()
-		zone.position = world_pos
-		zone.collision_layer = 0
-		zone.collision_mask = 1
-		var zone_col = CollisionShape2D.new()
-		var zone_shape = RectangleShape2D.new()
-		zone_shape.size = tile_size * 3
-		zone_col.shape = zone_shape
-		zone.add_child(zone_col)
-		$GameWorld.add_child(zone)
-
-		var prompt = Label.new()
-		prompt.text = "Press E"
-		prompt.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-		prompt.position = Vector2(-20, -tile_size.y - 8)
-		prompt.add_theme_font_size_override("font_size", 8)
-		prompt.visible = false
-		zone.add_child(prompt)
-
-		var door_data = {
-			"cell": cell,
-			"sprite": sprite,
-			"body": body,
-			"body_col": body_col,
-			"zone": zone,
-			"prompt": prompt,
-			"open": false,
-			"open_tex": open_tex.duplicate(),
-		}
-		_doors.append(door_data)
-
-		var idx = _doors.size() - 1
-		zone.body_entered.connect(_on_door_zone_entered.bind(idx))
-		zone.body_exited.connect(_on_door_zone_exited.bind(idx))
-
-func _on_door_zone_entered(body: Node2D, idx: int) -> void:
-	if body == player:
-		_nearest_door = _doors[idx]
-		if not _doors[idx].open:
-			_doors[idx].prompt.visible = true
-
-func _on_door_zone_exited(body: Node2D, idx: int) -> void:
-	if body == player:
-		_doors[idx].prompt.visible = false
-		if _nearest_door == _doors[idx]:
-			_nearest_door = {}
-
-func _open_door(door: Dictionary) -> void:
-	door.open = true
-	door.prompt.visible = false
-	door.sprite.texture = door.open_tex
-	door.body_col.set_deferred("disabled", true)
-	_nearest_door = {}
+			for cell in matched_cells:
+				var world_pos = tm.map_to_local(cell) + tilemap.position
+				# Erase all tiles in the entity's footprint
+				for dx in range(size.x):
+					for dy in range(size.y):
+						tm.erase_cell(Vector2i(cell.x + dx, cell.y + dy))
+				# Center entity on multi-tile footprint
+				world_pos += Vector2((size.x - 1) * 8.0, (size.y - 1) * 8.0)
+				var instance = entry.scene.instantiate()
+				instance.position = world_pos
+				$GameWorld.add_child(instance)
+				count += 1
+		print(entry.scene.resource_path.get_file(), " spawned: ", count)
 
 # ── Exit door (spawns when all tickets collected) ──
 
@@ -415,7 +370,10 @@ func _spawn_exit_door() -> void:
 
 	var tile_size = Vector2(tilemap.tile_set.tile_size)
 	var world_pos = tilemap.map_to_local(best_cell)
-	var closed_tex = _make_door_atlas(door_closed_tile)
+
+	var closed_tex = AtlasTexture.new()
+	closed_tex.atlas = _walls_tex
+	closed_tex.region = Rect2(112, 64, 16, 16)
 
 	var sprite = Sprite2D.new()
 	sprite.texture = closed_tex

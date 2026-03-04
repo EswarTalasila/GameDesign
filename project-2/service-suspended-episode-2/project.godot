@@ -20,8 +20,6 @@ config/icon="res://icon.svg"
 CustomCursor="*res://scripts/custom_cursor.gd"
 GameState="*res://scripts/game_state.gd"
 
-[display]
-
 [editor_plugins]
 
 enabled=PackedStringArray("res://addons/gdai-mcp-plugin-godot/plugin.cfg")
