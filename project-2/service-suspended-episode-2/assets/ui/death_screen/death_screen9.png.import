@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://riyheljn1xo2"
-path="res://.godot/imported/frame_8.png-fe2177f9f74d9e25fc17ee7544174d9b.ctex"
+uid="uid://dy76ujdl72mj5"
+path="res://.godot/imported/death_screen9.png-bcf7a8771fc0e2e6be858dc8ff2ea657.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/ui/death_screen/frame_8.png"
-dest_files=["res://.godot/imported/frame_8.png-fe2177f9f74d9e25fc17ee7544174d9b.ctex"]
+source_file="res://assets/ui/death_screen/death_screen9.png"
+dest_files=["res://.godot/imported/death_screen9.png-bcf7a8771fc0e2e6be858dc8ff2ea657.ctex"]
 
 [params]
 
