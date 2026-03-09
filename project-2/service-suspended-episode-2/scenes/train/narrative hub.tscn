@@ -2,7 +2,10 @@
 
 [ext_resource type="Texture2D" uid="uid://cmik06oax4kl7" path="res://assets/tilesets/train/Train Tiles.png" id="1_a4sqh"]
 [ext_resource type="PackedScene" uid="uid://c347cqvjvcbip" path="res://scenes/player/player.tscn" id="2_a4sqh"]
+[ext_resource type="Script" uid="uid://cumql0asuu3w1" path="res://scenes/npc/red_coat_lady.gd" id="2_a064v"]
 [ext_resource type="Texture2D" uid="uid://co6um0sh00yiq" path="res://assets/sprites/npc/lady_in_red_directions7.png" id="3_a4sqh"]
+[ext_resource type="Resource" uid="uid://et4gwmptwvbn" path="res://dialogues/Lady_in_red.dialogue" id="3_ycgj6"]
+[ext_resource type="Texture2D" uid="uid://ccavjtgx3afsu" path="res://assets/ui/press_e1.png" id="5_irqaa"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_a064v"]
 size = Vector2(11.906977, 35.798447)
@@ -612,13 +615,15 @@ sources/1 = SubResource("TileSetAtlasSource_a064v")
 
 [node name="Node2D" type="Node2D" unique_id=1270059477]
 
-[node name="Player" parent="." unique_id=34910791 instance=ExtResource("2_a4sqh")]
+[node name="Player" parent="." unique_id=34910791 groups=["Player"] instance=ExtResource("2_a4sqh")]
 z_index = 2
 position = Vector2(-44, 5)
 
 [node name="Red Coat Lady" type="CharacterBody2D" parent="." unique_id=1612189072]
 z_index = 2
 position = Vector2(47, 7)
+script = ExtResource("2_a064v")
+dialogue_resource = ExtResource("3_ycgj6")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Red Coat Lady" unique_id=1368016503]
 z_index = 2
@@ -639,6 +644,11 @@ shape = SubResource("CircleShape2D_rbodj")
 
 [node name="Timer" type="Timer" parent="Red Coat Lady" unique_id=25193712]
 autostart = true
+
+[node name="PromptSprite" type="Sprite2D" parent="Red Coat Lady" unique_id=1836340742]
+position = Vector2(19, -18.000004)
+scale = Vector2(0.6875, 0.6875)
+texture = ExtResource("5_irqaa")
 
 [node name="TileMapLayer" type="TileMapLayer" parent="." unique_id=1990979077]
 tile_map_data = PackedByteArray("AAD7//7/AQAAAAkAAAD7////AQAAAAoAAAD7/wAAAQAAAAoAAAD8//7/AQABAAkAAAD8////AQABAAoAAAD8/wAAAQABAAoAAAD9//7/AQACAAkAAAD9////AQACAAoAAAD9/wAAAQACAAoAAAD+//7/AQADAAkAAAD+////AQADAAoAAAD+/wAAAQADAAoAAAD///7/AQAEAAkAAAD/////AQAEAAoAAAD//wAAAQAEAAoAAAAAAP7/AQAFAAkAAAAAAP//AQAFAAoAAAAAAAAAAQAFAAoAAAABAP7/AQAGAAkAAAABAP//AQAGAAoAAAABAAAAAQAGAAoAAAACAP7/AQAHAAkAAAACAP//AQAHAAoAAAACAAAAAQAHAAoAAAD7//3/AQAAAAgAAAD8//3/AQABAAgAAAD9//3/AQACAAgAAAD+//3/AQADAAgAAAD///3/AQAEAAgAAAAAAP3/AQAFAAgAAAABAP3/AQAGAAgAAAACAP3/AQAHAAgAAAADAP3/AQAIAAgAAAADAP7/AQAIAAkAAAADAAAAAQACAAoAAAADAP//AQAIAAoAAAAHAP3/AQAKAAgAAAAHAP7/AQAKAAkAAAAHAP//AQAKAAoAAAAHAAAAAQAKAAoAAAAEAP//AQAGAAoAAAAFAP//AQAHAAoAAAAGAP//AQAIAAoAAAAEAAAAAQACAAoAAAAFAAAAAQADAAoAAAAGAAAAAQAEAAoAAAAEAP3/AQANAAgAAAAEAP7/AQANAAkAAAAFAP3/AQAOAAgAAAAFAP7/AQAOAAkAAAAGAP3/AQAPAAgAAAAGAP7/AQAPAAkAAAD7/wIAAQAAAAsAAAD8/wIAAQABAAsAAAD9/wIAAQACAAsAAAD+/wIAAQADAAsAAAD//wIAAQAEAAsAAAAAAAIAAQAFAAsAAAABAAIAAQAGAAsAAAACAAIAAQAHAAsAAAADAAIAAQAFAAsAAAAEAAIAAQAFAAsAAAAFAAIAAQAFAAsAAAAGAAIAAQAIAAsAAAAHAAIAAQAKAAsAAAD9/wEAAQABAAoAAAD+/wEAAQACAAoAAAD//wEAAQABAAoAAAAAAAEAAQACAAoAAAABAAEAAQADAAoAAAACAAEAAQAEAAoAAAADAAEAAQAFAAoAAAAEAAEAAQAGAAoAAAAFAAEAAQAHAAoAAAAGAAEAAQAIAAoAAAD7/wEAAQAAAAoAAAD8/wEAAQADAAoAAAAHAAEAAQAKAAoAAAA=")

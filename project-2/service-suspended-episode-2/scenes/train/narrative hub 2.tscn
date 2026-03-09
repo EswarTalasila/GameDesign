@@ -2,6 +2,9 @@
 
 [ext_resource type="PackedScene" uid="uid://c347cqvjvcbip" path="res://scenes/player/player.tscn" id="1_u845o"]
 [ext_resource type="Texture2D" uid="uid://co6um0sh00yiq" path="res://assets/sprites/npc/lady_in_red_directions7.png" id="2_fwrli"]
+[ext_resource type="Texture2D" uid="uid://ccavjtgx3afsu" path="res://assets/ui/press_e1.png" id="2_kt8ee"]
+[ext_resource type="Script" uid="uid://cumql0asuu3w1" path="res://scenes/npc/red_coat_lady.gd" id="2_xslqf"]
+[ext_resource type="Resource" uid="uid://caewmwbjkv1vg" path="res://dialogues/Lady_in_red_2.dialogue" id="3_kt8ee"]
 [ext_resource type="Texture2D" uid="uid://cmik06oax4kl7" path="res://assets/tilesets/train/Train Tiles.png" id="3_xslqf"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_a064v"]
@@ -596,13 +599,15 @@ sources/1 = SubResource("TileSetAtlasSource_a064v")
 
 [node name="Node2D" type="Node2D" unique_id=1270059477]
 
-[node name="Player" parent="." unique_id=34910791 instance=ExtResource("1_u845o")]
+[node name="Player" parent="." unique_id=34910791 groups=["Player"] instance=ExtResource("1_u845o")]
 z_index = 2
 position = Vector2(-44, 5)
 
 [node name="Red Coat Lady" type="CharacterBody2D" parent="." unique_id=1612189072]
 z_index = 2
 position = Vector2(47, 7)
+script = ExtResource("2_xslqf")
+dialogue_resource = ExtResource("3_kt8ee")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Red Coat Lady" unique_id=1368016503]
 z_index = 2
@@ -616,6 +621,7 @@ scale = Vector2(0.50390637, 0.50390637)
 sprite_frames = SubResource("SpriteFrames_irqaa")
 
 [node name="chat_detection" type="Area2D" parent="Red Coat Lady" unique_id=471169897]
+z_index = 2
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Red Coat Lady/chat_detection" unique_id=1049775170]
 position = Vector2(20, 6)
@@ -623,6 +629,11 @@ shape = SubResource("CircleShape2D_rbodj")
 
 [node name="Timer" type="Timer" parent="Red Coat Lady" unique_id=25193712]
 autostart = true
+
+[node name="PromptSprite" type="Sprite2D" parent="Red Coat Lady" unique_id=1097285066]
+position = Vector2(19, -18.000004)
+scale = Vector2(0.6875, 0.6875)
+texture = ExtResource("2_kt8ee")
 
 [node name="TileMapLayer" type="TileMapLayer" parent="." unique_id=1990979077]
 tile_map_data = PackedByteArray("AAD7//7/AQAKAAkAAAD7////AQAKAAoAAAD7/wAAAQAKAAoAAAD8//7/AQABAAkAAAD8////AQABAAoAAAD8/wAAAQABAAoAAAD9//7/AQACAAkAAAD9////AQACAAoAAAD9/wAAAQACAAoAAAD+//7/AQADAAkAAAD+////AQADAAoAAAD+/wAAAQADAAoAAAD///7/AQAEAAkAAAD/////AQAEAAoAAAD//wAAAQAEAAoAAAAAAP7/AQAFAAkAAAAAAP//AQAFAAoAAAAAAAAAAQAFAAoAAAABAP7/AQAGAAkAAAABAP//AQAGAAoAAAABAAAAAQAGAAoAAAACAP7/AQAHAAkAAAACAP//AQAHAAoAAAACAAAAAQAHAAoAAAD7//3/AQAKAAgAAAD8//3/AQALAAgAAAD9//3/AQACAAgAAAD+//3/AQADAAgAAAD///3/AQAEAAgAAAAAAP3/AQAFAAgAAAABAP3/AQAGAAgAAAACAP3/AQAHAAgAAAADAP3/AQAIAAgAAAADAP7/AQAIAAkAAAADAAAAAQACAAoAAAADAP//AQAIAAoAAAAHAP3/AQAKAAgAAAAHAP7/AQAKAAkAAAAHAP//AQAKAAoAAAAHAAAAAQAKAAoAAAAEAP//AQAGAAoAAAAFAP//AQAHAAoAAAAGAP//AQAIAAoAAAAEAAAAAQACAAoAAAAFAAAAAQADAAoAAAAGAAAAAQAEAAoAAAAEAP3/AQANAAgAAAAEAP7/AQANAAkAAAAFAP3/AQAOAAgAAAAFAP7/AQAOAAkAAAAGAP3/AQAPAAgAAAAGAP7/AQAPAAkAAAD7/wIAAQAKAAsAAAD8/wIAAQALAAsAAAD9/wIAAQACAAsAAAD+/wIAAQADAAsAAAD//wIAAQAEAAsAAAAAAAIAAQAFAAsAAAABAAIAAQAGAAsAAAACAAIAAQAHAAsAAAADAAIAAQAFAAsAAAAEAAIAAQAFAAsAAAAFAAIAAQAFAAsAAAAGAAIAAQAIAAsAAAAHAAIAAQAKAAsAAAD9/wEAAQABAAoAAAD+/wEAAQACAAoAAAD//wEAAQABAAoAAAAAAAEAAQACAAoAAAABAAEAAQADAAoAAAACAAEAAQAEAAoAAAADAAEAAQAFAAoAAAAEAAEAAQAGAAoAAAAFAAEAAQAHAAoAAAAGAAEAAQAIAAoAAAD7/wEAAQAKAAoAAAD8/wEAAQADAAoAAAAHAAEAAQAKAAoAAAA=")

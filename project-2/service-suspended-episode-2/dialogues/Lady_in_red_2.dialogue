@@ -2,6 +2,8 @@
 Lady In Red: How many have you punched.
 You: Enough. I think I'm close.
 Lady In Red: You're doing better than most.
+
+~ choices
 - Who is he. The one you wouldn't name?
 	Lady In Red: The conductor.
 	Lady In Red: He runs this place. Manages it. Files people into permanent loops when they've been down here long enough.
@@ -9,17 +11,21 @@ Lady In Red: You're doing better than most.
 	[shake]INTERCOM: [shake]Passenger deviation noted.[/shake]
 	Lady In Red: Assigns them a route. A permanent one. After that you don't try to leave anymore. You just commute. Down here. The same path. Indefinitely.
 	Lady In Red: He hasn't filed me because I'm not worth the paperwork. Too degraded. Too far gone to be useful to the system.
+	=> choices
 - Did you ever try to escape?
 	Lady In Red: Yes. Early on. I found what I thought was a way out.
 	Lady In Red: It wasn't. It just went deeper.
 	You: What stopped you from trying again.
 	Lady In Red: At some point I stopped being able to remember why leaving mattered.
 	Lady In Red: That's how you know the loops are working. When staying starts to feel the same as going.
+	=> choices
 - What were you like. Before.
 	Lady In Red: I read a lot. I remember that. I had a newspaper habit. Crosswords specifically.
 	Lady In Red: I don't remember if I was happy. I remember the crosswords. That's what's left.
 	Lady In Red: Don't lose too much before you get out. The things you can't remember, you don't miss them until you're back and they're just gone.
 	Lady In Red: At least I think that's how it works. I've never made it back to check.
+	=> end_choices
+~ end_choices
 [shake]INTERCOM: [shake]Continued irregular movement. Route reassignment pending.[/shake]
 Lady In Red: But it looks like you're actually going to make it.
 You: Come with me.
