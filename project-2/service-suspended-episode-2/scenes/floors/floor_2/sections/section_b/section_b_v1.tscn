@@ -14,6 +14,10 @@ tile_set = ExtResource("2_tileset")
 [node name="Furniture" type="TileMapLayer" parent="Terrain"]
 tile_set = ExtResource("2_tileset")
 
+
+[node name="Furniture2" type="TileMapLayer" parent="Terrain"]
+tile_set = ExtResource("2_tileset")
+
 [node name="EnemyMarkers" type="TileMapLayer" parent="Terrain"]
 tile_set = ExtResource("3_markers")
 
@@ -28,7 +32,12 @@ collision_enabled = false
 
 [node name="Doors" type="Node2D" parent="."]
 
-[node name="Walls" type="TileMapLayer" parent="."]
+[node name="BottomWalls" type="TileMapLayer" parent="."]
+y_sort_enabled = true
+tile_set = ExtResource("2_tileset")
+
+
+[node name="TopWalls" type="TileMapLayer" parent="."]
 y_sort_enabled = true
 tile_set = ExtResource("2_tileset")
 

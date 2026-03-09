@@ -46,15 +46,18 @@ var _tile_entities = [
 	{ "source": 2, "marker": Vector2i(9, 3), "scene": preload("res://scenes/interactables/lever.tscn"), "size": Vector2i(1, 1) },
 	# Chest
 	{ "source": 2, "marker": Vector2i(5, 5), "scene": preload("res://scenes/interactables/chest.tscn"), "size": Vector2i(3, 2) },
+	# Enemies (scanned from Dungeon Enemy layer — separate tileset, use "layer" key)
+	{ "source": 0, "marker": Vector2i(0, 0), "scene": preload("res://scenes/enemies/sword_enemy.tscn"), "size": Vector2i(1, 1), "layer": "enemy" },
 ]
 
 # --- Nodes ---
-@onready var player: CharacterBody2D = $Player
+@onready var player: CharacterBody2D = $GameWorld/Player
 @onready var punch_btn: TextureButton = $UILayer/PunchButton
 @onready var ticket_btn: TextureButton = $UILayer/TicketButton
 @onready var flying_ticket: AnimatedSprite2D = $UILayer/FlyingTicket
 @onready var cursor_sprite: Sprite2D = $CursorLayer/CursorSprite
 @onready var tilemap: TileMapLayer = $"GameWorld/Dungeon Terrain #1"
+@onready var walls_layer: TileMapLayer = $"GameWorld/Walls"
 
 # --- State ---
 var punch_mode: bool = false
@@ -122,9 +125,8 @@ func _ready() -> void:
 	cursor_sprite.scale = Vector2(2, 2)
 	cursor_sprite.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
 
-	# Add collision to wall and furniture tiles
-	_setup_wall_collision()
-	_setup_furniture_collision()
+	# Auto-collision for wall and furniture tile sources
+	_setup_auto_collision()
 
 	# Convert all painted marker tiles into entity instances
 	_setup_tile_entities()
@@ -231,9 +233,11 @@ func _update_ticket_count_display() -> void:
 func _on_ticket_collected(_current: int, _total: int) -> void:
 	_update_ticket_count_display()
 
-# ── Wall collision ──
+# ── Auto-collision for wall & furniture tile sources ──
+# Adds a full-tile collision polygon to every tile in the source that lacks one.
+# Layers control whether collision is active: Terrain & Walls = yes, Overhead = no.
 
-func _setup_wall_collision() -> void:
+func _setup_auto_collision() -> void:
 	var ts = tilemap.tile_set
 	if ts == null:
 		return
@@ -246,45 +250,48 @@ func _setup_wall_collision() -> void:
 		Vector2(-half.x, half.y)
 	])
 
-	var wall_source_id := 1
-	var src = ts.get_source(wall_source_id) as TileSetAtlasSource
-	if src == null:
-		return
-	for tile_idx in range(src.get_tiles_count()):
-		var tile_id = src.get_tile_id(tile_idx)
-		var td = src.get_tile_data(tile_id, 0)
-		if td.get_collision_polygons_count(0) == 0:
-			td.add_collision_polygon(0)
-			td.set_collision_polygon_points(0, 0, polygon)
+	# Source 1 = walls (y_sort_origin at tile bottom for depth sorting)
+	var wall_src = ts.get_source(1) as TileSetAtlasSource
+	if wall_src:
+		for i in range(wall_src.get_tiles_count()):
+			var td = wall_src.get_tile_data(wall_src.get_tile_id(i), 0)
+			td.y_sort_origin = int(half.y)
+			if td.get_collision_polygons_count(0) == 0:
+				td.add_collision_polygon(0)
+				td.set_collision_polygon_points(0, 0, polygon)
 
-# ── Furniture collision (decorations source, skip carpets) ──
-
-func _setup_furniture_collision() -> void:
-	var ts = tilemap.tile_set
-	if ts == null:
-		return
-
-	var half = Vector2(ts.tile_size) / 2.0
-	var polygon = PackedVector2Array([
-		Vector2(-half.x, -half.y),
-		Vector2(half.x, -half.y),
-		Vector2(half.x, half.y),
-		Vector2(-half.x, half.y)
-	])
-
-	var deco_source_id := 2
-	var src = ts.get_source(deco_source_id) as TileSetAtlasSource
-	if src == null:
-		return
-	for tile_idx in range(src.get_tiles_count()):
-		var tile_id = src.get_tile_id(tile_idx)
-		# Skip carpet tiles (cols >= 14, rows >= 5)
-		if tile_id.x >= 14 and tile_id.y >= 5:
-			continue
-		var td = src.get_tile_data(tile_id, 0)
-		if td.get_collision_polygons_count(0) == 0:
-			td.add_collision_polygon(0)
-			td.set_collision_polygon_points(0, 0, polygon)
+	# Source 2 = decorations / furniture (skip carpets: cols >= 14, rows >= 5)
+	# Tall furniture (atlas height > 1) only collides on the bottom row so the
+	# player can walk behind the upper visual portion.
+	var deco_src = ts.get_source(2) as TileSetAtlasSource
+	if deco_src:
+		for i in range(deco_src.get_tiles_count()):
+			var tile_id = deco_src.get_tile_id(i)
+			if tile_id.x >= 14 and tile_id.y >= 5:
+				continue
+			var td = deco_src.get_tile_data(tile_id, 0)
+			if td.get_collision_polygons_count(0) == 0:
+				var atlas_size = deco_src.get_tile_size_in_atlas(tile_id)
+				var px = Vector2(atlas_size) * Vector2(ts.tile_size)
+				var half_px = px / 2.0
+				var col_poly: PackedVector2Array
+				if atlas_size.y > 1:
+					# Bottom row only
+					col_poly = PackedVector2Array([
+						Vector2(-half_px.x, half_px.y - ts.tile_size.y),
+						Vector2(half_px.x, half_px.y - ts.tile_size.y),
+						Vector2(half_px.x, half_px.y),
+						Vector2(-half_px.x, half_px.y),
+					])
+				else:
+					col_poly = PackedVector2Array([
+						Vector2(-half_px.x, -half_px.y),
+						Vector2(half_px.x, -half_px.y),
+						Vector2(half_px.x, half_px.y),
+						Vector2(-half_px.x, half_px.y),
+					])
+				td.add_collision_polygon(0)
+				td.set_collision_polygon_points(0, 0, col_poly)
 
 # ── Floor cell helpers ──
 
@@ -313,16 +320,26 @@ func _spawn_tickets() -> void:
 # ── Generalized tile entity spawner ──
 
 func _setup_tile_entities() -> void:
-	# Gather all tilemap layers to scan
+	# Gather all tilemap layers to scan (terrain, furniture, walls)
 	var tilemaps: Array[TileMapLayer] = [tilemap]
 	var furniture = tilemap.get_node_or_null("Dungeon Furniture #1")
 	if furniture:
 		tilemaps.append(furniture)
+	if walls_layer:
+		tilemaps.append(walls_layer)
+	# Enemy marker layer uses a separate tileset — keyed by "layer": "enemy"
+	var enemy_layer = tilemap.get_node_or_null("Dungeon Enemy #1")
 
 	for entry in _tile_entities:
 		var count := 0
 		var size: Vector2i = entry.get("size", Vector2i(1, 1))
-		for tm in tilemaps:
+		# Route to the correct tilemap(s) based on optional "layer" key
+		var scan_layers: Array[TileMapLayer] = []
+		if entry.get("layer") == "enemy" and enemy_layer:
+			scan_layers = [enemy_layer]
+		else:
+			scan_layers = tilemaps
+		for tm in scan_layers:
 			# Collect matching cells first, then process (avoid modifying while iterating)
 			var matched_cells: Array[Vector2i] = []
 			for cell in tm.get_used_cells():
@@ -330,7 +347,7 @@ func _setup_tile_entities() -> void:
 					matched_cells.append(cell)
 
 			for cell in matched_cells:
-				var world_pos = tm.map_to_local(cell) + tilemap.position
+				var world_pos = $GameWorld.to_local(tm.to_global(tm.map_to_local(cell)))
 				# Erase all tiles in the entity's footprint
 				for dx in range(size.x):
 					for dy in range(size.y):
@@ -339,7 +356,11 @@ func _setup_tile_entities() -> void:
 				world_pos += Vector2((size.x - 1) * 8.0, (size.y - 1) * 8.0)
 				var instance = entry.scene.instantiate()
 				instance.position = world_pos
-				$GameWorld.add_child(instance)
+				var path = entry.scene.resource_path
+				if "door" in path and "exit" not in path:
+					$GameWorld/Doors.add_child(instance)
+				else:
+					$GameWorld.add_child(instance)
 				count += 1
 		print(entry.scene.resource_path.get_file(), " spawned: ", count)
 

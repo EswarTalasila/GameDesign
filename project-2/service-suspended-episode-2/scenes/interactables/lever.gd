@@ -6,7 +6,7 @@ var _state: int = 0
 var _player_nearby: bool = false
 
 @onready var _sprite: Sprite2D = $Sprite2D
-@onready var _prompt: Label = $Area2D/Label
+@onready var _prompt: AnimatedSprite2D = $Area2D/PressEPrompt
 
 func _ready() -> void:
 	if state_textures.size() > 0:

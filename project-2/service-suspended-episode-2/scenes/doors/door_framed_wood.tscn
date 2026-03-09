@@ -1,7 +1,9 @@
-[gd_scene load_steps=7 format=4]
+[gd_scene load_steps=9 format=4]
 
 [ext_resource type="Script" path="res://scenes/doors/door.gd" id="1_script"]
 [ext_resource type="Texture2D" path="res://assets/tilesets/dungeon/dungeon_tileset_walls.png" id="2_atlas"]
+[ext_resource type="PackedScene" path="res://scenes/ui/press_e_prompt.tscn" id="3_press_e"]
+[ext_resource type="PackedScene" path="res://scenes/ui/lock_prompt.tscn" id="4_lock"]
 
 [sub_resource type="AtlasTexture" id="closed_tex"]
 atlas = ExtResource("2_atlas")
@@ -18,6 +20,7 @@ size = Vector2(16, 16)
 size = Vector2(48, 48)
 
 [node name="Door" type="Node2D"]
+y_sort_origin = 8
 script = ExtResource("1_script")
 closed_texture = SubResource("closed_tex")
 open_texture = SubResource("open_tex")
@@ -38,12 +41,8 @@ collision_mask = 1
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
 shape = SubResource("zone_shape")
 
-[node name="Label" type="Label" parent="Area2D"]
-offset_left = -20.0
-offset_top = -24.0
-offset_right = 20.0
-offset_bottom = -10.0
-text = "Press E"
-horizontal_alignment = 1
-theme_override_font_sizes/font_size = 8
-visible = false
+[node name="PressEPrompt" parent="Area2D" instance=ExtResource("3_press_e")]
+position = Vector2(0, -17)
+
+[node name="LockPrompt" parent="Area2D" instance=ExtResource("4_lock")]
+position = Vector2(0, -17)

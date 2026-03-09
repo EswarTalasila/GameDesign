@@ -1,0 +1,133 @@
+[gd_scene format=3 uid="uid://djr5qxoqu2qd7"]
+
+[ext_resource type="Script" uid="uid://pxueeobwdcu5" path="res://scenes/floors/shared/floor.gd" id="1_floor"]
+[ext_resource type="PackedScene" uid="uid://c347cqvjvcbip" path="res://scenes/player/player.tscn" id="2_player"]
+[ext_resource type="PackedScene" uid="uid://est45e7pu3nu" path="res://scenes/floors/floor_1/sections/section_a/section_a_v1.tscn" id="3_sa"]
+[ext_resource type="PackedScene" uid="uid://dwqhtqkxxmc0p" path="res://scenes/floors/floor_1/sections/section_b/section_b_v1.tscn" id="4_sb"]
+[ext_resource type="PackedScene" path="res://scenes/floors/floor_1/sections/section_c/section_c_v1.tscn" id="5_sc"]
+[ext_resource type="PackedScene" path="res://scenes/floors/floor_1/sections/section_d/section_d_v1.tscn" id="6_sd"]
+[ext_resource type="TileSet" uid="uid://bm8ptduw62di4" path="res://assets/tilesets/dungeon/dungeon_terrain.tres" id="11_tileset"]
+[ext_resource type="PackedScene" path="res://scenes/ui/game_ui.tscn" id="12_gameui"]
+
+[sub_resource type="RectangleShape2D" id="bound_shape_a"]
+size = Vector2(800, 896)
+
+[sub_resource type="RectangleShape2D" id="bound_shape_b"]
+size = Vector2(800, 600)
+
+[sub_resource type="RectangleShape2D" id="bound_shape_c"]
+size = Vector2(800, 600)
+
+[sub_resource type="RectangleShape2D" id="bound_shape_d"]
+size = Vector2(800, 600)
+
+[node name="Floor1" type="Node2D" unique_id=1326494874]
+script = ExtResource("1_floor")
+
+[node name="Background" type="ColorRect" parent="." unique_id=1006843692]
+offset_right = 3346.0
+offset_bottom = 2296.0
+color = Color(0.06, 0.06, 0.08, 1)
+
+[node name="GameWorld" type="Node2D" parent="." unique_id=1495692843]
+y_sort_enabled = true
+
+[node name="StaticTerrain" type="TileMapLayer" parent="GameWorld" unique_id=1992346134]
+tile_set = ExtResource("11_tileset")
+
+[node name="StaticBottomWalls" type="TileMapLayer" parent="GameWorld" unique_id=1777802854]
+y_sort_enabled = true
+tile_set = ExtResource("11_tileset")
+
+[node name="StaticTopWalls" type="TileMapLayer" parent="GameWorld" unique_id=1191259714]
+y_sort_enabled = true
+tile_set = ExtResource("11_tileset")
+collision_enabled = false
+
+[node name="StaticFurniture" type="TileMapLayer" parent="GameWorld" unique_id=881041524]
+y_sort_enabled = true
+tile_set = ExtResource("11_tileset")
+
+[node name="StaticFurniture2" type="TileMapLayer" parent="GameWorld" unique_id=314214187]
+y_sort_enabled = true
+tile_set = ExtResource("11_tileset")
+
+[node name="StaticOverhead" type="TileMapLayer" parent="GameWorld" unique_id=1303788137]
+z_index = 10
+z_as_relative = false
+tile_set = ExtResource("11_tileset")
+collision_enabled = false
+
+[node name="StaticSideWalls" type="TileMapLayer" parent="GameWorld" unique_id=678582485]
+z_index = 10
+z_as_relative = false
+tile_set = ExtResource("11_tileset")
+
+[node name="Sections" type="Node2D" parent="GameWorld" unique_id=1752531391]
+y_sort_enabled = true
+
+[node name="SectionA" type="Node2D" parent="GameWorld/Sections" unique_id=977672614]
+y_sort_enabled = true
+
+[node name="SectionA_V1" parent="GameWorld/Sections/SectionA" unique_id=1229123982 instance=ExtResource("3_sa")]
+position = Vector2(-1123, 48)
+
+[node name="SectionB" type="Node2D" parent="GameWorld/Sections" unique_id=1965196015]
+y_sort_enabled = true
+position = Vector2(805, -163)
+
+[node name="SectionB_V1" parent="GameWorld/Sections/SectionB" unique_id=424933158 instance=ExtResource("4_sb")]
+position = Vector2(958, -567)
+
+[node name="SectionC" type="Node2D" parent="GameWorld/Sections" unique_id=966658100]
+y_sort_enabled = true
+position = Vector2(342, 1635)
+
+[node name="SectionC_V1" parent="GameWorld/Sections/SectionC" unique_id=539596875 instance=ExtResource("5_sc")]
+position = Vector2(39, 29)
+
+[node name="SectionD" type="Node2D" parent="GameWorld/Sections" unique_id=1437399887]
+y_sort_enabled = true
+position = Vector2(852, -899)
+
+[node name="SectionD_V1" parent="GameWorld/Sections/SectionD" unique_id=965126785 instance=ExtResource("6_sd")]
+position = Vector2(63, 26)
+
+[node name="Player" parent="GameWorld" unique_id=867231661 instance=ExtResource("2_player")]
+position = Vector2(-1020, 776)
+
+[node name="Boundaries" type="Node2D" parent="." unique_id=615029623]
+
+[node name="SectionA" type="Area2D" parent="Boundaries" unique_id=1038589431]
+position = Vector2(-1999, 59)
+collision_layer = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Boundaries/SectionA" unique_id=771384622]
+position = Vector2(1014, 402)
+shape = SubResource("bound_shape_a")
+
+[node name="SectionB" type="Area2D" parent="Boundaries" unique_id=754980911]
+position = Vector2(1566, -436)
+collision_layer = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Boundaries/SectionB" unique_id=2112524394]
+position = Vector2(507, 70)
+shape = SubResource("bound_shape_b")
+
+[node name="SectionC" type="Area2D" parent="Boundaries" unique_id=1808536936]
+position = Vector2(703, 1462)
+collision_layer = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Boundaries/SectionC" unique_id=1961316099]
+position = Vector2(440, 336)
+shape = SubResource("bound_shape_c")
+
+[node name="SectionD" type="Area2D" parent="Boundaries" unique_id=1232396268]
+position = Vector2(2196, 1165)
+collision_layer = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Boundaries/SectionD" unique_id=1198897130]
+position = Vector2(465, 356)
+shape = SubResource("bound_shape_d")
+
+[node name="GameUI" parent="." unique_id=323815624 instance=ExtResource("12_gameui")]

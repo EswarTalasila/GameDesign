@@ -1,6 +1,8 @@
 extends CanvasLayer
 
 signal transition_finished
+signal cover_finished
+signal uncover_finished
 
 @onready var anim: AnimatedSprite2D = $AnimatedSprite2D
 @onready var background: ColorRect = $Background
@@ -8,6 +10,7 @@ signal transition_finished
 @export var fade_in_time: float = 0.5
 @export var min_display_time: float = 3.0
 @export var fade_out_time: float = 0.5
+@export var cover_display_time: float = 1.0
 
 var _next_scene_path: String = ""
 
@@ -50,4 +53,22 @@ func _play_transition() -> void:
 	var scene = ResourceLoader.load_threaded_get(_next_scene_path)
 	get_tree().change_scene_to_packed(scene)
 	transition_finished.emit()
+	queue_free()
+
+
+# --- Cover / Uncover mode (no scene change) ---
+
+func cover() -> void:
+	anim.play("loading")
+	var tween = create_tween()
+	tween.tween_property(anim, "modulate:a", 1.0, fade_in_time)
+	await tween.finished
+	cover_finished.emit()
+
+func uncover() -> void:
+	await get_tree().create_timer(cover_display_time).timeout
+	var tween = create_tween()
+	tween.tween_property(anim, "modulate:a", 0.0, fade_out_time)
+	await tween.finished
+	uncover_finished.emit()
 	queue_free()

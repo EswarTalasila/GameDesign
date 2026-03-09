@@ -1,0 +1,44 @@
+[gd_scene load_steps=6 format=4]
+
+[ext_resource type="Script" path="res://scenes/enemies/sword_enemy.gd" id="1_script"]
+[ext_resource type="SpriteFrames" path="res://assets/sprites/enemies/sword/sword_frames.tres" id="2_frames"]
+
+[sub_resource type="CapsuleShape2D" id="body_shape"]
+radius = 6.0
+height = 20.0
+
+[sub_resource type="CircleShape2D" id="detect_shape"]
+radius = 80.0
+
+[sub_resource type="RectangleShape2D" id="hit_shape"]
+size = Vector2(40, 24)
+
+[node name="SwordEnemy" type="CharacterBody2D"]
+collision_layer = 2
+collision_mask = 1
+script = ExtResource("1_script")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+texture_filter = 1
+sprite_frames = ExtResource("2_frames")
+animation = &"dormant"
+offset = Vector2(0, -8)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0, 5)
+shape = SubResource("body_shape")
+
+[node name="DetectionZone" type="Area2D" parent="."]
+collision_layer = 0
+collision_mask = 1
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="DetectionZone"]
+shape = SubResource("detect_shape")
+
+[node name="HitBox" type="Area2D" parent="."]
+collision_layer = 0
+collision_mask = 1
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="HitBox"]
+position = Vector2(16, 0)
+shape = SubResource("hit_shape")
