@@ -1,0 +1,16 @@
+[remap]
+
+importer="dialogue_manager"
+importer_version=15
+type="Resource"
+uid="uid://btq6br0hdarim"
+path="res://.godot/imported/conductor.dialogue-6eb33b2352eb5da66578a3f4be1fc7f3.tres"
+
+[deps]
+
+source_file="res://dialogues/conductor.dialogue"
+dest_files=["res://.godot/imported/conductor.dialogue-6eb33b2352eb5da66578a3f4be1fc7f3.tres"]
+
+[params]
+
+defaults=true
