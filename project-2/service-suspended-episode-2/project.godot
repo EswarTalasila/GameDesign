@@ -19,6 +19,7 @@ config/icon="res://icon.svg"
 
 CustomCursor="*res://scripts/custom_cursor.gd"
 GameState="*res://scripts/game_state.gd"
+DialogueManager="*uid://c3rodes2l3gxb"
 
 [display]
 
@@ -29,7 +30,7 @@ window/stretch/mode="canvas_items"
 
 [editor_plugins]
 
-enabled=PackedStringArray("res://addons/gdai-mcp-plugin-godot/plugin.cfg")
+enabled=PackedStringArray("res://addons/dialogue_manager/plugin.cfg")
 
 [input]
 
@@ -68,6 +69,10 @@ toggle_inventory={
 "events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":4194306,"key_label":0,"unicode":0,"location":0,"echo":false,"script":null)
 ]
 }
+
+[internationalization]
+
+locale/translations_pot_files=PackedStringArray("res://dialogues/conductor.dialogue", "res://dialogues/Lady_in_red_2.dialogue", "res://dialogues/Lady_in_red.dialogue")
 
 [physics]
 

@@ -1,0 +1,16 @@
+[remap]
+
+importer="dialogue_manager"
+importer_version=15
+type="Resource"
+uid="uid://et4gwmptwvbn"
+path="res://.godot/imported/Lady_in_red.dialogue-9f7aaf035b50c07a083868484fb2fad9.tres"
+
+[deps]
+
+source_file="res://dialogues/Lady_in_red.dialogue"
+dest_files=["res://.godot/imported/Lady_in_red.dialogue-9f7aaf035b50c07a083868484fb2fad9.tres"]
+
+[params]
+
+defaults=true
