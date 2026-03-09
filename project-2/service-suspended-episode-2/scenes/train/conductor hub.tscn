@@ -1,29 +1,7 @@
 [gd_scene format=4 uid="uid://b22xcxjc7slw4"]
 
 [ext_resource type="PackedScene" uid="uid://c347cqvjvcbip" path="res://scenes/player/player.tscn" id="1_u1g08"]
-[ext_resource type="Texture2D" uid="uid://co6um0sh00yiq" path="res://assets/sprites/npc/lady_in_red_directions7.png" id="2_wjfgq"]
 [ext_resource type="Texture2D" uid="uid://cmik06oax4kl7" path="res://assets/tilesets/train/Train Tiles.png" id="3_q8as8"]
-
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_a064v"]
-size = Vector2(11.906977, 35.798447)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_ycgj6"]
-atlas = ExtResource("2_wjfgq")
-region = Rect2(0, 0, 64, 64)
-
-[sub_resource type="SpriteFrames" id="SpriteFrames_irqaa"]
-animations = [{
-"frames": [{
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_ycgj6")
-}],
-"loop": true,
-"name": &"default",
-"speed": 1.0
-}]
-
-[sub_resource type="CircleShape2D" id="CircleShape2D_rbodj"]
-radius = 21.0
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_a064v"]
 texture = ExtResource("3_q8as8")
@@ -609,30 +587,6 @@ sources/1 = SubResource("TileSetAtlasSource_a064v")
 [node name="Player" parent="." unique_id=34910791 instance=ExtResource("1_u1g08")]
 z_index = 2
 position = Vector2(-44, 5)
-
-[node name="Red Coat Lady" type="CharacterBody2D" parent="." unique_id=1612189072]
-z_index = 2
-position = Vector2(16, 7)
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Red Coat Lady" unique_id=1368016503]
-z_index = 2
-position = Vector2(20, 3.0195315)
-scale = Vector2(0.50390637, 0.50390637)
-shape = SubResource("RectangleShape2D_a064v")
-
-[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="Red Coat Lady" unique_id=1818355223]
-position = Vector2(19, 0)
-scale = Vector2(0.50390637, 0.50390637)
-sprite_frames = SubResource("SpriteFrames_irqaa")
-
-[node name="chat_detection" type="Area2D" parent="Red Coat Lady" unique_id=471169897]
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Red Coat Lady/chat_detection" unique_id=1049775170]
-position = Vector2(20, 6)
-shape = SubResource("CircleShape2D_rbodj")
-
-[node name="Timer" type="Timer" parent="Red Coat Lady" unique_id=25193712]
-autostart = true
 
 [node name="TileMapLayer" type="TileMapLayer" parent="." unique_id=1990979077]
 tile_map_data = PackedByteArray("AAD7//7/AQAKAAkAAAD7////AQAKAAoAAAD7/wAAAQAKAAoAAAD8//7/AQABAAkAAAD8////AQABAAoAAAD8/wAAAQABAAoAAAD9//7/AQACAAkAAAD9////AQACAAoAAAD9/wAAAQACAAoAAAD+//7/AQADAAkAAAD+////AQADAAoAAAD+/wAAAQADAAoAAAD///7/AQAEAAkAAAD/////AQAEAAoAAAD//wAAAQAEAAoAAAAAAP7/AQAFAAkAAAAAAP//AQAFAAoAAAAAAAAAAQAFAAoAAAABAP7/AQAGAAkAAAABAP//AQAGAAoAAAABAAAAAQAGAAoAAAACAP7/AQAHAAkAAAACAP//AQAHAAoAAAACAAAAAQAHAAoAAAD7//3/AQAKAAgAAAD8//3/AQALAAgAAAD9//3/AQACAAgAAAD+//3/AQADAAgAAAD///3/AQAEAAgAAAAAAP3/AQAFAAgAAAABAP3/AQAGAAgAAAACAP3/AQAHAAgAAAADAP3/AQAbAAgAAAADAP7/AQAbAAkAAAADAAAAAQACAAoAAAADAP//AQAIAAoAAAAEAP//AQAcAAoAAAAFAP//AQAHAAoAAAAGAP//AQAeAAoAAAAEAAAAAQACAAoAAAAFAAAAAQADAAoAAAAGAAAAAQAeAAoAAAAEAP3/AQAcAAgAAAAEAP7/AQAcAAkAAAAFAP3/AQAdAAgAAAAFAP7/AQAdAAkAAAAGAP3/AQAeAAgAAAAGAP7/AQAeAAkAAAD7/wIAAQAKAAsAAAD8/wIAAQALAAsAAAD9/wIAAQACAAsAAAD+/wIAAQADAAsAAAD//wIAAQAEAAsAAAAAAAIAAQAFAAsAAAABAAIAAQAZAAsAAAACAAIAAQAaAAsAAAADAAIAAQAbAAsAAAAEAAIAAQAcAAsAAAAFAAIAAQAdAAsAAAAGAAIAAQAeAAsAAAD9/wEAAQABAAoAAAD+/wEAAQACAAoAAAD//wEAAQABAAoAAAAAAAEAAQACAAoAAAABAAEAAQADAAoAAAACAAEAAQAEAAoAAAADAAEAAQAFAAoAAAAEAAEAAQAGAAoAAAAFAAEAAQAHAAoAAAAGAAEAAQAeAAoAAAD7/wEAAQAKAAoAAAD8/wEAAQADAAoAAAA=")
