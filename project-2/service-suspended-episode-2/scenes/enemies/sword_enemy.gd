@@ -126,6 +126,13 @@ func _on_detection_entered(body: Node2D) -> void:
 		_player = body
 
 func _show_combat_tutorial() -> void:
+	var floor_node = get_tree().current_scene
+	# Match floor.gd's _show_tip: floor=ALWAYS (keeps audio), GameWorld=DISABLED (freezes game)
+	if floor_node and floor_node.has_node("GameWorld"):
+		floor_node._showing_tip = true
+		floor_node.process_mode = Node.PROCESS_MODE_ALWAYS
+		floor_node.get_node("GameWorld").set_deferred("process_mode", Node.PROCESS_MODE_DISABLED)
+
 	process_mode = Node.PROCESS_MODE_ALWAYS
 	get_tree().paused = true
 
@@ -139,6 +146,10 @@ func _show_combat_tutorial() -> void:
 		bubble.process_mode = Node.PROCESS_MODE_INHERIT
 
 	get_tree().paused = false
+	if floor_node and floor_node.has_node("GameWorld"):
+		floor_node.get_node("GameWorld").set_deferred("process_mode", Node.PROCESS_MODE_INHERIT)
+		floor_node.process_mode = Node.PROCESS_MODE_INHERIT
+		floor_node._showing_tip = false
 	process_mode = Node.PROCESS_MODE_INHERIT
 	_change_state(State.SPAWNING)
 

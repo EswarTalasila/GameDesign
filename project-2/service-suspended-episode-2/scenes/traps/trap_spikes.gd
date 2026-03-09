@@ -32,6 +32,8 @@ func _ready() -> void:
 func _physics_process(_delta: float) -> void:
 	if not _active or not _player_inside or _player_ref == null:
 		return
+	if _player_ref.get("_dead"):
+		return
 	if $AnimatedSprite2D.frame == peak_frame and _player_ref.has_method("take_hit"):
 		_player_ref.take_hit(2)
 

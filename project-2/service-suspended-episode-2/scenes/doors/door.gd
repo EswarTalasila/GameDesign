@@ -58,7 +58,7 @@ func _input(event: InputEvent) -> void:
 					unlock()
 					GameState.set_key_mode(false)
 
-func _is_click_on_zone(event: InputEventMouseButton) -> bool:
+func _is_click_on_zone(_event: InputEventMouseButton) -> bool:
 	var mouse_world = get_global_mouse_position()
 	var zone_pos = $Area2D.global_position + _zone_col.position
 	var shape = _zone_col.shape as RectangleShape2D

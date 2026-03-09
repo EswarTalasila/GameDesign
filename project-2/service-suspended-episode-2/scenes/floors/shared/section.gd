@@ -138,6 +138,8 @@ func _setup_tile_entities() -> void:
 		tilemaps.append(_furniture)
 	if _bottom_walls:
 		tilemaps.append(_bottom_walls)
+	if _top_walls:
+		tilemaps.append(_top_walls)
 
 	for entry in _tile_entities:
 		if entry.get("floor_managed", false):

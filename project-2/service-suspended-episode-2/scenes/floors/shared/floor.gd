@@ -40,7 +40,6 @@ var _key_cursor_click = preload("res://assets/ui/cursor/key_cursor_click.png")
 var _pause_normal = preload("res://assets/ui/buttons/play_pause/pause_normal.png")
 var _pause_pressed = preload("res://assets/ui/buttons/play_pause/pause_pressed.png")
 var _play_normal = preload("res://assets/ui/buttons/play_pause/play_normal.png")
-var _play_pressed = preload("res://assets/ui/buttons/play_pause/play_pressed.png")
 
 # --- Shader ---
 var _burn_shader = preload("res://shaders/burn_dissolve.gdshader")
@@ -371,6 +370,31 @@ func _swap_current_section() -> void:
 		_connect_exit_doors()
 
 
+func _reload_current_section() -> void:
+	if _current_section_key.is_empty():
+		return
+	var key = _current_section_key
+	var current_variant = GameState.get_section_variant(floor_id, key)
+	var path = "res://scenes/floors/floor_%d/sections/section_%s/section_%s_v%d.tscn" % [floor_id, key, key, current_variant]
+
+	var container = _section_containers.get(key)
+	if not container:
+		return
+
+	var old_pos = Vector2.ZERO
+	if container.get_child_count() > 0:
+		old_pos = container.get_child(0).position
+	for child in container.get_children():
+		child.queue_free()
+
+	var scene = load(path)
+	if scene:
+		var instance = scene.instantiate()
+		container.add_child(instance)
+		instance.position = old_pos
+		_section_instances[key] = instance
+		_connect_exit_doors()
+
 func _try_spawn_special_ticket_in_section(section: DungeonSection) -> void:
 	if not section:
 		return
@@ -393,8 +417,6 @@ func _try_spawn_special_ticket_in_section(section: DungeonSection) -> void:
 
 	var on_map = get_tree().get_nodes_in_group("special_ticket").size()
 	var needed = GameState.special_tickets_required - GameState.special_tickets_collected - on_map
-	var spawned = false
-
 	if needed > 0 and markers.size() > 0 and randf() < 0.75:
 		markers.shuffle()
 		var cell = markers[0]
@@ -402,7 +424,6 @@ func _try_spawn_special_ticket_in_section(section: DungeonSection) -> void:
 		var instance = entry.scene.instantiate()
 		section.add_child(instance)
 		instance.global_position = world_pos
-		spawned = true
 
 	for cell in markers:
 		items_layer.erase_cell(cell)
@@ -607,12 +628,26 @@ func _show_tip(text: String, speaker: String = "Tip") -> void:
 	var bubble = bubbles[0]
 	process_mode = Node.PROCESS_MODE_ALWAYS
 	bubble.process_mode = Node.PROCESS_MODE_ALWAYS
+	$GameWorld.set_deferred("process_mode", Node.PROCESS_MODE_DISABLED)
 	get_tree().paused = true
 	bubble.show_text(text, speaker)
 	while bubble.visible:
 		await get_tree().process_frame
 	get_tree().paused = false
+	$GameWorld.set_deferred("process_mode", Node.PROCESS_MODE_INHERIT)
 	bubble.process_mode = Node.PROCESS_MODE_INHERIT
+	process_mode = Node.PROCESS_MODE_INHERIT
+	_showing_tip = false
+
+func _dismiss_tip() -> void:
+	if not _showing_tip:
+		return
+	var bubbles = get_tree().get_nodes_in_group("dialog_bubble")
+	if bubbles.size() > 0:
+		bubbles[0].visible = false
+		bubbles[0].process_mode = Node.PROCESS_MODE_INHERIT
+	$GameWorld.set_deferred("process_mode", Node.PROCESS_MODE_INHERIT)
+	get_tree().paused = false
 	process_mode = Node.PROCESS_MODE_INHERIT
 	_showing_tip = false
 
@@ -652,6 +687,7 @@ func _on_player_died() -> void:
 	if _dead:
 		return
 	_dead = true
+	_dismiss_tip()
 	player.set_physics_process(false)
 	player.visible = false
 	player.collision_layer = 0
@@ -683,19 +719,48 @@ func _on_death_reload(death_screen) -> void:
 	loading_screen.transition_to(floor_path)
 
 func _on_death_respawn(death_screen: CanvasLayer) -> void:
-	# Deduct 1 held ticket
+	# Free death screen so UI layer is visible for ticket animation
+	death_screen.queue_free()
+
+	# Ticket fly-in
+	flying_ticket.visible = true
+	flying_ticket.modulate = Color.WHITE
+	flying_ticket.material.set_shader_parameter("radius", 0.0)
+	flying_ticket.play("fly_in")
+	await flying_ticket.animation_finished
+	flying_ticket.play("idle_float")
+
+	# Punch + burn
+	punch_slot.texture = _punch_icon_closed
+	_play_sfx(_punch_sound)
+	await get_tree().create_timer(0.2).timeout
+	punch_slot.texture = _punch_icon_open
+	_play_sfx(_burn_sound_stream)
+	var burn_tween = create_tween()
+	burn_tween.tween_method(_set_burn_radius, 0.0, 2.0, 1.5)
+	await burn_tween.finished
+	flying_ticket.visible = false
+
+	# Deduct ticket and update HUD
 	GameState.tickets_held = maxi(GameState.tickets_held - 1, 0)
 	_update_hud_icons()
 	GameState.reset_health()
 
-	# Loading screen covers first, then free death screen
+	# Loading screen covers
 	var loading_screen = preload("res://scenes/ui/loading_screen.tscn").instantiate()
 	get_tree().root.add_child(loading_screen)
 	loading_screen.cover()
 	await loading_screen.cover_finished
-	death_screen.queue_free()
 
-	# Teleport player to checkpoint while covered
+	# Reload current section (enemies, items, traps reset) while covered
+	player.visible = false
+	player.collision_layer = 0
+	player.collision_mask = 0
+	_reload_current_section()
+	await get_tree().physics_frame
+	await get_tree().physics_frame
+
+	# Teleport player to checkpoint
 	player.global_position = GameState.checkpoint_position
 	await get_tree().physics_frame
 
