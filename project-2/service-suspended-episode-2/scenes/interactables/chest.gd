@@ -42,6 +42,8 @@ func _input(event: InputEvent) -> void:
 		if locked:
 			if GameState.use_key():
 				unlock()
+			else:
+				_show_dialog("I need to find a key...")
 			return
 		if _open:
 			_close_chest()
@@ -107,6 +109,11 @@ func _spawn_loot() -> void:
 	else:
 		dir = Vector2(0, sign(dir.y))
 	item.global_position = global_position + dir * 16.0
+
+func _show_dialog(text: String) -> void:
+	var bubbles = get_tree().get_nodes_in_group("dialog_bubble")
+	if bubbles.size() > 0:
+		bubbles[0].show_text(text, "You")
 
 func unlock() -> void:
 	locked = false

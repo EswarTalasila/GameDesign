@@ -12,6 +12,7 @@ var _char_timer: float = 0.0
 
 func _ready() -> void:
 	visible = false
+	add_to_group("dialog_bubble")
 
 func show_text(text: String, speaker: String = "") -> void:
 	if speaker != "":

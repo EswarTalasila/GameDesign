@@ -173,10 +173,11 @@ func _setup_tile_entities() -> void:
 							for mod in modifiers:
 								if check_atlas == mod.atlas:
 									props.merge(mod.props)
-				# Erase all tiles in the entity's footprint
-				for dx in range(size.x):
-					for dy in range(size.y):
-						tm.erase_cell(Vector2i(cell.x + dx, cell.y + dy))
+				# Erase all tiles in the entity's footprint (unless no_erase)
+				if not entry.get("no_erase", false):
+					for dx in range(size.x):
+						for dy in range(size.y):
+							tm.erase_cell(Vector2i(cell.x + dx, cell.y + dy))
 				# Center entity on multi-tile footprint
 				world_pos += Vector2((size.x - 1) * 8.0, (size.y - 1) * 8.0)
 				var instance = entry.scene.instantiate()
@@ -199,22 +200,11 @@ func _setup_tile_entities() -> void:
 		if count > 0:
 			print(entry.scene.resource_path.get_file(), " spawned: ", count)
 
-# ── Floor cell helpers (used by floor.gd for exit door placement, etc.) ──
-
-func get_floor_cells(exclude_pos: Vector2 = Vector2.INF, exclude_radius: float = 3.0) -> Array[Vector2i]:
-	if not _terrain:
-		return []
-	var cells: Array[Vector2i] = []
-	var exclude_cell = _terrain.local_to_map(exclude_pos) if exclude_pos != Vector2.INF else Vector2i(-99999, -99999)
-	for cell in _terrain.get_used_cells():
-		if _terrain.get_cell_source_id(cell) == 0:
-			if cell.distance_to(exclude_cell) < exclude_radius:
-				continue
-			cells.append(cell)
-	return cells
-
 func get_terrain() -> TileMapLayer:
 	return _terrain
 
 func get_items_layer() -> TileMapLayer:
 	return _items_layer
+
+func get_bottom_walls() -> TileMapLayer:
+	return _bottom_walls

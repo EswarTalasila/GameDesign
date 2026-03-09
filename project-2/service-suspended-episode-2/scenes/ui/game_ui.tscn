@@ -3,6 +3,7 @@
 [ext_resource type="PackedScene" uid="uid://dbfylbpq23411" path="res://scenes/ui/inventory_hud.tscn" id="1_inv"]
 [ext_resource type="PackedScene" path="res://scenes/ui/health_bar.tscn" id="5_health"]
 [ext_resource type="Script" path="res://scenes/ui/cursor_tracker.gd" id="6_cursor"]
+[ext_resource type="PackedScene" path="res://scenes/ui/dialog_bubble.tscn" id="7_dialog"]
 
 [node name="GameUI" type="Node" unique_id=1000860900]
 
@@ -21,6 +22,8 @@ scale = Vector2(4, 4)
 position = Vector2(1622, 179)
 scale = Vector2(2.593751, 2.593751)
 centered = false
+
+[node name="DialogBubble" parent="UILayer" instance=ExtResource("7_dialog")]
 
 [node name="CursorLayer" type="CanvasLayer" parent="." unique_id=43180685]
 layer = 128

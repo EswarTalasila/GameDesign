@@ -2,7 +2,7 @@ extends Node2D
 class_name DungeonFloor
 
 # Floor coordinator — loads section variants into slots, manages boundaries,
-# ticket spawning, UI, punch flow, death/respawn, cursor, and exit door.
+# ticket spawning, UI, punch flow, death/respawn, cursor, and special exits.
 # Attach to a floor scene root. Expects child structure:
 #   GameWorld (Node2D, y_sort_enabled)
 #     Sections/SectionA, SectionB, SectionC, SectionD (each with a section instance)
@@ -47,9 +47,6 @@ var _burn_shader = preload("res://shaders/burn_dissolve.gdshader")
 
 var _saving_icon_scene = preload("res://scenes/ui/saving_icon.tscn")
 
-# --- Walls spritesheet (for exit door overlay) ---
-var _walls_tex = preload("res://assets/tilesets/dungeon/dungeon_tileset_walls.png")
-
 # --- Section keys ---
 const SECTION_KEYS = ["a", "b", "c", "d"]
 
@@ -73,11 +70,6 @@ var punch_mode: bool = false
 var is_animating: bool = false
 var _dead: bool = false
 var _paused: bool = false
-
-
-# --- Exit door state ---
-var _exit_door_data: Dictionary = {}
-var _near_exit_door: bool = false
 
 
 func _ready() -> void:
@@ -183,7 +175,6 @@ func _ready() -> void:
 	# Connect GameState signals
 	GameState.ticket_picked_up.connect(_on_ticket_picked_up)
 	GameState.ticket_collected.connect(_on_ticket_collected)
-	GameState.all_tickets_collected.connect(_on_all_tickets_collected)
 	GameState.player_died.connect(_on_player_died)
 	GameState.special_ticket_collected.connect(_on_special_ticket_collected)
 
@@ -191,8 +182,8 @@ func _ready() -> void:
 	GameState.set_checkpoint(player.global_position, _current_section_key)
 	GameState.checkpoint_set.connect(_on_checkpoint_set)
 
-	# Special tickets → exit door glow
-	GameState.all_special_tickets_collected.connect(_on_all_special_tickets_collected)
+	# Connect painted exit doors in "special_exit" group
+	_connect_exit_doors()
 
 	# (Inventory is now built into game_ui.tscn — no separate panel needed)
 
@@ -251,10 +242,6 @@ func _input(event: InputEvent) -> void:
 			_cancel_floating_ticket()
 		elif not is_animating:
 			_open_pause_menu()
-
-	# Exit door interaction
-	if event.is_action_pressed("interact") and _near_exit_door and not _exit_door_data.is_empty():
-		_use_exit_door()
 
 
 # ── Section boundary tracking ──
@@ -352,6 +339,24 @@ func _swap_current_section() -> void:
 		container.add_child(instance)
 		instance.position = old_pos
 		_section_instances[key] = instance
+		# Clean up floor_managed markers (special tickets) in new variant
+		_cleanup_floor_managed_markers(instance as DungeonSection)
+		# Reconnect exit doors in the new section variant
+		_connect_exit_doors()
+
+
+func _cleanup_floor_managed_markers(section: DungeonSection) -> void:
+	if not section:
+		return
+	var items_layer = section.get_items_layer()
+	if not items_layer:
+		return
+	for entry in TileEntities.get_table():
+		if not entry.get("floor_managed", false):
+			continue
+		for cell in items_layer.get_used_cells():
+			if items_layer.get_cell_source_id(cell) == entry.source and items_layer.get_cell_atlas_coords(cell) == entry.marker:
+				items_layer.erase_cell(cell)
 
 
 # ── Inventory slot click detection ──
@@ -506,119 +511,25 @@ func _on_checkpoint_set(_pos: Vector2, _section: String) -> void:
 	$GameUI/UILayer.add_child(icon)
 
 
-# ── Exit door (spawns when all tickets collected) ──
+# ── Special exit doors (painted in tilemap, connected via group) ──
 
-func _on_all_tickets_collected() -> void:
-	call_deferred("_spawn_exit_door")
+func _connect_exit_doors() -> void:
+	for node in get_tree().get_nodes_in_group("special_exit"):
+		if not node.exit_used.is_connected(_on_exit_door_used):
+			node.exit_used.connect(_on_exit_door_used)
 
-func _spawn_exit_door() -> void:
-	# Gather floor cells from all sections
-	var all_cells: Array[Dictionary] = []
-	for key in SECTION_KEYS:
-		var section = _section_instances.get(key) as DungeonSection
-		if not section:
-			continue
-		var terrain = section.get_terrain()
-		if not terrain:
-			continue
-		for cell in section.get_floor_cells(Vector2.INF, 0.0):
-			var world_pos = terrain.to_global(terrain.map_to_local(cell))
-			all_cells.append({ "pos": world_pos })
-
-	if all_cells.is_empty():
-		return
-
-	# Find center of all floor cells
-	var center = Vector2.ZERO
-	for entry in all_cells:
-		center += entry.pos
-	center /= all_cells.size()
-
-	# Closest cell to center
-	var best = all_cells[0]
-	var best_dist = best.pos.distance_to(center)
-	for entry in all_cells:
-		var d = entry.pos.distance_to(center)
-		if d < best_dist:
-			best_dist = d
-			best = entry
-
-	var world_pos = best.pos
-
-	var closed_tex = AtlasTexture.new()
-	closed_tex.atlas = _walls_tex
-	closed_tex.region = Rect2(112, 64, 16, 16)
-
-	var sprite = Sprite2D.new()
-	sprite.texture = closed_tex
-	sprite.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
-	sprite.global_position = world_pos
-	sprite.scale = Vector2(1.5, 1.5)
-	$GameWorld.add_child(sprite)
-
-	var zone = Area2D.new()
-	zone.global_position = world_pos
-	zone.collision_layer = 0
-	zone.collision_mask = 1
-	var zone_col = CollisionShape2D.new()
-	var zone_shape = RectangleShape2D.new()
-	zone_shape.size = Vector2(48, 48)
-	zone_col.shape = zone_shape
-	zone.add_child(zone_col)
-	$GameWorld.add_child(zone)
-
-	var prompt = Label.new()
-	prompt.text = "Press E"
-	prompt.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	prompt.position = Vector2(-20, -20)
-	prompt.add_theme_font_size_override("font_size", 8)
-	prompt.visible = false
-	zone.add_child(prompt)
-
-	_exit_door_data = { "sprite": sprite, "zone": zone, "prompt": prompt }
-	zone.body_entered.connect(_on_exit_zone_entered)
-	zone.body_exited.connect(_on_exit_zone_exited)
-
-	# Pop-in animation
-	sprite.scale = Vector2.ZERO
-	var tween = create_tween()
-	tween.tween_property(sprite, "scale", Vector2(1.5, 1.5), 0.4).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
-
-func _on_exit_zone_entered(body: Node2D) -> void:
-	if body == player:
-		_near_exit_door = true
-		_exit_door_data.prompt.visible = true
-
-func _on_exit_zone_exited(body: Node2D) -> void:
-	if body == player:
-		_near_exit_door = false
-		_exit_door_data.prompt.visible = false
-
-func _use_exit_door() -> void:
-	_near_exit_door = false
-	_exit_door_data.prompt.visible = false
+func _on_exit_door_used() -> void:
 	player.set_physics_process(false)
-
-	# Stop glow tween if running
-	if _exit_door_data.has("glow_tween"):
-		_exit_door_data.glow_tween.kill()
-
 	GameState.tickets_collected = 0
 	GameState.tickets_held = 0
+	GameState.keys_collected = 0
 	GameState.special_tickets_collected = 0
-
-	await get_tree().create_timer(0.3).timeout
-
-	var next_floor = floor_id + 1
-	if next_floor <= GameState.num_floors:
-		GameState.current_floor = next_floor
-		GameState.randomize_section_variants(next_floor)
-		var floor_path = "res://scenes/floors/floor_%d/floor_%d.tscn" % [next_floor, next_floor]
-		var loading_screen = preload("res://scenes/ui/loading_screen.tscn").instantiate()
-		get_tree().root.add_child(loading_screen)
-		loading_screen.transition_to(floor_path)
-	else:
-		print("Dungeon complete! All floors cleared.")
+	GameState.reset_health()
+	GameState.randomize_section_variants(floor_id)
+	var floor_path = "res://scenes/floors/floor_%d/floor_%d.tscn" % [floor_id, floor_id]
+	var loading_screen = preload("res://scenes/ui/loading_screen.tscn").instantiate()
+	get_tree().root.add_child(loading_screen)
+	loading_screen.transition_to(floor_path)
 
 
 # ── Death / respawn ──
@@ -720,20 +631,6 @@ func _on_pause_quit(menu: CanvasLayer) -> void:
 	get_tree().quit()
 
 
-# ── Special ticket → exit door glow ──
-
-func _on_all_special_tickets_collected() -> void:
-	if _exit_door_data.is_empty():
-		return
-	var lit_tex = AtlasTexture.new()
-	lit_tex.atlas = _walls_tex
-	lit_tex.region = Rect2(304, 64, 16, 16)
-	_exit_door_data.sprite.texture = lit_tex
-	var tween = create_tween().set_loops(0)
-	tween.tween_property(_exit_door_data.sprite, "modulate", Color(1.3, 1.2, 0.8), 0.8)
-	tween.tween_property(_exit_door_data.sprite, "modulate", Color.WHITE, 0.8)
-	_exit_door_data["glow_tween"] = tween
-
 
 # ── Cursor management ──
 
@@ -753,8 +650,6 @@ func _exit_tree() -> void:
 		GameState.ticket_picked_up.disconnect(_on_ticket_picked_up)
 	if GameState.ticket_collected.is_connected(_on_ticket_collected):
 		GameState.ticket_collected.disconnect(_on_ticket_collected)
-	if GameState.all_tickets_collected.is_connected(_on_all_tickets_collected):
-		GameState.all_tickets_collected.disconnect(_on_all_tickets_collected)
 	if GameState.player_died.is_connected(_on_player_died):
 		GameState.player_died.disconnect(_on_player_died)
 	if GameState.key_collected.is_connected(_on_key_collected):
@@ -763,8 +658,6 @@ func _exit_tree() -> void:
 		GameState.key_mode_changed.disconnect(_on_key_mode_changed)
 	if GameState.checkpoint_set.is_connected(_on_checkpoint_set):
 		GameState.checkpoint_set.disconnect(_on_checkpoint_set)
-	if GameState.all_special_tickets_collected.is_connected(_on_all_special_tickets_collected):
-		GameState.all_special_tickets_collected.disconnect(_on_all_special_tickets_collected)
 	if GameState.special_ticket_collected.is_connected(_on_special_ticket_collected):
 		GameState.special_ticket_collected.disconnect(_on_special_ticket_collected)
 

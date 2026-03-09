@@ -26,6 +26,11 @@ static func get_table() -> Array:
 		# Locked doors (framed variants)
 		{ "source": 1, "marker": Vector2i(11, 9), "scene": preload("res://scenes/doors/door_framed_wood.tscn"), "size": Vector2i(1, 1), "props": { "locked": true } },
 		{ "source": 1, "marker": Vector2i(13, 9), "scene": preload("res://scenes/doors/door_framed_cell.tscn"), "size": Vector2i(1, 1), "props": { "locked": true } },
+		# Special-ticket-locked doors (star markers — visual is normal door sprite)
+		{ "source": 1, "marker": Vector2i(9, 9), "scene": preload("res://scenes/doors/door_framed_wood.tscn"), "size": Vector2i(1, 1), "props": { "special_locked": true } },
+		{ "source": 1, "marker": Vector2i(15, 9), "scene": preload("res://scenes/doors/door_framed_cell.tscn"), "size": Vector2i(1, 1), "props": { "special_locked": true } },
+		# Exit frame (dark open doorway — tiles stay, entity provides interaction only)
+		{ "source": 1, "marker": Vector2i(19, 1), "scene": preload("res://scenes/doors/exit_frame.tscn"), "size": Vector2i(1, 1), "no_erase": true },
 		# Enemies (scanned from EnemyMarkers layer — separate tileset)
 		{ "source": 0, "marker": Vector2i(0, 0), "scene": preload("res://scenes/enemies/sword_enemy.tscn"), "size": Vector2i(1, 2), "layer": "enemy" },
 		# Ticket pickups (scanned from Items layer — source 0 in item_spawn_markers.tres)
