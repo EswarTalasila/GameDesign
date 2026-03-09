@@ -1,0 +1,56 @@
+[gd_scene format=3 uid="uid://m5yub62eibj1"]
+
+[ext_resource type="Script" uid="uid://volxuxfi2vbr" path="res://scenes/ui/main_menu.gd" id="1_script"]
+[ext_resource type="Texture2D" uid="uid://c6b1gswprd83c" path="res://assets/ui/screens/main_menu_base.png" id="2_bg"]
+[ext_resource type="AudioStream" path="res://assets/sounds/Coductor_theme.wav" id="3_music"]
+[ext_resource type="AudioStream" path="res://assets/sounds/Light_Buzz.mp3" id="4_hover"]
+[ext_resource type="AudioStream" path="res://assets/sounds/Glass_Break.mp3" id="5_click"]
+
+[node name="MainMenu" type="Control" unique_id=2119809034]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("1_script")
+
+[node name="Background" type="TextureRect" parent="." unique_id=269388860]
+texture_filter = 1
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = ExtResource("2_bg")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="ExitRegion" type="Control" parent="." unique_id=541243258]
+anchors_preset = 0
+offset_left = 1.0
+offset_top = 280.0
+offset_right = 280.0
+offset_bottom = 600.0
+mouse_default_cursor_shape = 2
+
+[node name="PlayRegion" type="Control" parent="." unique_id=1111548175]
+anchors_preset = 0
+offset_left = 1639.0
+offset_top = 273.0
+offset_right = 1919.0
+offset_bottom = 592.0
+mouse_default_cursor_shape = 2
+
+[node name="Music" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("3_music")
+autoplay = true
+
+[node name="HoverSound" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("4_hover")
+
+[node name="ClickSound" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("5_click")

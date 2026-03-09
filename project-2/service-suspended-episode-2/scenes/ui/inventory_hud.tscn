@@ -1,0 +1,48 @@
+[gd_scene format=3 uid="uid://dbfylbpq23411"]
+
+[ext_resource type="Texture2D" uid="uid://bdex6hbun0kc0" path="res://assets/ui/hole_punch/punch_0.png" id="1_punch"]
+[ext_resource type="Texture2D" uid="uid://cs03g2128b0kc" path="res://assets/ui/inventory/inventory.png" id="2_inv"]
+[ext_resource type="Texture2D" uid="uid://cw7fvbnlgfvqx" path="res://assets/ui/key_icons/key_Numbered_00.png" id="3_key0"]
+[ext_resource type="Texture2D" uid="uid://bbo3fux7s8bcp" path="res://assets/ui/tickets/ticket_Numbered_0.png" id="4_ticket0"]
+[ext_resource type="Texture2D" uid="uid://b1fmopgt0omq7" path="res://assets/ui/special_tickets/special_Numbered_0.png" id="5_special0"]
+[ext_resource type="Texture2D" uid="uid://m5ux1wa7ccod" path="res://assets/ui/buttons/play_pause/pause_normal.png" id="6_pause"]
+
+[node name="InventoryPanel" type="Node2D" unique_id=1726369265]
+scale = Vector2(3, 3)
+
+[node name="BG" type="Sprite2D" parent="." unique_id=899191673]
+texture_filter = 1
+position = Vector2(42, 0)
+scale = Vector2(4.4843745, 4.4843745)
+texture = ExtResource("2_inv")
+centered = false
+
+[node name="KeySlot" type="Sprite2D" parent="." unique_id=864091622]
+texture_filter = 1
+position = Vector2(137.33333, 133.33331)
+scale = Vector2(1.0068358, 1.0068358)
+texture = ExtResource("3_key0")
+
+[node name="TicketSlot" type="Sprite2D" parent="." unique_id=1668873155]
+texture_filter = 1
+position = Vector2(236.33334, 128.66667)
+scale = Vector2(0.96354216, 0.9218761)
+texture = ExtResource("4_ticket0")
+
+[node name="PunchSlot" type="Sprite2D" parent="." unique_id=554701086]
+texture_filter = 1
+position = Vector2(137.66666, 225.00002)
+scale = Vector2(0.96809906, 0.96809906)
+texture = ExtResource("1_punch")
+
+[node name="SpecialSlot" type="Sprite2D" parent="." unique_id=17767852]
+texture_filter = 1
+position = Vector2(235.33331, 224.00002)
+scale = Vector2(0.89062506, 0.9218744)
+texture = ExtResource("5_special0")
+
+[node name="PauseSlot" type="Sprite2D" parent="." unique_id=762424516]
+texture_filter = 1
+position = Vector2(310.33334, 34)
+scale = Vector2(3.0442715, 3.0442715)
+texture = ExtResource("6_pause")

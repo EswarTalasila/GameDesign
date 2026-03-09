@@ -1,23 +1,33 @@
 [gd_scene format=3 uid="uid://c347cqvjvcbip"]
 
 [ext_resource type="Script" uid="uid://88h211yass85" path="res://scenes/player/player.gd" id="1_8afob"]
-[ext_resource type="SpriteFrames" path="res://assets/sprites/protagonist/protagonist_frames.tres" id="2_dovo2"]
+[ext_resource type="SpriteFrames" uid="uid://6vibko1pckob" path="res://assets/sprites/protagonist/protagonist_frames.tres" id="2_dovo2"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_8afob"]
 radius = 4.0
 height = 10.0
 
+[sub_resource type="CircleShape2D" id="attack_shape"]
+
 [node name="Player" type="CharacterBody2D" unique_id=34910791]
 script = ExtResource("1_8afob")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=1123004927]
+scale = Vector2(0.5, 0.5)
 sprite_frames = ExtResource("2_dovo2")
 animation = &"idle_south"
-scale = Vector2(0.5, 0.5)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1063585635]
 position = Vector2(0, 5)
 shape = SubResource("CapsuleShape2D_8afob")
 
+[node name="AttackHitBox" type="Area2D" parent="." unique_id=1139064785]
+collision_layer = 0
+collision_mask = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="AttackHitBox" unique_id=994726829]
+position = Vector2(0, 12)
+shape = SubResource("attack_shape")
+
 [node name="Camera2D" type="Camera2D" parent="." unique_id=1331789071]
-zoom = Vector2(3, 3)
+zoom = Vector2(4, 4)

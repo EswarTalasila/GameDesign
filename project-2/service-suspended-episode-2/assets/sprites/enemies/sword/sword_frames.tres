@@ -1,0 +1,506 @@
+[gd_resource type="SpriteFrames" format=3 uid="uid://oqs7w2koa8mk"]
+
+[ext_resource type="Texture2D" uid="uid://iylvr4bfru5d" path="res://assets/sprites/enemies/sword/attack_east/frame_000.png" id="1"]
+[ext_resource type="Texture2D" uid="uid://cm7dkgdlwkoak" path="res://assets/sprites/enemies/sword/attack_east/frame_001.png" id="2"]
+[ext_resource type="Texture2D" uid="uid://dg5wuovakwa7c" path="res://assets/sprites/enemies/sword/attack_east/frame_002.png" id="3"]
+[ext_resource type="Texture2D" uid="uid://c857hpykte5m" path="res://assets/sprites/enemies/sword/attack_east/frame_003.png" id="4"]
+[ext_resource type="Texture2D" uid="uid://ja7bomshv4oc" path="res://assets/sprites/enemies/sword/attack_east/frame_004.png" id="5"]
+[ext_resource type="Texture2D" uid="uid://c3gejtcuq5i32" path="res://assets/sprites/enemies/sword/attack_east/frame_005.png" id="6"]
+[ext_resource type="Texture2D" uid="uid://bd3sbw1lride0" path="res://assets/sprites/enemies/sword/attack_east/frame_006.png" id="7"]
+[ext_resource type="Texture2D" uid="uid://bxtg03t75df2h" path="res://assets/sprites/enemies/sword/attack_east/frame_007.png" id="8"]
+[ext_resource type="Texture2D" uid="uid://q40bapej6vra" path="res://assets/sprites/enemies/sword/attack_east/frame_008.png" id="9"]
+[ext_resource type="Texture2D" uid="uid://caooms6adqa8i" path="res://assets/sprites/enemies/sword/attack_east/frame_009.png" id="10"]
+[ext_resource type="Texture2D" uid="uid://btwwf5cln5yp1" path="res://assets/sprites/enemies/sword/attack_east/frame_010.png" id="11"]
+[ext_resource type="Texture2D" uid="uid://bxqi50kbjwi0h" path="res://assets/sprites/enemies/sword/attack_east/frame_011.png" id="12"]
+[ext_resource type="Texture2D" uid="uid://dxp3vdxv6gv4f" path="res://assets/sprites/enemies/sword/attack_east/frame_012.png" id="13"]
+[ext_resource type="Texture2D" uid="uid://b0kwf5imna32r" path="res://assets/sprites/enemies/sword/attack_east/frame_013.png" id="14"]
+[ext_resource type="Texture2D" uid="uid://dmvkqlcs6k57h" path="res://assets/sprites/enemies/sword/attack_west/frame_000.png" id="15"]
+[ext_resource type="Texture2D" uid="uid://6ol6qgq8s844" path="res://assets/sprites/enemies/sword/attack_west/frame_001.png" id="16"]
+[ext_resource type="Texture2D" uid="uid://dmkv8x2twfafa" path="res://assets/sprites/enemies/sword/attack_west/frame_002.png" id="17"]
+[ext_resource type="Texture2D" uid="uid://dg1np853vr7fu" path="res://assets/sprites/enemies/sword/attack_west/frame_003.png" id="18"]
+[ext_resource type="Texture2D" uid="uid://bfo0g63b5rkkn" path="res://assets/sprites/enemies/sword/attack_west/frame_004.png" id="19"]
+[ext_resource type="Texture2D" uid="uid://c8ryqi61fhjc6" path="res://assets/sprites/enemies/sword/attack_west/frame_005.png" id="20"]
+[ext_resource type="Texture2D" uid="uid://bia2cvftxel67" path="res://assets/sprites/enemies/sword/attack_west/frame_006.png" id="21"]
+[ext_resource type="Texture2D" uid="uid://bcik2hal1u7q0" path="res://assets/sprites/enemies/sword/attack_west/frame_007.png" id="22"]
+[ext_resource type="Texture2D" uid="uid://bpdf5a1bf42sx" path="res://assets/sprites/enemies/sword/attack_west/frame_008.png" id="23"]
+[ext_resource type="Texture2D" uid="uid://b7vajrav2cln1" path="res://assets/sprites/enemies/sword/attack_west/frame_009.png" id="24"]
+[ext_resource type="Texture2D" uid="uid://d21lqr7pdd6yf" path="res://assets/sprites/enemies/sword/attack_west/frame_010.png" id="25"]
+[ext_resource type="Texture2D" uid="uid://coka63hybbsn5" path="res://assets/sprites/enemies/sword/attack_west/frame_011.png" id="26"]
+[ext_resource type="Texture2D" uid="uid://cdw5vmv88jtkb" path="res://assets/sprites/enemies/sword/attack_west/frame_012.png" id="27"]
+[ext_resource type="Texture2D" uid="uid://ch8bsbyrvinjm" path="res://assets/sprites/enemies/sword/attack_west/frame_013.png" id="28"]
+[ext_resource type="Texture2D" uid="uid://bcrqd4br75bft" path="res://assets/sprites/enemies/sword/death_east/frame_000.png" id="29"]
+[ext_resource type="Texture2D" uid="uid://cup1nuio2ophv" path="res://assets/sprites/enemies/sword/death_east/frame_001.png" id="30"]
+[ext_resource type="Texture2D" uid="uid://81t1a4hddhxh" path="res://assets/sprites/enemies/sword/death_east/frame_002.png" id="31"]
+[ext_resource type="Texture2D" uid="uid://bpydbvludpyn6" path="res://assets/sprites/enemies/sword/death_east/frame_003.png" id="32"]
+[ext_resource type="Texture2D" uid="uid://b4xio812n03is" path="res://assets/sprites/enemies/sword/death_east/frame_004.png" id="33"]
+[ext_resource type="Texture2D" uid="uid://cjje8odsjxnpv" path="res://assets/sprites/enemies/sword/death_east/frame_005.png" id="34"]
+[ext_resource type="Texture2D" uid="uid://cealwtpb22gib" path="res://assets/sprites/enemies/sword/death_east/frame_006.png" id="35"]
+[ext_resource type="Texture2D" uid="uid://fxj2ni7oueim" path="res://assets/sprites/enemies/sword/death_east/frame_007.png" id="36"]
+[ext_resource type="Texture2D" uid="uid://dcg2g0cb3ldux" path="res://assets/sprites/enemies/sword/death_east/frame_008.png" id="37"]
+[ext_resource type="Texture2D" uid="uid://bgf2lp347a55k" path="res://assets/sprites/enemies/sword/death_east/frame_009.png" id="38"]
+[ext_resource type="Texture2D" uid="uid://dbnqcc024bw5v" path="res://assets/sprites/enemies/sword/death_west/frame_000.png" id="39"]
+[ext_resource type="Texture2D" uid="uid://ctfuhaamfr6u3" path="res://assets/sprites/enemies/sword/death_west/frame_001.png" id="40"]
+[ext_resource type="Texture2D" uid="uid://cr2vwjvj3wl2y" path="res://assets/sprites/enemies/sword/death_west/frame_002.png" id="41"]
+[ext_resource type="Texture2D" uid="uid://mqebcdrjo7cj" path="res://assets/sprites/enemies/sword/death_west/frame_003.png" id="42"]
+[ext_resource type="Texture2D" uid="uid://d255q5tlmc3hi" path="res://assets/sprites/enemies/sword/death_west/frame_004.png" id="43"]
+[ext_resource type="Texture2D" uid="uid://bt7vmcgtm6exs" path="res://assets/sprites/enemies/sword/death_west/frame_005.png" id="44"]
+[ext_resource type="Texture2D" uid="uid://bqtcqxo8wbgnv" path="res://assets/sprites/enemies/sword/death_west/frame_006.png" id="45"]
+[ext_resource type="Texture2D" uid="uid://c2iyrv7t4u2yy" path="res://assets/sprites/enemies/sword/death_west/frame_007.png" id="46"]
+[ext_resource type="Texture2D" uid="uid://daxcn7j1e6m5s" path="res://assets/sprites/enemies/sword/death_west/frame_008.png" id="47"]
+[ext_resource type="Texture2D" uid="uid://bdjaie2sagxyy" path="res://assets/sprites/enemies/sword/death_west/frame_009.png" id="48"]
+[ext_resource type="Texture2D" uid="uid://bwxb6x4h0tnyu" path="res://assets/sprites/enemies/sword/dormant_frame_east.png" id="49"]
+[ext_resource type="Texture2D" uid="uid://u8biyps6otfq" path="res://assets/sprites/enemies/sword/hit_east/frame_000.png" id="50"]
+[ext_resource type="Texture2D" uid="uid://bd8snn6nqfn5h" path="res://assets/sprites/enemies/sword/hit_east/frame_001.png" id="51"]
+[ext_resource type="Texture2D" uid="uid://dl0tgd8cqdomo" path="res://assets/sprites/enemies/sword/hit_west/frame_000.png" id="52"]
+[ext_resource type="Texture2D" uid="uid://ctqg0h515cayj" path="res://assets/sprites/enemies/sword/hit_west/frame_001.png" id="53"]
+[ext_resource type="Texture2D" uid="uid://ejb02a6i4bk2" path="res://assets/sprites/enemies/sword/idle_east/frame_000.png" id="54"]
+[ext_resource type="Texture2D" uid="uid://b06b0rne5qvp3" path="res://assets/sprites/enemies/sword/idle_east/frame_001.png" id="55"]
+[ext_resource type="Texture2D" uid="uid://cvgdt8ophqf84" path="res://assets/sprites/enemies/sword/idle_east/frame_002.png" id="56"]
+[ext_resource type="Texture2D" uid="uid://cjdlikvac6t0h" path="res://assets/sprites/enemies/sword/idle_east/frame_003.png" id="57"]
+[ext_resource type="Texture2D" uid="uid://142feb1k8cy1" path="res://assets/sprites/enemies/sword/idle_east/frame_004.png" id="58"]
+[ext_resource type="Texture2D" uid="uid://b1psgvnl4wbh0" path="res://assets/sprites/enemies/sword/idle_east/frame_005.png" id="59"]
+[ext_resource type="Texture2D" uid="uid://d4juitl0ttqc0" path="res://assets/sprites/enemies/sword/idle_east/frame_006.png" id="60"]
+[ext_resource type="Texture2D" uid="uid://c43evaa7a6m80" path="res://assets/sprites/enemies/sword/idle_west/frame_000.png" id="61"]
+[ext_resource type="Texture2D" uid="uid://1mj73dnkjdpr" path="res://assets/sprites/enemies/sword/idle_west/frame_001.png" id="62"]
+[ext_resource type="Texture2D" uid="uid://bv4ud1lk0oxno" path="res://assets/sprites/enemies/sword/idle_west/frame_002.png" id="63"]
+[ext_resource type="Texture2D" uid="uid://07rwk6poowrx" path="res://assets/sprites/enemies/sword/idle_west/frame_003.png" id="64"]
+[ext_resource type="Texture2D" uid="uid://cofrw7b6rhww2" path="res://assets/sprites/enemies/sword/idle_west/frame_004.png" id="65"]
+[ext_resource type="Texture2D" uid="uid://bmof2oyxdc7el" path="res://assets/sprites/enemies/sword/idle_west/frame_005.png" id="66"]
+[ext_resource type="Texture2D" uid="uid://dla5uafqwgmmg" path="res://assets/sprites/enemies/sword/idle_west/frame_006.png" id="67"]
+[ext_resource type="Texture2D" uid="uid://bixu1umojblej" path="res://assets/sprites/enemies/sword/spawn_east/frame_000.png" id="68"]
+[ext_resource type="Texture2D" uid="uid://duawawe2e71xw" path="res://assets/sprites/enemies/sword/spawn_east/frame_001.png" id="69"]
+[ext_resource type="Texture2D" uid="uid://brh47givjwb8w" path="res://assets/sprites/enemies/sword/spawn_east/frame_002.png" id="70"]
+[ext_resource type="Texture2D" uid="uid://byyc3mt6l5sta" path="res://assets/sprites/enemies/sword/spawn_east/frame_003.png" id="71"]
+[ext_resource type="Texture2D" uid="uid://ct7tl8sj5vivy" path="res://assets/sprites/enemies/sword/spawn_east/frame_004.png" id="72"]
+[ext_resource type="Texture2D" uid="uid://bs7grygmx3nf0" path="res://assets/sprites/enemies/sword/spawn_east/frame_005.png" id="73"]
+[ext_resource type="Texture2D" uid="uid://c137cm7gbx3fe" path="res://assets/sprites/enemies/sword/spawn_east/frame_006.png" id="74"]
+[ext_resource type="Texture2D" uid="uid://caa6u4o1admuu" path="res://assets/sprites/enemies/sword/spawn_east/frame_007.png" id="75"]
+[ext_resource type="Texture2D" uid="uid://mhnte27m075x" path="res://assets/sprites/enemies/sword/spawn_east/frame_008.png" id="76"]
+[ext_resource type="Texture2D" uid="uid://2p36kaefrbtq" path="res://assets/sprites/enemies/sword/spawn_east/frame_009.png" id="77"]
+[ext_resource type="Texture2D" uid="uid://cbtyojg6elhqe" path="res://assets/sprites/enemies/sword/spawn_east/frame_010.png" id="78"]
+[ext_resource type="Texture2D" uid="uid://s7bbcl24fec4" path="res://assets/sprites/enemies/sword/spawn_east/frame_011.png" id="79"]
+[ext_resource type="Texture2D" uid="uid://rel7yxwf3gmt" path="res://assets/sprites/enemies/sword/spawn_east/frame_012.png" id="80"]
+[ext_resource type="Texture2D" uid="uid://dal7hwpnppb3v" path="res://assets/sprites/enemies/sword/spawn_east/frame_013.png" id="81"]
+[ext_resource type="Texture2D" uid="uid://ccik2wysste3l" path="res://assets/sprites/enemies/sword/spawn_west/frame_000.png" id="82"]
+[ext_resource type="Texture2D" uid="uid://vh8bbmvx7boe" path="res://assets/sprites/enemies/sword/spawn_west/frame_001.png" id="83"]
+[ext_resource type="Texture2D" uid="uid://dea5axlqtgj5v" path="res://assets/sprites/enemies/sword/spawn_west/frame_002.png" id="84"]
+[ext_resource type="Texture2D" uid="uid://cvrwxj3h8jja2" path="res://assets/sprites/enemies/sword/spawn_west/frame_003.png" id="85"]
+[ext_resource type="Texture2D" uid="uid://pjbkltnllbv7" path="res://assets/sprites/enemies/sword/spawn_west/frame_004.png" id="86"]
+[ext_resource type="Texture2D" uid="uid://7r3t57qntlbw" path="res://assets/sprites/enemies/sword/spawn_west/frame_005.png" id="87"]
+[ext_resource type="Texture2D" uid="uid://d044ibxb4omg3" path="res://assets/sprites/enemies/sword/spawn_west/frame_006.png" id="88"]
+[ext_resource type="Texture2D" uid="uid://dhva4g3y0w60m" path="res://assets/sprites/enemies/sword/spawn_west/frame_007.png" id="89"]
+[ext_resource type="Texture2D" uid="uid://dguvg62imto6k" path="res://assets/sprites/enemies/sword/spawn_west/frame_008.png" id="90"]
+[ext_resource type="Texture2D" uid="uid://dcpecbv6uyd6k" path="res://assets/sprites/enemies/sword/spawn_west/frame_009.png" id="91"]
+[ext_resource type="Texture2D" uid="uid://cjtho1dq4vyqq" path="res://assets/sprites/enemies/sword/spawn_west/frame_010.png" id="92"]
+[ext_resource type="Texture2D" uid="uid://bayckq16mk7wb" path="res://assets/sprites/enemies/sword/spawn_west/frame_011.png" id="93"]
+[ext_resource type="Texture2D" uid="uid://d3oaq261xxoua" path="res://assets/sprites/enemies/sword/spawn_west/frame_012.png" id="94"]
+[ext_resource type="Texture2D" uid="uid://cwq8jf8ggqw6b" path="res://assets/sprites/enemies/sword/spawn_west/frame_013.png" id="95"]
+[ext_resource type="Texture2D" uid="uid://cvaxjqih4p1xw" path="res://assets/sprites/enemies/sword/walk_east/frame_000.png" id="96"]
+[ext_resource type="Texture2D" uid="uid://do7v5bm0amyal" path="res://assets/sprites/enemies/sword/walk_east/frame_001.png" id="97"]
+[ext_resource type="Texture2D" uid="uid://bsv6e440fvjec" path="res://assets/sprites/enemies/sword/walk_east/frame_002.png" id="98"]
+[ext_resource type="Texture2D" uid="uid://d1b0b0n0pq438" path="res://assets/sprites/enemies/sword/walk_east/frame_003.png" id="99"]
+[ext_resource type="Texture2D" uid="uid://d0po3grb0jsuv" path="res://assets/sprites/enemies/sword/walk_east/frame_004.png" id="100"]
+[ext_resource type="Texture2D" uid="uid://cotv4j5c3w4cq" path="res://assets/sprites/enemies/sword/walk_east/frame_005.png" id="101"]
+[ext_resource type="Texture2D" uid="uid://coi77tl8rwa26" path="res://assets/sprites/enemies/sword/walk_east/frame_006.png" id="102"]
+[ext_resource type="Texture2D" uid="uid://cn8uq8py4mumj" path="res://assets/sprites/enemies/sword/walk_west/frame_000.png" id="103"]
+[ext_resource type="Texture2D" uid="uid://crcu7wft4opn5" path="res://assets/sprites/enemies/sword/walk_west/frame_001.png" id="104"]
+[ext_resource type="Texture2D" uid="uid://cu4578w4e4td4" path="res://assets/sprites/enemies/sword/walk_west/frame_002.png" id="105"]
+[ext_resource type="Texture2D" uid="uid://s3rs1m1dc8yh" path="res://assets/sprites/enemies/sword/walk_west/frame_003.png" id="106"]
+[ext_resource type="Texture2D" uid="uid://b1ql76hukddko" path="res://assets/sprites/enemies/sword/walk_west/frame_004.png" id="107"]
+[ext_resource type="Texture2D" uid="uid://cp6r6s74sqvfq" path="res://assets/sprites/enemies/sword/walk_west/frame_005.png" id="108"]
+[ext_resource type="Texture2D" uid="uid://bdrpvo1fs7f34" path="res://assets/sprites/enemies/sword/walk_west/frame_006.png" id="109"]
+
+[resource]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("1")
+}, {
+"duration": 1.0,
+"texture": ExtResource("2")
+}, {
+"duration": 1.0,
+"texture": ExtResource("3")
+}, {
+"duration": 1.0,
+"texture": ExtResource("4")
+}, {
+"duration": 1.0,
+"texture": ExtResource("5")
+}, {
+"duration": 1.0,
+"texture": ExtResource("6")
+}, {
+"duration": 1.0,
+"texture": ExtResource("7")
+}, {
+"duration": 1.0,
+"texture": ExtResource("8")
+}, {
+"duration": 1.0,
+"texture": ExtResource("9")
+}, {
+"duration": 1.0,
+"texture": ExtResource("10")
+}, {
+"duration": 1.0,
+"texture": ExtResource("11")
+}, {
+"duration": 1.0,
+"texture": ExtResource("12")
+}, {
+"duration": 1.0,
+"texture": ExtResource("13")
+}, {
+"duration": 1.0,
+"texture": ExtResource("14")
+}],
+"loop": false,
+"name": &"attack_east",
+"speed": 10.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("15")
+}, {
+"duration": 1.0,
+"texture": ExtResource("16")
+}, {
+"duration": 1.0,
+"texture": ExtResource("17")
+}, {
+"duration": 1.0,
+"texture": ExtResource("18")
+}, {
+"duration": 1.0,
+"texture": ExtResource("19")
+}, {
+"duration": 1.0,
+"texture": ExtResource("20")
+}, {
+"duration": 1.0,
+"texture": ExtResource("21")
+}, {
+"duration": 1.0,
+"texture": ExtResource("22")
+}, {
+"duration": 1.0,
+"texture": ExtResource("23")
+}, {
+"duration": 1.0,
+"texture": ExtResource("24")
+}, {
+"duration": 1.0,
+"texture": ExtResource("25")
+}, {
+"duration": 1.0,
+"texture": ExtResource("26")
+}, {
+"duration": 1.0,
+"texture": ExtResource("27")
+}, {
+"duration": 1.0,
+"texture": ExtResource("28")
+}],
+"loop": false,
+"name": &"attack_west",
+"speed": 10.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("29")
+}, {
+"duration": 1.0,
+"texture": ExtResource("30")
+}, {
+"duration": 1.0,
+"texture": ExtResource("31")
+}, {
+"duration": 1.0,
+"texture": ExtResource("32")
+}, {
+"duration": 1.0,
+"texture": ExtResource("33")
+}, {
+"duration": 1.0,
+"texture": ExtResource("34")
+}, {
+"duration": 1.0,
+"texture": ExtResource("35")
+}, {
+"duration": 1.0,
+"texture": ExtResource("36")
+}, {
+"duration": 1.0,
+"texture": ExtResource("37")
+}, {
+"duration": 1.0,
+"texture": ExtResource("38")
+}],
+"loop": false,
+"name": &"death_east",
+"speed": 10.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("39")
+}, {
+"duration": 1.0,
+"texture": ExtResource("40")
+}, {
+"duration": 1.0,
+"texture": ExtResource("41")
+}, {
+"duration": 1.0,
+"texture": ExtResource("42")
+}, {
+"duration": 1.0,
+"texture": ExtResource("43")
+}, {
+"duration": 1.0,
+"texture": ExtResource("44")
+}, {
+"duration": 1.0,
+"texture": ExtResource("45")
+}, {
+"duration": 1.0,
+"texture": ExtResource("46")
+}, {
+"duration": 1.0,
+"texture": ExtResource("47")
+}, {
+"duration": 1.0,
+"texture": ExtResource("48")
+}],
+"loop": false,
+"name": &"death_west",
+"speed": 10.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("49")
+}],
+"loop": true,
+"name": &"dormant",
+"speed": 1.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("50")
+}, {
+"duration": 1.0,
+"texture": ExtResource("51")
+}],
+"loop": false,
+"name": &"hit_east",
+"speed": 10.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("52")
+}, {
+"duration": 1.0,
+"texture": ExtResource("53")
+}],
+"loop": false,
+"name": &"hit_west",
+"speed": 10.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("54")
+}, {
+"duration": 1.0,
+"texture": ExtResource("55")
+}, {
+"duration": 1.0,
+"texture": ExtResource("56")
+}, {
+"duration": 1.0,
+"texture": ExtResource("57")
+}, {
+"duration": 1.0,
+"texture": ExtResource("58")
+}, {
+"duration": 1.0,
+"texture": ExtResource("59")
+}, {
+"duration": 1.0,
+"texture": ExtResource("60")
+}],
+"loop": true,
+"name": &"idle_east",
+"speed": 10.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("61")
+}, {
+"duration": 1.0,
+"texture": ExtResource("62")
+}, {
+"duration": 1.0,
+"texture": ExtResource("63")
+}, {
+"duration": 1.0,
+"texture": ExtResource("64")
+}, {
+"duration": 1.0,
+"texture": ExtResource("65")
+}, {
+"duration": 1.0,
+"texture": ExtResource("66")
+}, {
+"duration": 1.0,
+"texture": ExtResource("67")
+}],
+"loop": true,
+"name": &"idle_west",
+"speed": 10.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("68")
+}, {
+"duration": 1.0,
+"texture": ExtResource("69")
+}, {
+"duration": 1.0,
+"texture": ExtResource("70")
+}, {
+"duration": 1.0,
+"texture": ExtResource("71")
+}, {
+"duration": 1.0,
+"texture": ExtResource("72")
+}, {
+"duration": 1.0,
+"texture": ExtResource("73")
+}, {
+"duration": 1.0,
+"texture": ExtResource("74")
+}, {
+"duration": 1.0,
+"texture": ExtResource("75")
+}, {
+"duration": 1.0,
+"texture": ExtResource("76")
+}, {
+"duration": 1.0,
+"texture": ExtResource("77")
+}, {
+"duration": 1.0,
+"texture": ExtResource("78")
+}, {
+"duration": 1.0,
+"texture": ExtResource("79")
+}, {
+"duration": 1.0,
+"texture": ExtResource("80")
+}, {
+"duration": 1.0,
+"texture": ExtResource("81")
+}],
+"loop": false,
+"name": &"spawn_east",
+"speed": 10.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("82")
+}, {
+"duration": 1.0,
+"texture": ExtResource("83")
+}, {
+"duration": 1.0,
+"texture": ExtResource("84")
+}, {
+"duration": 1.0,
+"texture": ExtResource("85")
+}, {
+"duration": 1.0,
+"texture": ExtResource("86")
+}, {
+"duration": 1.0,
+"texture": ExtResource("87")
+}, {
+"duration": 1.0,
+"texture": ExtResource("88")
+}, {
+"duration": 1.0,
+"texture": ExtResource("89")
+}, {
+"duration": 1.0,
+"texture": ExtResource("90")
+}, {
+"duration": 1.0,
+"texture": ExtResource("91")
+}, {
+"duration": 1.0,
+"texture": ExtResource("92")
+}, {
+"duration": 1.0,
+"texture": ExtResource("93")
+}, {
+"duration": 1.0,
+"texture": ExtResource("94")
+}, {
+"duration": 1.0,
+"texture": ExtResource("95")
+}],
+"loop": false,
+"name": &"spawn_west",
+"speed": 10.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("96")
+}, {
+"duration": 1.0,
+"texture": ExtResource("97")
+}, {
+"duration": 1.0,
+"texture": ExtResource("98")
+}, {
+"duration": 1.0,
+"texture": ExtResource("99")
+}, {
+"duration": 1.0,
+"texture": ExtResource("100")
+}, {
+"duration": 1.0,
+"texture": ExtResource("101")
+}, {
+"duration": 1.0,
+"texture": ExtResource("102")
+}],
+"loop": true,
+"name": &"walk_east",
+"speed": 10.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("103")
+}, {
+"duration": 1.0,
+"texture": ExtResource("104")
+}, {
+"duration": 1.0,
+"texture": ExtResource("105")
+}, {
+"duration": 1.0,
+"texture": ExtResource("106")
+}, {
+"duration": 1.0,
+"texture": ExtResource("107")
+}, {
+"duration": 1.0,
+"texture": ExtResource("108")
+}, {
+"duration": 1.0,
+"texture": ExtResource("109")
+}],
+"loop": true,
+"name": &"walk_west",
+"speed": 10.0
+}]
