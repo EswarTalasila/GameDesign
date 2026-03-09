@@ -34,6 +34,11 @@ var _resume_tooltip: Label
 var _restart_tooltip: Label
 var _quit_tooltip: Label
 
+var _btn_hover_sound = preload("res://assets/sounds/button_hover.mp3")
+var _btn_click_sound = preload("res://assets/sounds/button_click.mp3")
+var _hover_player: AudioStreamPlayer
+var _click_player: AudioStreamPlayer
+
 var _disabled: bool = false
 
 func _ready() -> void:
@@ -50,6 +55,14 @@ func _ready() -> void:
 	_resume_tooltip = _create_tooltip("Resume", resume_btn)
 	_restart_tooltip = _create_tooltip("Restart Floor\nResets tickets & keys", restart_btn)
 	_quit_tooltip = _create_tooltip("Quit Game", quit_btn)
+
+	# Button sounds
+	_hover_player = AudioStreamPlayer.new()
+	_hover_player.stream = _btn_hover_sound
+	add_child(_hover_player)
+	_click_player = AudioStreamPlayer.new()
+	_click_player.stream = _btn_click_sound
+	add_child(_click_player)
 
 	_play_intro()
 
@@ -85,6 +98,8 @@ func _set_hover(idx: int, hovered: bool) -> void:
 		_: return
 	btn.texture = tex[1] if hovered else tex[0]
 	tooltip.visible = hovered
+	if hovered and _hover_player:
+		_hover_player.play()
 
 func _create_tooltip(text: String, btn: Sprite2D) -> Label:
 	var label = Label.new()
@@ -128,12 +143,15 @@ func _input(event: InputEvent) -> void:
 	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.pressed and not _disabled:
 		var click = get_viewport().get_mouse_position()
 		if _is_in_area(click, resume_btn, resume_area):
+			_click_player.play()
 			resume_btn.texture = _resume_tex[2]
 			_on_resume_pressed()
 		elif _is_in_area(click, restart_btn, restart_area):
+			_click_player.play()
 			restart_btn.texture = _restart_tex[2]
 			_on_restart_pressed()
 		elif _is_in_area(click, quit_btn, quit_area):
+			_click_player.play()
 			quit_btn.texture = _quit_tex[2]
 			_on_quit_pressed()
 

@@ -4,8 +4,11 @@ extends Node2D
 @export var open_texture: AtlasTexture
 @export var locked: bool = false
 @export var special_locked: bool = false
+@export var open_sound: AudioStream = preload("res://assets/sounds/wooden_door_open.mp3")
 
 signal exit_used
+
+var _unlock_sound = preload("res://assets/sounds/door_unlock.mp3")
 
 var _open: bool = false
 var _player_nearby: bool = false
@@ -77,18 +80,28 @@ func _on_zone_exited(body: Node2D) -> void:
 		_prompt.visible = false
 		_lock_prompt.visible = false
 
+func _play_sfx(stream: AudioStream) -> void:
+	var sfx = AudioStreamPlayer.new()
+	sfx.stream = stream
+	get_tree().root.add_child(sfx)
+	sfx.play()
+	sfx.finished.connect(sfx.queue_free)
+
 func _open_door() -> void:
 	_open = true
 	_sprite.texture = open_texture
 	_body_col.set_deferred("disabled", true)
+	_play_sfx(open_sound)
 
 func _close_door() -> void:
 	_open = false
 	_sprite.texture = closed_texture
 	_body_col.set_deferred("disabled", false)
+	_play_sfx(open_sound)
 
 func unlock() -> void:
 	locked = false
+	_play_sfx(_unlock_sound)
 	_lock_prompt.play("opening")
 	await _lock_prompt.animation_finished
 	_lock_prompt.visible = false

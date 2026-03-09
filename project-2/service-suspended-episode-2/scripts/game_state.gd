@@ -29,7 +29,15 @@ var checkpoint_section: String = ""
 var max_health: int = 3
 var player_health: int = 3
 var special_tickets_collected: int = 0
-var special_tickets_required: int = 2  # per floor
+var special_tickets_required: int = 6  # per floor
+var combat_tutorial_shown: bool = false
+var hit_tip_shown: bool = false
+var ticket_tip_shown: bool = false
+var checkpoint_tip_shown: bool = false
+var swap_tip_shown: bool = false
+var key_tip_shown: bool = false
+var golden_ticket_tip_shown: bool = false
+var all_golden_tip_shown: bool = false
 
 # Floor/section tracking
 var current_floor: int = 1
@@ -148,4 +156,12 @@ func reset() -> void:
 	special_tickets_collected = 0
 	checkpoint_position = Vector2.ZERO
 	checkpoint_section = ""
+	combat_tutorial_shown = false
+	hit_tip_shown = false
+	ticket_tip_shown = false
+	checkpoint_tip_shown = false
+	swap_tip_shown = false
+	key_tip_shown = false
+	golden_ticket_tip_shown = false
+	all_golden_tip_shown = false
 	_init_section_variants()

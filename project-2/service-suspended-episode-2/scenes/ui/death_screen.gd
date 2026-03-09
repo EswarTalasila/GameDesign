@@ -18,6 +18,14 @@ var _respawn_tex = [
 	preload("res://assets/ui/buttons/respawn/clicked.png"),
 ]
 
+var _game_over_music = preload("res://assets/sounds/game_over.mp3")
+var _btn_hover_sound = preload("res://assets/sounds/button_hover.mp3")
+var _btn_click_sound = preload("res://assets/sounds/button_click.mp3")
+
+var _music_player: AudioStreamPlayer
+var _hover_player: AudioStreamPlayer
+var _click_player: AudioStreamPlayer
+
 var _reload_tooltip: Label
 var _respawn_tooltip: Label
 
@@ -68,6 +76,23 @@ func _ready() -> void:
 	reload_btn.pressed.connect(_on_reload_pressed)
 	respawn_btn.pressed.connect(_on_respawn_pressed)
 
+	# Button sounds
+	_hover_player = AudioStreamPlayer.new()
+	_hover_player.stream = _btn_hover_sound
+	add_child(_hover_player)
+	_click_player = AudioStreamPlayer.new()
+	_click_player.stream = _btn_click_sound
+	add_child(_click_player)
+	reload_btn.mouse_entered.connect(func(): _hover_player.play())
+	respawn_btn.mouse_entered.connect(func(): _hover_player.play())
+
+	# Game over music
+	_music_player = AudioStreamPlayer.new()
+	_music_player.stream = _game_over_music
+	add_child(_music_player)
+	_music_player.finished.connect(_music_player.play)
+	_music_player.play()
+
 	_play_intro()
 
 func _create_tooltip(text: String, btn: TextureButton) -> Label:
@@ -108,14 +133,17 @@ func _fade_out() -> void:
 	tween.tween_property(reload_btn, "modulate:a", 0.0, 0.5)
 	tween.tween_property(respawn_btn, "modulate:a", 0.0, 0.5)
 	tween.tween_property($Background, "color:a", 0.0, 0.5)
+	tween.tween_property(_music_player, "volume_db", -40.0, 0.5)
 	await tween.finished
 
 func _on_reload_pressed() -> void:
+	_click_player.play()
 	reload_btn.disabled = true
 	respawn_btn.disabled = true
 	reload_requested.emit()
 
 func _on_respawn_pressed() -> void:
+	_click_player.play()
 	reload_btn.disabled = true
 	respawn_btn.disabled = true
 	respawn_requested.emit()

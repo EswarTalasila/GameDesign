@@ -1,8 +1,11 @@
 extends Area2D
 
+var _pickup_sound = preload("res://assets/sounds/golden_ticket_pickup.mp3")
+
 @onready var sprite: AnimatedSprite2D = $AnimatedSprite2D
 
 func _ready() -> void:
+	add_to_group("special_ticket")
 	collision_layer = 4   # layer 3
 	collision_mask = 1    # detect player (layer 1)
 	body_entered.connect(_on_body_entered)
@@ -16,8 +19,16 @@ func _start_glow_pulse() -> void:
 	tween.tween_property(mat, "shader_parameter/glow_alpha", 0.3, 0.8).set_trans(Tween.TRANS_SINE)
 	tween.tween_property(mat, "shader_parameter/glow_alpha", 0.7, 0.8).set_trans(Tween.TRANS_SINE)
 
+func _play_sfx(stream: AudioStream) -> void:
+	var sfx = AudioStreamPlayer.new()
+	sfx.stream = stream
+	get_tree().root.add_child(sfx)
+	sfx.play()
+	sfx.finished.connect(sfx.queue_free)
+
 func _on_body_entered(_body: Node2D) -> void:
 	set_deferred("monitoring", false)
+	_play_sfx(_pickup_sound)
 	GameState.collect_special_ticket()
 
 	var tween = create_tween()

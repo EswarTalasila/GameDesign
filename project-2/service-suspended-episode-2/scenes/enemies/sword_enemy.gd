@@ -9,6 +9,8 @@ enum State { DORMANT, SPAWNING, IDLE, WALKING, ATTACKING, HIT, DYING, DEAD }
 @export var attack_damage_frames: Array[int] = [5, 9]  # frames in attack anim that deal damage
 @export var health: int = 2
 
+var _shadow_hit_sound = preload("res://assets/sounds/shadow_hit.mp3")
+
 var _state: State = State.DORMANT
 var _player: CharacterBody2D = null
 var _idle_timer: float = 0.0
@@ -115,9 +117,30 @@ func _on_detection_entered(body: Node2D) -> void:
 		return
 	if _state == State.DORMANT:
 		_player = body
+		if not GameState.combat_tutorial_shown:
+			GameState.combat_tutorial_shown = true
+			_show_combat_tutorial()
+			return
 		_change_state(State.SPAWNING)
 	elif _player == null:
 		_player = body
+
+func _show_combat_tutorial() -> void:
+	process_mode = Node.PROCESS_MODE_ALWAYS
+	get_tree().paused = true
+
+	var bubbles = get_tree().get_nodes_in_group("dialog_bubble")
+	if bubbles.size() > 0:
+		var bubble = bubbles[0]
+		bubble.process_mode = Node.PROCESS_MODE_ALWAYS
+		bubble.show_text("Press SPACE to attack!", "Tip")
+		while bubble.visible:
+			await get_tree().process_frame
+		bubble.process_mode = Node.PROCESS_MODE_INHERIT
+
+	get_tree().paused = false
+	process_mode = Node.PROCESS_MODE_INHERIT
+	_change_state(State.SPAWNING)
 
 func _on_animation_finished() -> void:
 	match _state:
@@ -134,6 +157,13 @@ func _on_animation_finished() -> void:
 		State.DYING:
 			_change_state(State.DEAD)
 
+func _play_sfx(stream: AudioStream) -> void:
+	var sfx = AudioStreamPlayer.new()
+	sfx.stream = stream
+	get_tree().root.add_child(sfx)
+	sfx.play()
+	sfx.finished.connect(sfx.queue_free)
+
 func take_damage(amount: int = 1) -> void:
 	if _state == State.DORMANT or _state == State.DYING or _state == State.DEAD or _state == State.HIT:
 		return
@@ -141,4 +171,5 @@ func take_damage(amount: int = 1) -> void:
 	_state = State.HIT
 	velocity = Vector2.ZERO
 	_hitbox.monitoring = false
+	_play_sfx(_shadow_hit_sound)
 	_play_directional("hit")

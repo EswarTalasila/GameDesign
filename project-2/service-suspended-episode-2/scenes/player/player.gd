@@ -6,11 +6,14 @@ extends CharacterBody2D
 @onready var animated_sprite: AnimatedSprite2D = $AnimatedSprite2D
 @onready var _hitbox: Area2D = $AttackHitBox
 
+var _hit_sound = preload("res://assets/sounds/player_hit.mp3")
+
 var direction: Vector2 = Vector2.ZERO
 var last_direction: String = "south"
 var _attacking: bool = false
 var _hit_stunned: bool = false
 var _invincible: bool = false
+var _dead: bool = false
 
 func _ready() -> void:
 	animated_sprite.animation_finished.connect(_on_animation_finished)
@@ -79,14 +82,25 @@ func _update_hitbox_position() -> void:
 	}
 	$AttackHitBox/CollisionShape2D.position = offsets.get(last_direction, Vector2(0, 12))
 
+func _play_sfx(stream: AudioStream) -> void:
+	var sfx = AudioStreamPlayer.new()
+	sfx.stream = stream
+	get_tree().root.add_child(sfx)
+	sfx.play()
+	sfx.finished.connect(sfx.queue_free)
+
 func take_hit(damage: int = 1) -> void:
-	if _invincible:
+	if _invincible or _dead:
 		return
 	_hit_stunned = true
 	_invincible = true
 	_attacking = false
 	_hitbox.monitoring = false
+	_play_sfx(_hit_sound)
 	GameState.damage_player(damage)
+	if GameState.player_health <= 0:
+		_dead = true
+		return
 	_play_animation("hit_" + last_direction, true)
 	_start_iframes()
 

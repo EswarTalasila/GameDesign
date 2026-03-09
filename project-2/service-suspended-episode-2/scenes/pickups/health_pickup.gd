@@ -1,5 +1,7 @@
 extends Area2D
 
+var _pickup_sound = preload("res://assets/sounds/health_pickup.mp3")
+
 @onready var sprite: AnimatedSprite2D = $AnimatedSprite2D
 
 func _ready() -> void:
@@ -16,10 +18,18 @@ func _start_glow_pulse() -> void:
 	tween.tween_property(mat, "shader_parameter/glow_alpha", 0.3, 0.8).set_trans(Tween.TRANS_SINE)
 	tween.tween_property(mat, "shader_parameter/glow_alpha", 0.7, 0.8).set_trans(Tween.TRANS_SINE)
 
+func _play_sfx(stream: AudioStream) -> void:
+	var sfx = AudioStreamPlayer.new()
+	sfx.stream = stream
+	get_tree().root.add_child(sfx)
+	sfx.play()
+	sfx.finished.connect(sfx.queue_free)
+
 func _on_body_entered(_body: Node2D) -> void:
 	if GameState.player_health >= GameState.max_health:
 		return
 	set_deferred("monitoring", false)
+	_play_sfx(_pickup_sound)
 	GameState.heal_player(1)
 
 	var tween = create_tween()

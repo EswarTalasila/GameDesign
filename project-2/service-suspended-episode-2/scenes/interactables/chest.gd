@@ -10,6 +10,9 @@ extends Node2D
 @export var interaction_zone_offset := Vector2(0, 9)
 @export var locked: bool = false
 
+var _chest_open_sound = preload("res://assets/sounds/chest_open.wav")
+var _unlock_sound = preload("res://assets/sounds/door_unlock.mp3")
+
 var _open: bool = false
 var _player_nearby: bool = false
 var _looted: bool = false
@@ -81,9 +84,17 @@ func _on_zone_exited(body: Node2D) -> void:
 		_prompt.visible = false
 		_lock_prompt.visible = false
 
+func _play_sfx(stream: AudioStream) -> void:
+	var sfx = AudioStreamPlayer.new()
+	sfx.stream = stream
+	get_tree().root.add_child(sfx)
+	sfx.play()
+	sfx.finished.connect(sfx.queue_free)
+
 func _open_chest() -> void:
 	_open = true
 	_sprite.texture = open_texture
+	_play_sfx(_chest_open_sound)
 	(_body_col.shape as RectangleShape2D).size = open_collision_size
 	_body_col.position = open_collision_offset
 	if not _looted:
@@ -117,6 +128,7 @@ func _show_dialog(text: String) -> void:
 
 func unlock() -> void:
 	locked = false
+	_play_sfx(_unlock_sound)
 	_lock_prompt.play("opening")
 	await _lock_prompt.animation_finished
 	_lock_prompt.visible = false

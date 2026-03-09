@@ -15,9 +15,9 @@ static func get_table() -> Array:
 		{ "source": 0, "marker": Vector2i(8, 0), "scene": preload("res://scenes/traps/trap_spikes.tscn"), "size": Vector2i(1, 1) },
 		# Doors
 		{ "source": 1, "marker": Vector2i(7, 4), "scene": preload("res://scenes/doors/door_framed_wood.tscn"), "size": Vector2i(1, 1) },
-		{ "source": 1, "marker": Vector2i(13, 4), "scene": preload("res://scenes/doors/door_framed_cell.tscn"), "size": Vector2i(1, 1) },
+		{ "source": 1, "marker": Vector2i(13, 4), "scene": preload("res://scenes/doors/door_framed_cell.tscn"), "size": Vector2i(1, 1), "props": { "open_sound": preload("res://assets/sounds/metal_door_open.mp3") } },
 		{ "source": 2, "marker": Vector2i(0, 0), "scene": preload("res://scenes/doors/door_wood.tscn"), "size": Vector2i(1, 2) },
-		{ "source": 2, "marker": Vector2i(2, 0), "scene": preload("res://scenes/doors/door_cell.tscn"), "size": Vector2i(1, 2) },
+		{ "source": 2, "marker": Vector2i(2, 0), "scene": preload("res://scenes/doors/door_cell.tscn"), "size": Vector2i(1, 2), "props": { "open_sound": preload("res://assets/sounds/metal_door_open.mp3") } },
 		# Lever
 		{ "source": 2, "marker": Vector2i(9, 3), "scene": preload("res://scenes/interactables/lever.tscn"), "size": Vector2i(1, 1) },
 		# Chest — if any tile in the 3x2 footprint is (14,3) the chest spawns locked
@@ -25,10 +25,10 @@ static func get_table() -> Array:
 		  "modifiers": [{ "atlas": Vector2i(14, 3), "props": { "locked": true } }] },
 		# Locked doors (framed variants)
 		{ "source": 1, "marker": Vector2i(11, 9), "scene": preload("res://scenes/doors/door_framed_wood.tscn"), "size": Vector2i(1, 1), "props": { "locked": true } },
-		{ "source": 1, "marker": Vector2i(13, 9), "scene": preload("res://scenes/doors/door_framed_cell.tscn"), "size": Vector2i(1, 1), "props": { "locked": true } },
+		{ "source": 1, "marker": Vector2i(13, 9), "scene": preload("res://scenes/doors/door_framed_cell.tscn"), "size": Vector2i(1, 1), "props": { "locked": true, "open_sound": preload("res://assets/sounds/metal_door_open.mp3") } },
 		# Special-ticket-locked doors (star markers — visual is normal door sprite)
 		{ "source": 1, "marker": Vector2i(9, 9), "scene": preload("res://scenes/doors/door_framed_wood.tscn"), "size": Vector2i(1, 1), "props": { "special_locked": true } },
-		{ "source": 1, "marker": Vector2i(15, 9), "scene": preload("res://scenes/doors/door_framed_cell.tscn"), "size": Vector2i(1, 1), "props": { "special_locked": true } },
+		{ "source": 1, "marker": Vector2i(15, 9), "scene": preload("res://scenes/doors/door_framed_cell.tscn"), "size": Vector2i(1, 1), "props": { "special_locked": true, "open_sound": preload("res://assets/sounds/metal_door_open.mp3") } },
 		# Exit frame (dark open doorway — tiles stay, entity provides interaction only)
 		{ "source": 1, "marker": Vector2i(19, 1), "scene": preload("res://scenes/doors/exit_frame.tscn"), "size": Vector2i(1, 1), "no_erase": true },
 		# Enemies (scanned from EnemyMarkers layer — separate tileset)

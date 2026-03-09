@@ -46,6 +46,16 @@ var _play_pressed = preload("res://assets/ui/buttons/play_pause/play_pressed.png
 var _burn_shader = preload("res://shaders/burn_dissolve.gdshader")
 
 var _saving_icon_scene = preload("res://scenes/ui/saving_icon.tscn")
+var _ambience_stream = preload("res://assets/sounds/dungeon_ambience.mp3")
+var _ambience_stream_2 = preload("res://assets/sounds/dungeon_ambience_2.mp3")
+var _heartbeat_stream = preload("res://assets/sounds/heartbeat.mp3")
+var _punch_sound = preload("res://assets/sounds/ticket_punch.mp3")
+var _burn_sound_stream = preload("res://assets/sounds/ticket_burn.mp3")
+
+var _unlock_sound_stream = preload("res://assets/sounds/door_unlock.mp3")
+
+var _heartbeat_player: AudioStreamPlayer
+var _showing_tip: bool = false
 
 # --- Section keys ---
 const SECTION_KEYS = ["a", "b", "c", "d"]
@@ -185,6 +195,24 @@ func _ready() -> void:
 	# Connect painted exit doors in "special_exit" group
 	_connect_exit_doors()
 
+	# Dungeon ambience (looping, randomly pick track)
+	var ambience = AudioStreamPlayer.new()
+	ambience.stream = [_ambience_stream, _ambience_stream_2].pick_random()
+	ambience.name = "DungeonAmbience"
+	add_child(ambience)
+	ambience.finished.connect(ambience.play)
+	ambience.play()
+
+	# Heartbeat (looping, plays at 1 HP)
+	_heartbeat_player = AudioStreamPlayer.new()
+	_heartbeat_player.stream = _heartbeat_stream
+	_heartbeat_player.name = "Heartbeat"
+	add_child(_heartbeat_player)
+	_heartbeat_player.finished.connect(_heartbeat_player.play)
+	GameState.player_health_changed.connect(_on_health_changed)
+	GameState.player_hit.connect(_on_player_hit_tip)
+	GameState.all_special_tickets_collected.connect(_on_all_golden_collected)
+
 	# (Inventory is now built into game_ui.tscn — no separate panel needed)
 
 
@@ -298,16 +326,14 @@ func _setup_special_tickets() -> void:
 				var world_pos = items_layer.to_global(items_layer.map_to_local(cell))
 				candidates.append({ "section": section, "layer": items_layer, "cell": cell, "world_pos": world_pos })
 
-	# Shuffle and pick up to special_tickets_required
+	# Shuffle and pick 2 for initial spawn
 	candidates.shuffle()
-	var to_spawn = mini(candidates.size(), GameState.special_tickets_required)
+	var to_spawn = mini(candidates.size(), 2)
 
 	for i in range(candidates.size()):
 		var c = candidates[i]
-		# Erase the marker tile regardless
 		c.layer.erase_cell(c.cell)
 		if i < to_spawn:
-			# Spawn entity at this position
 			var instance = entry.scene.instantiate()
 			c.section.add_child(instance)
 			instance.global_position = c.world_pos
@@ -339,24 +365,47 @@ func _swap_current_section() -> void:
 		container.add_child(instance)
 		instance.position = old_pos
 		_section_instances[key] = instance
-		# Clean up floor_managed markers (special tickets) in new variant
-		_cleanup_floor_managed_markers(instance as DungeonSection)
+		# Maybe spawn golden ticket in new variant (75% chance)
+		_try_spawn_special_ticket_in_section(instance as DungeonSection)
 		# Reconnect exit doors in the new section variant
 		_connect_exit_doors()
 
 
-func _cleanup_floor_managed_markers(section: DungeonSection) -> void:
+func _try_spawn_special_ticket_in_section(section: DungeonSection) -> void:
 	if not section:
 		return
 	var items_layer = section.get_items_layer()
 	if not items_layer:
 		return
-	for entry in TileEntities.get_table():
-		if not entry.get("floor_managed", false):
-			continue
-		for cell in items_layer.get_used_cells():
-			if items_layer.get_cell_source_id(cell) == entry.source and items_layer.get_cell_atlas_coords(cell) == entry.marker:
-				items_layer.erase_cell(cell)
+
+	var entry: Dictionary = {}
+	for e in TileEntities.get_table():
+		if e.get("floor_managed", false):
+			entry = e
+			break
+	if entry.is_empty():
+		return
+
+	var markers: Array[Vector2i] = []
+	for cell in items_layer.get_used_cells():
+		if items_layer.get_cell_source_id(cell) == entry.source and items_layer.get_cell_atlas_coords(cell) == entry.marker:
+			markers.append(cell)
+
+	var on_map = get_tree().get_nodes_in_group("special_ticket").size()
+	var needed = GameState.special_tickets_required - GameState.special_tickets_collected - on_map
+	var spawned = false
+
+	if needed > 0 and markers.size() > 0 and randf() < 0.75:
+		markers.shuffle()
+		var cell = markers[0]
+		var world_pos = items_layer.to_global(items_layer.map_to_local(cell))
+		var instance = entry.scene.instantiate()
+		section.add_child(instance)
+		instance.global_position = world_pos
+		spawned = true
+
+	for cell in markers:
+		items_layer.erase_cell(cell)
 
 
 # ── Inventory slot click detection ──
@@ -383,11 +432,6 @@ func _on_key_pressed() -> void:
 	if GameState.key_mode:
 		punch_mode = false
 	cursor_sprite.texture = _key_cursor if GameState.key_mode else _cursor_default
-
-func _on_key_collected(_current: int) -> void:
-	_update_hud_icons()
-	if GameState.keys_collected <= 0 and GameState.key_mode:
-		GameState.set_key_mode(false)
 
 func _on_key_mode_changed(active: bool) -> void:
 	if not active:
@@ -436,12 +480,14 @@ func _punch_ticket() -> void:
 	cursor_sprite.texture = _cursor_default
 	player.set_physics_process(false)
 
-	# 1. Punch button close/open animation
+	# 1. Punch button close/open animation + punch sound
 	punch_slot.texture = _punch_icon_closed
+	_play_sfx(_punch_sound)
 	await get_tree().create_timer(0.2).timeout
 	punch_slot.texture = _punch_icon_open
 
-	# 2. Burn shader dissolves ticket (old tiles still visible)
+	# 2. Burn shader dissolves ticket (old tiles still visible) + burn sound
+	_play_sfx(_burn_sound_stream)
 	var tween = create_tween()
 	tween.tween_method(_set_burn_radius, 0.0, 2.0, 1.5)
 	await tween.finished
@@ -486,6 +532,11 @@ func _punch_ticket() -> void:
 	loading_screen.uncover()
 	await loading_screen.uncover_finished
 
+	# Swap tip (first time)
+	if not GameState.swap_tip_shown:
+		GameState.swap_tip_shown = true
+		_show_tip("The section changed! New items and enemies have spawned. Be careful — punching a ticket outside a section wastes it!")
+
 func _set_burn_radius(value: float) -> void:
 	flying_ticket.material.set_shader_parameter("radius", value)
 
@@ -499,16 +550,78 @@ func _update_hud_icons() -> void:
 
 func _on_ticket_picked_up(_held: int) -> void:
 	_update_hud_icons()
+	if not GameState.ticket_tip_shown:
+		GameState.ticket_tip_shown = true
+		_show_tip("Pick up tickets and punch them to rotate sections! Click the ticket icon, then the punch icon, then click the floating ticket.")
 
 func _on_ticket_collected(_current: int, _total: int) -> void:
 	_update_hud_icons()
 
 func _on_special_ticket_collected(_current: int, _required: int) -> void:
 	_update_hud_icons()
+	if not GameState.golden_ticket_tip_shown:
+		GameState.golden_ticket_tip_shown = true
+		_show_tip("I wonder what this is for...", "You")
+
+func _on_all_golden_collected() -> void:
+	_play_sfx(_unlock_sound_stream)
+	if not GameState.all_golden_tip_shown:
+		GameState.all_golden_tip_shown = true
+		_show_tip("A door has been unlocked somewhere...")
+
+func _on_key_collected(_current: int) -> void:
+	_update_hud_icons()
+	if GameState.keys_collected <= 0 and GameState.key_mode:
+		GameState.set_key_mode(false)
+	if not GameState.key_tip_shown:
+		GameState.key_tip_shown = true
+		_show_tip("Press E near a locked door or chest, or click the key icon then click the lock!")
+
+func _on_health_changed(current_health: int) -> void:
+	if current_health == 1:
+		if not _heartbeat_player.playing:
+			_heartbeat_player.play()
+	else:
+		_heartbeat_player.stop()
+
+func _on_player_hit_tip(_current_health: int) -> void:
+	if not GameState.hit_tip_shown:
+		GameState.hit_tip_shown = true
+		_show_tip("Find heart pickups to restore health!")
+
+func _play_sfx(stream: AudioStream) -> void:
+	var sfx = AudioStreamPlayer.new()
+	sfx.stream = stream
+	get_tree().root.add_child(sfx)
+	sfx.play()
+	sfx.finished.connect(sfx.queue_free)
+
+func _show_tip(text: String, speaker: String = "Tip") -> void:
+	if _showing_tip or _dead or is_animating:
+		return
+	_showing_tip = true
+	var bubbles = get_tree().get_nodes_in_group("dialog_bubble")
+	if bubbles.size() == 0:
+		_showing_tip = false
+		return
+	var bubble = bubbles[0]
+	process_mode = Node.PROCESS_MODE_ALWAYS
+	bubble.process_mode = Node.PROCESS_MODE_ALWAYS
+	get_tree().paused = true
+	bubble.show_text(text, speaker)
+	while bubble.visible:
+		await get_tree().process_frame
+	get_tree().paused = false
+	bubble.process_mode = Node.PROCESS_MODE_INHERIT
+	process_mode = Node.PROCESS_MODE_INHERIT
+	_showing_tip = false
 
 func _on_checkpoint_set(_pos: Vector2, _section: String) -> void:
 	var icon = _saving_icon_scene.instantiate()
 	$GameUI/UILayer.add_child(icon)
+	if not GameState.checkpoint_tip_shown:
+		GameState.checkpoint_tip_shown = true
+		_show_tip("That saving icon means you entered a new section. Sections can be rotated when you punch a ticket inside them.")
 
 
 # ── Special exit doors (painted in tilemap, connected via group) ──
@@ -519,6 +632,7 @@ func _connect_exit_doors() -> void:
 			node.exit_used.connect(_on_exit_door_used)
 
 func _on_exit_door_used() -> void:
+	is_animating = true
 	player.set_physics_process(false)
 	GameState.tickets_collected = 0
 	GameState.tickets_held = 0
@@ -552,6 +666,7 @@ func _on_player_died() -> void:
 		death.respawn_btn.modulate = Color(1, 1, 1, 0.4)
 
 func _on_death_reload(death_screen) -> void:
+	is_animating = true
 	GameState.tickets_collected = 0
 	GameState.tickets_held = 0
 	GameState.keys_collected = 0
@@ -586,6 +701,9 @@ func _on_death_respawn(death_screen: CanvasLayer) -> void:
 
 	# Re-enable player
 	_dead = false
+	player._dead = false
+	player._invincible = false
+	player._hit_stunned = false
 	player.visible = true
 	player.collision_layer = 1
 	player.collision_mask = 1
@@ -660,6 +778,12 @@ func _exit_tree() -> void:
 		GameState.checkpoint_set.disconnect(_on_checkpoint_set)
 	if GameState.special_ticket_collected.is_connected(_on_special_ticket_collected):
 		GameState.special_ticket_collected.disconnect(_on_special_ticket_collected)
+	if GameState.player_health_changed.is_connected(_on_health_changed):
+		GameState.player_health_changed.disconnect(_on_health_changed)
+	if GameState.player_hit.is_connected(_on_player_hit_tip):
+		GameState.player_hit.disconnect(_on_player_hit_tip)
+	if GameState.all_special_tickets_collected.is_connected(_on_all_golden_collected):
+		GameState.all_special_tickets_collected.disconnect(_on_all_golden_collected)
 
 	if has_node("/root/CustomCursor"):
 		var cc = get_node("/root/CustomCursor")
