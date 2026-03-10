@@ -23,4 +23,4 @@ func _on_body_entered(_body: Node2D) -> void:
 	# Transition via loading screen to next cart
 	var loading = preload("res://scenes/ui/loading_screen.tscn").instantiate()
 	get_tree().root.add_child(loading)
-	loading.transition_to("res://scenes/rooms/train_cart_hub.tscn")
+	loading.transition_to("res://scenes/train/train.tscn")

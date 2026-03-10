@@ -8,7 +8,7 @@ class_name TileEntities
 static func get_table() -> Array:
 	return [
 		# Torches
-		{ "source": 1, "marker": Vector2i(13, 6), "scene": preload("res://scenes/torches/torch.tscn"), "size": Vector2i(1, 1) },
+		{ "source": 1, "marker": Vector2i(13, 6), "scene": preload("res://scenes/torches/torch.tscn"), "size": Vector2i(1, 1), "layer": "walls" },
 		{ "source": 2, "marker": Vector2i(2, 3), "scene": preload("res://scenes/torches/torch_pillar2.tscn"), "size": Vector2i(1, 1) },
 		{ "source": 2, "marker": Vector2i(5, 7), "scene": preload("res://scenes/torches/torch_wall.tscn"), "size": Vector2i(1, 2) },
 		# Spikes

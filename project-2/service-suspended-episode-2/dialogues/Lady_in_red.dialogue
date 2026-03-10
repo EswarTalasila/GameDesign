@@ -17,3 +17,10 @@ Lady In Red: Find the tickets. Don't stay in one place too long. And don't let h
 You: Who.
 Lady In Red: (nods deeper into the dungeon) Go.
 => END
+
+~ return
+Lady In Red: Find the tickets. Don't stay in one place too long. And don't let him see you.
+- Can you tell me again?
+	=> start
+- (Leave)
+	=> END

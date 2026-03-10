@@ -68,7 +68,7 @@ func _on_play_input(event: InputEvent) -> void:
 		_click_sound.play()
 		GameState.reset()
 		await get_tree().create_timer(0.15).timeout
-		get_tree().change_scene_to_file("res://scenes/floors/floor_1/floor_1.tscn")
+		get_tree().change_scene_to_file("res://scenes/train/train.tscn")
 
 
 func _hold_then_base() -> void:

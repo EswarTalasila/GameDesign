@@ -10,6 +10,14 @@ func _ready() -> void:
 	collision_mask = 1    # detect player (layer 1)
 	body_entered.connect(_on_body_entered)
 	_start_glow_pulse()
+	# Check for already-overlapping player (e.g. teleported onto this ticket)
+	_check_overlap.call_deferred()
+
+func _check_overlap() -> void:
+	for body in get_overlapping_bodies():
+		if body.name == "Player":
+			_on_body_entered(body)
+			return
 
 func _start_glow_pulse() -> void:
 	var mat = sprite.material as ShaderMaterial

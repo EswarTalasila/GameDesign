@@ -39,6 +39,10 @@ var key_tip_shown: bool = false
 var golden_ticket_tip_shown: bool = false
 var all_golden_tip_shown: bool = false
 
+# Dialogue replay flags — tracks whether NPC dialogue has been heard
+var lady_section_1_heard: bool = false
+var lady_section_2_heard: bool = false
+
 # Floor/section tracking
 var current_floor: int = 1
 var num_floors: int = 2
@@ -164,4 +168,6 @@ func reset() -> void:
 	key_tip_shown = false
 	golden_ticket_tip_shown = false
 	all_golden_tip_shown = false
+	lady_section_1_heard = false
+	lady_section_2_heard = false
 	_init_section_variants()

@@ -65,4 +65,4 @@ func _enter_dungeon() -> void:
 
 	var loading = preload("res://scenes/ui/loading_screen.tscn").instantiate()
 	get_tree().root.add_child(loading)
-	loading.transition_to("res://scenes/dungeon/dungeon.tscn")
+	loading.transition_to("res://scenes/floors/floor_1/floor_1.tscn")

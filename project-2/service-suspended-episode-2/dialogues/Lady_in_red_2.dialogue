@@ -40,3 +40,10 @@ You: Why?
 Lady In Red: Because he can't file someone who's still specific. The system needs you to be generic. A passenger. Not a person.
 Lady In Red: Go.
 => END
+
+~ return
+Lady In Red: Hold onto something specific. A memory. Something small and exact. He can't file someone who's still specific.
+- Can you tell me again?
+	=> start
+- (Leave)
+	=> END

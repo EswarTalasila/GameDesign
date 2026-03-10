@@ -393,6 +393,7 @@ func _reload_current_section() -> void:
 		container.add_child(instance)
 		instance.position = old_pos
 		_section_instances[key] = instance
+		_try_spawn_special_ticket_in_section(instance as DungeonSection)
 		_connect_exit_doors()
 
 func _try_spawn_special_ticket_in_section(section: DungeonSection) -> void:
@@ -415,7 +416,12 @@ func _try_spawn_special_ticket_in_section(section: DungeonSection) -> void:
 		if items_layer.get_cell_source_id(cell) == entry.source and items_layer.get_cell_atlas_coords(cell) == entry.marker:
 			markers.append(cell)
 
-	var on_map = get_tree().get_nodes_in_group("special_ticket").size()
+	# Count only tickets NOT queued for deletion (old section's tickets are queue_free'd but still in group)
+	var on_map := 0
+	for node in get_tree().get_nodes_in_group("special_ticket"):
+		if node.is_queued_for_deletion():
+			continue
+		on_map += 1
 	var needed = GameState.special_tickets_required - GameState.special_tickets_collected - on_map
 	if needed > 0 and markers.size() > 0 and randf() < 0.75:
 		markers.shuffle()
@@ -496,6 +502,7 @@ func _cancel_floating_ticket() -> void:
 	is_animating = false
 
 func _punch_ticket() -> void:
+	_dismiss_tip()
 	is_animating = true
 	punch_mode = false
 	cursor_sprite.texture = _cursor_default
@@ -632,7 +639,13 @@ func _show_tip(text: String, speaker: String = "Tip") -> void:
 	get_tree().paused = true
 	bubble.show_text(text, speaker)
 	while bubble.visible:
+		if not is_inside_tree():
+			_showing_tip = false
+			return
 		await get_tree().process_frame
+	if not is_inside_tree():
+		_showing_tip = false
+		return
 	get_tree().paused = false
 	$GameWorld.set_deferred("process_mode", Node.PROCESS_MODE_INHERIT)
 	bubble.process_mode = Node.PROCESS_MODE_INHERIT
@@ -667,18 +680,16 @@ func _connect_exit_doors() -> void:
 			node.exit_used.connect(_on_exit_door_used)
 
 func _on_exit_door_used() -> void:
+	_dismiss_tip()
 	is_animating = true
 	player.set_physics_process(false)
-	GameState.tickets_collected = 0
-	GameState.tickets_held = 0
-	GameState.keys_collected = 0
-	GameState.special_tickets_collected = 0
-	GameState.reset_health()
-	GameState.randomize_section_variants(floor_id)
-	var floor_path = "res://scenes/floors/floor_%d/floor_%d.tscn" % [floor_id, floor_id]
+	player.visible = false
+	player.collision_layer = 0
+	player.collision_mask = 0
+	GameState.complete_dungeon()
 	var loading_screen = preload("res://scenes/ui/loading_screen.tscn").instantiate()
 	get_tree().root.add_child(loading_screen)
-	loading_screen.transition_to(floor_path)
+	loading_screen.transition_to("res://scenes/train/train.tscn")
 
 
 # ── Death / respawn ──
@@ -787,6 +798,7 @@ func _on_pause_slot_pressed() -> void:
 	_open_pause_menu()
 
 func _open_pause_menu() -> void:
+	_dismiss_tip()
 	_paused = true
 	pause_slot.texture = _play_normal
 	get_tree().paused = true

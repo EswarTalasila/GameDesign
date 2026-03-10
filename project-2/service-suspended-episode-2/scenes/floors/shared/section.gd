@@ -138,8 +138,6 @@ func _setup_tile_entities() -> void:
 		tilemaps.append(_furniture)
 	if _bottom_walls:
 		tilemaps.append(_bottom_walls)
-	if _top_walls:
-		tilemaps.append(_top_walls)
 
 	for entry in _tile_entities:
 		if entry.get("floor_managed", false):
@@ -153,6 +151,12 @@ func _setup_tile_entities() -> void:
 			scan_layers = [_enemy_layer]
 		elif entry.get("layer") == "items" and _items_layer:
 			scan_layers = [_items_layer]
+		elif entry.get("layer") == "walls":
+			scan_layers = []
+			if _bottom_walls:
+				scan_layers.append(_bottom_walls)
+			if _top_walls:
+				scan_layers.append(_top_walls)
 		else:
 			scan_layers = tilemaps
 
