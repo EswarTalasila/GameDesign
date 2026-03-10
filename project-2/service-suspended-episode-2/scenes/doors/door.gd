@@ -27,6 +27,8 @@ func _ready() -> void:
 	if special_locked:
 		locked = true
 		GameState.all_special_tickets_collected.connect(_on_special_unlock)
+		if GameState.special_tickets_collected >= GameState.special_tickets_required:
+			locked = false
 		add_to_group("special_exit")
 
 func _input(event: InputEvent) -> void:

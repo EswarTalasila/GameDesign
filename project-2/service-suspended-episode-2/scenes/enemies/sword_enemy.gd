@@ -131,7 +131,7 @@ func _show_combat_tutorial() -> void:
 	if floor_node and floor_node.has_node("GameWorld"):
 		floor_node._showing_tip = true
 		floor_node.process_mode = Node.PROCESS_MODE_ALWAYS
-		floor_node.get_node("GameWorld").set_deferred("process_mode", Node.PROCESS_MODE_DISABLED)
+		floor_node.get_node("GameWorld").set_deferred("process_mode", Node.PROCESS_MODE_PAUSABLE)
 
 	process_mode = Node.PROCESS_MODE_ALWAYS
 	get_tree().paused = true

@@ -635,7 +635,7 @@ func _show_tip(text: String, speaker: String = "Tip") -> void:
 	var bubble = bubbles[0]
 	process_mode = Node.PROCESS_MODE_ALWAYS
 	bubble.process_mode = Node.PROCESS_MODE_ALWAYS
-	$GameWorld.set_deferred("process_mode", Node.PROCESS_MODE_DISABLED)
+	$GameWorld.set_deferred("process_mode", Node.PROCESS_MODE_PAUSABLE)
 	get_tree().paused = true
 	bubble.show_text(text, speaker)
 	while bubble.visible:
