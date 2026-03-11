@@ -66,7 +66,7 @@ func _ready() -> void:
 
 	# Hover tooltips
 	_reload_tooltip = _create_tooltip("Reload the floor\nFree - resets tickets & keys", reload_btn)
-	_respawn_tooltip = _create_tooltip("Respawn at checkpoint\nCosts 1 ticket", respawn_btn)
+	_respawn_tooltip = _create_tooltip("Respawn at checkpoint\nCosts 3 tickets", respawn_btn)
 
 	reload_btn.mouse_entered.connect(func(): _reload_tooltip.visible = true)
 	reload_btn.mouse_exited.connect(func(): _reload_tooltip.visible = false)

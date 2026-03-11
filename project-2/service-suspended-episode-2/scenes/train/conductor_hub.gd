@@ -56,6 +56,11 @@ func _ready() -> void:
 	Input.mouse_mode = Input.MOUSE_MODE_HIDDEN
 	_disable_autoload_cursor()
 
+	# Hide objective panel (only shown in dungeon)
+	var obj_panel = $GameUI/UILayer.get_node_or_null("ObjectivePanel")
+	if obj_panel:
+		obj_panel.visible = false
+
 	cursor_sprite.texture = _cursor_default
 	cursor_sprite.centered = false
 	cursor_sprite.scale = Vector2(1, 1)
@@ -72,6 +77,7 @@ func _ready() -> void:
 	conductor_target = conductor.global_position
 	player.global_position = Vector2(-20, player_target.y)
 	conductor.global_position = Vector2(-40, conductor_target.y)
+	conductor.visible = false
 
 	call_deferred("_start_cutscene")
 
@@ -108,14 +114,36 @@ func _start_cutscene() -> void:
 
 	await get_tree().create_timer(0.5).timeout
 
-	# --- Conductor follows from the left, walking east ---
+	# --- Intercom plays before conductor appears ---
+	DialogueManager.show_dialogue_balloon(_conductor_dialogue, "intercom")
+	await DialogueManager.dialogue_ended
+
+	await get_tree().create_timer(0.8).timeout
+
+	# --- Conductor appears and follows from the left, walking east ---
+	conductor.visible = true
 	var conductor_sprite: AnimatedSprite2D = conductor.get_node("AnimatedSprite2D")
 	conductor_sprite.play("walk_east")
+
+	# Camera shake while conductor walks
+	var cam: Camera2D = player.get_node("Camera2D")
+	var shake_timer := Timer.new()
+	shake_timer.wait_time = 0.05
+	shake_timer.autostart = true
+	add_child(shake_timer)
+	shake_timer.timeout.connect(func():
+		cam.offset = Vector2(randf_range(-1.5, 1.5), randf_range(-1.0, 1.0))
+	)
 
 	var conductor_tween = create_tween()
 	conductor_tween.tween_property(conductor, "global_position", conductor_target, 2.0) \
 		.set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
 	await conductor_tween.finished
+
+	# Stop shake and reset camera
+	shake_timer.stop()
+	shake_timer.queue_free()
+	cam.offset = Vector2.ZERO
 
 	# Conductor stops facing east (toward player)
 	conductor_sprite.play("idle_east")
@@ -136,13 +164,13 @@ func _start_cutscene() -> void:
 	await get_tree().create_timer(0.5).timeout
 
 	# --- Ending text 1 ---
-	ending_label.text = "The conductor has locked you in a tiny closet, cut off from the rest of this forsaken train. You will need to find a way to escape."
+	ending_label.text = "The conductor locks you in a cart with no windows and seemingly no escape. Your service has been suspended."
 	ending_label.visible = true
 	await _wait_for_click()
 
 	# --- Ending text 2 ---
 	ending_label.text = "See you in Episode 3."
-	await _wait_for_click()
+	await get_tree().create_timer(4.0).timeout
 
 	await get_tree().create_timer(0.3).timeout
 

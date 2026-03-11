@@ -416,14 +416,7 @@ func _try_spawn_special_ticket_in_section(section: DungeonSection) -> void:
 		if items_layer.get_cell_source_id(cell) == entry.source and items_layer.get_cell_atlas_coords(cell) == entry.marker:
 			markers.append(cell)
 
-	# Count only tickets NOT queued for deletion (old section's tickets are queue_free'd but still in group)
-	var on_map := 0
-	for node in get_tree().get_nodes_in_group("special_ticket"):
-		if node.is_queued_for_deletion():
-			continue
-		on_map += 1
-	var needed = GameState.special_tickets_required - GameState.special_tickets_collected - on_map
-	if needed > 0 and markers.size() > 0 and randf() < 0.75:
+	if markers.size() > 0 and randf() < 0.75:
 		markers.shuffle()
 		var cell = markers[0]
 		var world_pos = items_layer.to_global(items_layer.map_to_local(cell))
@@ -507,6 +500,7 @@ func _punch_ticket() -> void:
 	punch_mode = false
 	cursor_sprite.texture = _cursor_default
 	player.set_physics_process(false)
+	player._invincible = true
 
 	# 1. Punch button close/open animation + punch sound
 	punch_slot.texture = _punch_icon_closed
@@ -553,6 +547,7 @@ func _punch_ticket() -> void:
 	player.collision_layer = 1
 	player.collision_mask = 1
 	player.visible = true
+	player._invincible = false
 	player.set_physics_process(true)
 	is_animating = false
 
@@ -590,6 +585,10 @@ func _on_special_ticket_collected(_current: int, _required: int) -> void:
 	if not GameState.golden_ticket_tip_shown:
 		GameState.golden_ticket_tip_shown = true
 		_show_tip("I wonder what this is for...", "You")
+	elif floor_id == 1 and GameState.special_tickets_collected >= 2 and not GameState.golden_punch_tip_shown:
+		GameState.golden_punch_tip_shown = true
+		_show_tip("You've collected both golden tickets on this floor — try punching a ticket with
+  the hole puncher to see if you can find more! ")
 
 func _on_all_golden_collected() -> void:
 	_play_sfx(_unlock_sound_stream)
@@ -708,7 +707,7 @@ func _on_player_died() -> void:
 	get_tree().root.add_child(death)
 	death.reload_requested.connect(_on_death_reload.bind(death))
 	death.respawn_requested.connect(_on_death_respawn.bind(death))
-	if GameState.tickets_held <= 0:
+	if GameState.tickets_held < 3:
 		death.respawn_btn.disabled = true
 		death.respawn_btn.modulate = Color(1, 1, 1, 0.4)
 
@@ -752,8 +751,8 @@ func _on_death_respawn(death_screen: CanvasLayer) -> void:
 	await burn_tween.finished
 	flying_ticket.visible = false
 
-	# Deduct ticket and update HUD
-	GameState.tickets_held = maxi(GameState.tickets_held - 1, 0)
+	# Deduct tickets and update HUD
+	GameState.tickets_held = maxi(GameState.tickets_held - 3, 0)
 	_update_hud_icons()
 	GameState.reset_health()
 

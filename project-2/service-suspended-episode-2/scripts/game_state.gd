@@ -37,11 +37,15 @@ var checkpoint_tip_shown: bool = false
 var swap_tip_shown: bool = false
 var key_tip_shown: bool = false
 var golden_ticket_tip_shown: bool = false
+var golden_punch_tip_shown: bool = false
 var all_golden_tip_shown: bool = false
 
 # Dialogue replay flags — tracks whether NPC dialogue has been heard
 var lady_section_1_heard: bool = false
 var lady_section_2_heard: bool = false
+var lady2_asked_conductor: bool = false
+var lady2_asked_escape: bool = false
+var lady2_asked_before: bool = false
 
 # Floor/section tracking
 var current_floor: int = 1
@@ -86,6 +90,8 @@ func get_effective_seed() -> int:
 	return current_cart_index * 10000 + loop_count
 
 func pickup_ticket() -> void:
+	if tickets_held >= 9:
+		return
 	tickets_held += 1
 	ticket_picked_up.emit(tickets_held)
 
@@ -102,6 +108,8 @@ func collect_special_ticket() -> void:
 		all_special_tickets_collected.emit()
 
 func collect_key() -> void:
+	if keys_collected >= 9:
+		return
 	keys_collected += 1
 	key_collected.emit(keys_collected)
 
@@ -167,7 +175,11 @@ func reset() -> void:
 	swap_tip_shown = false
 	key_tip_shown = false
 	golden_ticket_tip_shown = false
+	golden_punch_tip_shown = false
 	all_golden_tip_shown = false
 	lady_section_1_heard = false
 	lady_section_2_heard = false
+	lady2_asked_conductor = false
+	lady2_asked_escape = false
+	lady2_asked_before = false
 	_init_section_variants()

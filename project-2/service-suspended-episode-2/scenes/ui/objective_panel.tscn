@@ -1,0 +1,45 @@
+[gd_scene format=3 uid="uid://cyvkggox7voe1"]
+
+[ext_resource type="Script" uid="uid://dkqklar1x4lr2" path="res://scenes/ui/objective_panel.gd" id="1_script"]
+[ext_resource type="FontFile" uid="uid://l121oiwf8wys" path="res://assets/fonts/DotGothic16-Regular.ttf" id="2_font"]
+
+[sub_resource type="StyleBoxFlat" id="panel_style"]
+content_margin_left = 12.0
+content_margin_top = 8.0
+content_margin_right = 12.0
+content_margin_bottom = 8.0
+bg_color = Color(0.05, 0.05, 0.08, 0.75)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+
+[node name="ObjectivePanel" type="PanelContainer" unique_id=1777161707]
+offset_left = 16.0
+offset_top = 16.0
+offset_right = 340.0
+offset_bottom = 130.0
+theme_override_styles/panel = SubResource("panel_style")
+script = ExtResource("1_script")
+
+[node name="VBox" type="VBoxContainer" parent="." unique_id=159497304]
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="TotalLabel" type="RichTextLabel" parent="VBox" unique_id=317643334]
+custom_minimum_size = Vector2(0, 20)
+layout_mode = 2
+theme_override_fonts/normal_font = ExtResource("2_font")
+theme_override_font_sizes/normal_font_size = 17
+bbcode_enabled = true
+text = "[color=#ffd700]Golden Tickets: 0 / 6[/color]"
+fit_content = true
+
+[node name="HintLabel" type="RichTextLabel" parent="VBox" unique_id=1479753469]
+custom_minimum_size = Vector2(0, 36)
+layout_mode = 2
+theme_override_fonts/normal_font = ExtResource("2_font")
+theme_override_font_sizes/normal_font_size = 15
+bbcode_enabled = true
+text = "[color=#aaaaaa]Puhcing a ticket with the hole puncher might cause something interesting to happen ...[/color]"
+fit_content = true

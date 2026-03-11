@@ -42,6 +42,7 @@ var _train_ambience_stream_2 = preload("res://assets/sounds/train_ambience_2.mp3
 
 # --- State ---
 var _paused: bool = false
+var _transitioning: bool = false
 
 # --- Connector tracking ---
 var _active_connector: Area2D = null  # connector the player is currently inside
@@ -51,6 +52,11 @@ var _connector_prompts: Dictionary = {}  # Area2D -> PressEPrompt node
 func _ready() -> void:
 	_disable_autoload_cursor()
 	Input.mouse_mode = Input.MOUSE_MODE_HIDDEN
+
+	# Hide objective panel (only shown in dungeon)
+	var obj_panel = $GameUI/UILayer.get_node_or_null("ObjectivePanel")
+	if obj_panel:
+		obj_panel.visible = false
 
 	# Cursor setup
 	cursor_sprite.texture = _cursor_default
@@ -201,6 +207,9 @@ func _on_connector_body_exited(body: Node2D, connector: Area2D) -> void:
 
 
 func _use_connector(connector: Area2D) -> void:
+	if _transitioning:
+		return
+	_transitioning = true
 	var target = connector.get_meta("target", "dungeon")
 
 	# Disable player immediately
