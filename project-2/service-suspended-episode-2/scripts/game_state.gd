@@ -37,6 +37,7 @@ var checkpoint_tip_shown: bool = false
 var swap_tip_shown: bool = false
 var key_tip_shown: bool = false
 var golden_ticket_tip_shown: bool = false
+var golden_punch_tip_shown: bool = false
 var all_golden_tip_shown: bool = false
 
 # Dialogue replay flags — tracks whether NPC dialogue has been heard
@@ -174,6 +175,7 @@ func reset() -> void:
 	swap_tip_shown = false
 	key_tip_shown = false
 	golden_ticket_tip_shown = false
+	golden_punch_tip_shown = false
 	all_golden_tip_shown = false
 	lady_section_1_heard = false
 	lady_section_2_heard = false
