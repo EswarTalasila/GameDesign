@@ -507,6 +507,7 @@ func _punch_ticket() -> void:
 	punch_mode = false
 	cursor_sprite.texture = _cursor_default
 	player.set_physics_process(false)
+	player.collision_mask = 0  # Invulnerable during burn/teleport
 
 	# 1. Punch button close/open animation + punch sound
 	punch_slot.texture = _punch_icon_closed
