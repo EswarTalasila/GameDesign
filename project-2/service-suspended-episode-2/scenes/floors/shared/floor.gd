@@ -416,14 +416,7 @@ func _try_spawn_special_ticket_in_section(section: DungeonSection) -> void:
 		if items_layer.get_cell_source_id(cell) == entry.source and items_layer.get_cell_atlas_coords(cell) == entry.marker:
 			markers.append(cell)
 
-	# Count only tickets NOT queued for deletion (old section's tickets are queue_free'd but still in group)
-	var on_map := 0
-	for node in get_tree().get_nodes_in_group("special_ticket"):
-		if node.is_queued_for_deletion():
-			continue
-		on_map += 1
-	var needed = GameState.special_tickets_required - GameState.special_tickets_collected - on_map
-	if needed > 0 and markers.size() > 0 and randf() < 0.75:
+	if markers.size() > 0 and randf() < 0.75:
 		markers.shuffle()
 		var cell = markers[0]
 		var world_pos = items_layer.to_global(items_layer.map_to_local(cell))
@@ -507,6 +500,7 @@ func _punch_ticket() -> void:
 	punch_mode = false
 	cursor_sprite.texture = _cursor_default
 	player.set_physics_process(false)
+	player._invincible = true
 
 	# 1. Punch button close/open animation + punch sound
 	punch_slot.texture = _punch_icon_closed
@@ -553,6 +547,7 @@ func _punch_ticket() -> void:
 	player.collision_layer = 1
 	player.collision_mask = 1
 	player.visible = true
+	player._invincible = false
 	player.set_physics_process(true)
 	is_animating = false
 
