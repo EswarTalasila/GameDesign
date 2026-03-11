@@ -178,8 +178,13 @@ func _ready() -> void:
 	# Detect initial section (body_entered won't fire for already-overlapping bodies)
 	_detect_initial_section()
 
+	# Reset per-floor golden ticket tracking
+	GameState.special_tickets_spawned_this_floor = 0
+	GameState.special_tickets_collected_this_floor = 0
+
 	# Spawn only 2 special tickets from all painted markers across sections
 	_setup_special_tickets()
+	GameState.objective_updated.emit()
 
 	# Connect GameState signals
 	GameState.ticket_picked_up.connect(_on_ticket_picked_up)
@@ -336,12 +341,16 @@ func _setup_special_tickets() -> void:
 			var instance = entry.scene.instantiate()
 			c.section.add_child(instance)
 			instance.global_position = c.world_pos
+			GameState.special_tickets_spawned_this_floor += 1
 
 # ── Section variant swapping ──
 
 func _swap_current_section() -> void:
 	if _current_section_key.is_empty():
 		return
+	# Reset per-section golden ticket tracking
+	GameState.special_tickets_spawned_this_floor = 0
+	GameState.special_tickets_collected_this_floor = 0
 	var key = _current_section_key
 	var next_variant = GameState.advance_section_variant(floor_id, key)
 	var path = "res://scenes/floors/floor_%d/sections/section_%s/section_%s_v%d.tscn" % [floor_id, key, key, next_variant]
@@ -373,6 +382,9 @@ func _swap_current_section() -> void:
 func _reload_current_section() -> void:
 	if _current_section_key.is_empty():
 		return
+	# Reset per-section golden ticket tracking
+	GameState.special_tickets_spawned_this_floor = 0
+	GameState.special_tickets_collected_this_floor = 0
 	var key = _current_section_key
 	var current_variant = GameState.get_section_variant(floor_id, key)
 	var path = "res://scenes/floors/floor_%d/sections/section_%s/section_%s_v%d.tscn" % [floor_id, key, key, current_variant]
@@ -430,6 +442,8 @@ func _try_spawn_special_ticket_in_section(section: DungeonSection) -> void:
 		var instance = entry.scene.instantiate()
 		section.add_child(instance)
 		instance.global_position = world_pos
+		GameState.special_tickets_spawned_this_floor += 1
+		GameState.objective_updated.emit()
 
 	for cell in markers:
 		items_layer.erase_cell(cell)
@@ -507,7 +521,6 @@ func _punch_ticket() -> void:
 	punch_mode = false
 	cursor_sprite.texture = _cursor_default
 	player.set_physics_process(false)
-	player.collision_mask = 0  # Invulnerable during burn/teleport
 
 	# 1. Punch button close/open animation + punch sound
 	punch_slot.texture = _punch_icon_closed

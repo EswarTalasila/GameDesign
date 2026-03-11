@@ -26,6 +26,8 @@ func _play_sfx(stream: AudioStream) -> void:
 	sfx.finished.connect(sfx.queue_free)
 
 func _on_body_entered(_body: Node2D) -> void:
+	if GameState.keys_collected >= 9:
+		return
 	set_deferred("monitoring", false)
 	_play_sfx(_pickup_sound)
 	GameState.collect_key()

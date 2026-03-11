@@ -8,6 +8,7 @@ extends Node2D
 @export var cart_index: int = 0
 
 var _near_punch: bool = false
+var _entering_dungeon: bool = false
 
 var _intro_lines: Array[Dictionary] = [
 	{"text": "Another car... The train stretches on forever.", "speaker": "You"},
@@ -60,6 +61,9 @@ func _on_punch_zone_exited(_body: Node2D) -> void:
 	prompt_label.visible = false
 
 func _enter_dungeon() -> void:
+	if _entering_dungeon:
+		return
+	_entering_dungeon = true
 	player.set_physics_process(false)
 	GameState.start_dungeon(cart_index, "standard", 5)
 

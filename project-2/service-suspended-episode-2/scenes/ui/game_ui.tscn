@@ -4,6 +4,7 @@
 [ext_resource type="PackedScene" path="res://scenes/ui/health_bar.tscn" id="5_health"]
 [ext_resource type="Script" path="res://scenes/ui/cursor_tracker.gd" id="6_cursor"]
 [ext_resource type="PackedScene" path="res://scenes/ui/dialog_bubble.tscn" id="7_dialog"]
+[ext_resource type="PackedScene" path="res://scenes/ui/objective_panel.tscn" id="8_obj"]
 
 [node name="GameUI" type="Node" unique_id=1000860900]
 
@@ -22,6 +23,8 @@ scale = Vector2(4, 4)
 position = Vector2(1622, 179)
 scale = Vector2(2.593751, 2.593751)
 centered = false
+
+[node name="ObjectivePanel" parent="UILayer" instance=ExtResource("8_obj")]
 
 [node name="DialogBubble" parent="UILayer" instance=ExtResource("7_dialog")]
 

@@ -14,6 +14,7 @@ signal player_health_changed(current_health: int)
 signal ticket_picked_up(held: int)
 signal special_ticket_collected(current: int, required: int)
 signal all_special_tickets_collected
+signal objective_updated
 
 var current_cart_index: int = 0
 var dungeon_type: String = "standard"
@@ -30,6 +31,8 @@ var max_health: int = 3
 var player_health: int = 3
 var special_tickets_collected: int = 0
 var special_tickets_required: int = 6  # per floor
+var special_tickets_spawned_this_floor: int = 0
+var special_tickets_collected_this_floor: int = 0
 var combat_tutorial_shown: bool = false
 var hit_tip_shown: bool = false
 var ticket_tip_shown: bool = false
@@ -86,6 +89,8 @@ func get_effective_seed() -> int:
 	return current_cart_index * 10000 + loop_count
 
 func pickup_ticket() -> void:
+	if tickets_held >= 9:
+		return
 	tickets_held += 1
 	ticket_picked_up.emit(tickets_held)
 
@@ -97,11 +102,15 @@ func collect_ticket() -> void:
 
 func collect_special_ticket() -> void:
 	special_tickets_collected += 1
+	special_tickets_collected_this_floor += 1
 	special_ticket_collected.emit(special_tickets_collected, special_tickets_required)
+	objective_updated.emit()
 	if special_tickets_collected >= special_tickets_required:
 		all_special_tickets_collected.emit()
 
 func collect_key() -> void:
+	if keys_collected >= 9:
+		return
 	keys_collected += 1
 	key_collected.emit(keys_collected)
 
@@ -158,6 +167,8 @@ func reset() -> void:
 	dungeon_seed = 0
 	current_floor = 1
 	special_tickets_collected = 0
+	special_tickets_spawned_this_floor = 0
+	special_tickets_collected_this_floor = 0
 	checkpoint_position = Vector2.ZERO
 	checkpoint_section = ""
 	combat_tutorial_shown = false

@@ -62,7 +62,7 @@ animations = [{
 }]
 
 [sub_resource type="RectangleShape2D" id="col_shape"]
-size = Vector2(18, 18)
+size = Vector2(14, 14)
 
 [node name="HealthPickup" type="Area2D"]
 y_sort_origin = 16
