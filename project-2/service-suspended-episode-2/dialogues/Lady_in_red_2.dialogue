@@ -8,7 +8,7 @@ Lady In Red: You're doing better than most.
 	Lady In Red: The conductor.
 	Lady In Red: He runs this place. Manages it. Files people into permanent loops when they've been down here long enough.
 	You: Files them?
-	[shake]INTERCOM: [shake]Passenger deviation noted.[/shake]
+	INTERCOM: [shake][color=#ffb347]Passenger deviation noted.[/color][/shake]
 	Lady In Red: Assigns them a route. A permanent one. After that you don't try to leave anymore. You just commute. Down here. The same path. Indefinitely.
 	Lady In Red: He hasn't filed me because I'm not worth the paperwork. Too degraded. Too far gone to be useful to the system.
 	=> choices
@@ -26,7 +26,7 @@ Lady In Red: You're doing better than most.
 	Lady In Red: At least I think that's how it works. I've never made it back to check.
 	=> end_choices
 ~ end_choices
-[shake]INTERCOM: [shake]Continued irregular movement. Route reassignment pending.[/shake]
+INTERCOM: [shake][color=#ffb347]Continued irregular movement. Route reassignment pending.[/color][/shake]
 Lady In Red: But it looks like you're actually going to make it.
 You: Come with me.
 Lady In Red: I don't know if there's anything left to go back to. Even if I got out.

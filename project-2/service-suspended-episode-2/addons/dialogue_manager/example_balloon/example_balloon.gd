@@ -131,7 +131,18 @@ func apply_dialogue_line() -> void:
 	balloon.grab_focus()
 
 	character_label.visible = not dialogue_line.character.is_empty()
-	character_label.text = tr(dialogue_line.character, "dialogue")
+
+	# Bold + colored character names by speaker
+	var character_colors: Dictionary = {
+		"Lady In Red": "#e83b5a",
+		"Conductor": "#5b9bff",
+		"You": "#ffffff",
+	}
+	var char_name: String = tr(dialogue_line.character, "dialogue")
+	if dialogue_line.character in character_colors:
+		character_label.text = "[b][color=%s]%s[/color][/b]" % [character_colors[dialogue_line.character], char_name]
+	else:
+		character_label.text = "[b]%s[/b]" % char_name
 
 	dialogue_label.hide()
 	dialogue_label.dialogue_line = dialogue_line

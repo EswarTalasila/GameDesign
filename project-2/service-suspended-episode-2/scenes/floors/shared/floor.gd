@@ -708,7 +708,7 @@ func _on_player_died() -> void:
 	get_tree().root.add_child(death)
 	death.reload_requested.connect(_on_death_reload.bind(death))
 	death.respawn_requested.connect(_on_death_respawn.bind(death))
-	if GameState.tickets_held <= 0:
+	if GameState.tickets_held < 3:
 		death.respawn_btn.disabled = true
 		death.respawn_btn.modulate = Color(1, 1, 1, 0.4)
 
@@ -752,8 +752,8 @@ func _on_death_respawn(death_screen: CanvasLayer) -> void:
 	await burn_tween.finished
 	flying_ticket.visible = false
 
-	# Deduct ticket and update HUD
-	GameState.tickets_held = maxi(GameState.tickets_held - 1, 0)
+	# Deduct tickets and update HUD
+	GameState.tickets_held = maxi(GameState.tickets_held - 3, 0)
 	_update_hud_icons()
 	GameState.reset_health()
 

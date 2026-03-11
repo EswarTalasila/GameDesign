@@ -108,6 +108,12 @@ func _start_cutscene() -> void:
 
 	await get_tree().create_timer(0.5).timeout
 
+	# --- Intercom plays before conductor appears ---
+	DialogueManager.show_dialogue_balloon(_conductor_dialogue, "intercom")
+	await DialogueManager.dialogue_ended
+
+	await get_tree().create_timer(0.8).timeout
+
 	# --- Conductor follows from the left, walking east ---
 	var conductor_sprite: AnimatedSprite2D = conductor.get_node("AnimatedSprite2D")
 	conductor_sprite.play("walk_east")
@@ -136,13 +142,13 @@ func _start_cutscene() -> void:
 	await get_tree().create_timer(0.5).timeout
 
 	# --- Ending text 1 ---
-	ending_label.text = "The conductor has locked you in a tiny closet, cut off from the rest of this forsaken train. You will need to find a way to escape."
+	ending_label.text = "The door sealed behind you. The conductor's footsteps fade. You are alone now — filed away in a place no route leads out of."
 	ending_label.visible = true
 	await _wait_for_click()
 
 	# --- Ending text 2 ---
 	ending_label.text = "See you in Episode 3."
-	await _wait_for_click()
+	await get_tree().create_timer(4.0).timeout
 
 	await get_tree().create_timer(0.3).timeout
 
