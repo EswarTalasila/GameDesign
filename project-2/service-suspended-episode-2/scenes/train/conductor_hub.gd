@@ -56,6 +56,11 @@ func _ready() -> void:
 	Input.mouse_mode = Input.MOUSE_MODE_HIDDEN
 	_disable_autoload_cursor()
 
+	# Hide objective panel (only shown in dungeon)
+	var obj_panel = $GameUI/UILayer.get_node_or_null("ObjectivePanel")
+	if obj_panel:
+		obj_panel.visible = false
+
 	cursor_sprite.texture = _cursor_default
 	cursor_sprite.centered = false
 	cursor_sprite.scale = Vector2(1, 1)

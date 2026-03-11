@@ -25,10 +25,10 @@ script = ExtResource("1_train")
 metadata/_edit_horizontal_guides_ = [42.0]
 
 [node name="Background" type="ColorRect" parent="." unique_id=1577943722]
-offset_left = -2000.0
-offset_top = -2000.0
-offset_right = 4000.0
-offset_bottom = 4000.0
+offset_left = -1620.0
+offset_top = -2158.0
+offset_right = 4380.0
+offset_bottom = 3842.0
 color = Color(0.05, 0.05, 0.08, 1)
 
 [node name="GameWorld" type="Node2D" parent="." unique_id=1287034031]
