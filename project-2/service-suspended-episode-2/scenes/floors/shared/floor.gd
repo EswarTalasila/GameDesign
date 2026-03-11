@@ -587,7 +587,8 @@ func _on_special_ticket_collected(_current: int, _required: int) -> void:
 		_show_tip("I wonder what this is for...", "You")
 	elif floor_id == 1 and GameState.special_tickets_collected >= 2 and not GameState.golden_punch_tip_shown:
 		GameState.golden_punch_tip_shown = true
-		_show_tip("Maybe try punching the ticket with the hole puncher now ...")
+		_show_tip("You've collected both golden tickets on this floor — try punching a ticket with
+  the hole puncher to see if you can find more! ")
 
 func _on_all_golden_collected() -> void:
 	_play_sfx(_unlock_sound_stream)
