@@ -6,6 +6,10 @@ extends Control
 @onready var _music: AudioStreamPlayer = $Music
 @onready var _hover_sound: AudioStreamPlayer = $HoverSound
 @onready var _click_sound: AudioStreamPlayer = $ClickSound
+@onready var _mute_btn: TextureButton = $MuteButton
+
+var _mute_unmute_tex := preload("res://assets/ui/buttons/mute_unmute.png")
+var _mute_muted_tex := preload("res://assets/ui/buttons/mute_muted.png")
 
 var _base_tex := preload("res://assets/ui/screens/main_menu_base.png")
 var _hover_exit_tex := preload("res://assets/ui/screens/main_menu_hover_exit.png")
@@ -26,6 +30,11 @@ func _ready() -> void:
 	_play_region.mouse_entered.connect(_on_play_hover)
 	_play_region.mouse_exited.connect(_on_play_unhover)
 	_play_region.gui_input.connect(_on_play_input)
+
+	# Mute button — sync with current state
+	_update_mute_texture()
+	AudioServer.set_bus_mute(0, GameState.muted)
+	_mute_btn.pressed.connect(_on_mute_pressed)
 
 
 func _on_exit_hover() -> void:
@@ -81,3 +90,12 @@ func _cancel_hold() -> void:
 	if _hold_tween and _hold_tween.is_valid():
 		_hold_tween.kill()
 	_hold_tween = null
+
+
+func _on_mute_pressed() -> void:
+	GameState.toggle_mute()
+	_update_mute_texture()
+
+
+func _update_mute_texture() -> void:
+	_mute_btn.texture_normal = _mute_muted_tex if GameState.muted else _mute_unmute_tex
