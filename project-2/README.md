@@ -41,6 +41,7 @@ You board a train and meet a mysterious woman in red who warns you about "him" �
 - **Mouse** — Custom cursor with context-sensitive states
 - **Left Click** — Click UI inventory slots, punch floating tickets
 - **Escape** — Cancel active mode / open pause menu
+- **Mute Button** — Toggle audio mute (available on main menu and in the pause menu)
 
 ## Gameplay Systems
 
@@ -51,7 +52,7 @@ Collect ticket pickups scattered through dungeon sections. Click the ticket icon
 Each dungeon floor has 4 sections (A-D) with 3 variants each. Punching a ticket inside a section swaps it to the next variant. This is the core mechanic — rotating sections reveals new paths, items, and golden ticket spawns.
 
 ### Golden Tickets
-6 special golden tickets are required per floor to unlock the exit door. They spawn with 75% probability in newly rotated sections. Collect all 6 to unlock the special exit and escape to the train.
+6 special golden tickets are required per floor to unlock the exit door. They spawn with 75% probability in newly rotated sections. After 2 consecutive rotations without a golden ticket, the next rotation is guaranteed to produce one. Collect all 6 to unlock the special exit and escape to the train.
 
 ### Keys & Locked Doors
 Keys drop from enemies and are found in the environment. Use them to unlock doors and chests by pressing E near them or clicking the key icon then clicking the lock.
@@ -61,7 +62,7 @@ Enemies patrol dungeon sections. The player can take up to 3 hits before dying. 
 
 ### Death & Respawn
 - **Reload** — Free restart, resets all progress on the current floor
-- **Respawn** — Costs one collected ticket, burns it with a dissolve animation, reloads the current section and respawns at the last checkpoint
+- **Respawn** — Costs 3 collected tickets, burns one with a dissolve animation, reloads the current section and respawns at the last checkpoint
 
 ## Dialogue System
 
@@ -82,6 +83,7 @@ Uses Dialogue Manager v3.10.1 with branching dialogue trees. NPCs have proximity
 - Pause menu with resume, restart, and quit options
 - Dual ambient audio layers (dungeon ambience, train sounds)
 - Tile entity system — marker tiles painted in the editor are replaced with entity scenes at runtime
+- Objective panel HUD — live golden ticket counter (X/6) displayed in the top-left of the screen during dungeon runs
 
 ## Externally Sourced Content
 
@@ -99,6 +101,7 @@ Uses Dialogue Manager v3.10.1 with branching dialogue trees. NPCs have proximity
 
 ### Fonts
 - **Compass 9** pixel font — used for in-game text rendering
+- **DotGothic16** — used for the Conductor Hub ending sequence text
 
 ### Sound Effects
 - Sound effects sourced from **Pixabay** (https://pixabay.com/sound-effects/) and the **Freesound** community — includes door sounds, ambient tracks, pickup effects, and UI feedback sounds
