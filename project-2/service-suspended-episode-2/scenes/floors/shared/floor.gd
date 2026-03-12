@@ -416,13 +416,18 @@ func _try_spawn_special_ticket_in_section(section: DungeonSection) -> void:
 		if items_layer.get_cell_source_id(cell) == entry.source and items_layer.get_cell_atlas_coords(cell) == entry.marker:
 			markers.append(cell)
 
-	if markers.size() > 0 and randf() < 0.75:
-		markers.shuffle()
-		var cell = markers[0]
-		var world_pos = items_layer.to_global(items_layer.map_to_local(cell))
-		var instance = entry.scene.instantiate()
-		section.add_child(instance)
-		instance.global_position = world_pos
+	if markers.size() > 0:
+		var should_spawn = randf() < 0.75 or GameState.golden_ticket_dry_streak >= 2
+		if should_spawn:
+			GameState.golden_ticket_dry_streak = 0
+			markers.shuffle()
+			var cell = markers[0]
+			var world_pos = items_layer.to_global(items_layer.map_to_local(cell))
+			var instance = entry.scene.instantiate()
+			section.add_child(instance)
+			instance.global_position = world_pos
+		else:
+			GameState.golden_ticket_dry_streak += 1
 
 	for cell in markers:
 		items_layer.erase_cell(cell)
