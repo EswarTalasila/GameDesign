@@ -39,6 +39,7 @@ var key_tip_shown: bool = false
 var golden_ticket_tip_shown: bool = false
 var golden_punch_tip_shown: bool = false
 var all_golden_tip_shown: bool = false
+var golden_ticket_dry_streak: int = 0  # consecutive rotations without a golden ticket
 
 # Dialogue replay flags — tracks whether NPC dialogue has been heard
 var lady_section_1_heard: bool = false
@@ -180,6 +181,7 @@ func reset() -> void:
 	golden_ticket_tip_shown = false
 	golden_punch_tip_shown = false
 	all_golden_tip_shown = false
+	golden_ticket_dry_streak = 0
 	lady_section_1_heard = false
 	lady_section_2_heard = false
 	lady2_asked_conductor = false
