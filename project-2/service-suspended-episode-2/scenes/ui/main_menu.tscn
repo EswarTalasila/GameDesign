@@ -5,6 +5,7 @@
 [ext_resource type="AudioStream" uid="uid://bdbxqp0fiji0f" path="res://assets/sounds/Coductor_theme.wav" id="3_music"]
 [ext_resource type="AudioStream" uid="uid://bbfpu03pit63h" path="res://assets/sounds/Light_Buzz.mp3" id="4_hover"]
 [ext_resource type="AudioStream" uid="uid://c48jfxl3ljabv" path="res://assets/sounds/Glass_Break.mp3" id="5_click"]
+[ext_resource type="Texture2D" uid="uid://c24nb05wb83kg" path="res://assets/ui/buttons/mute_unmute.png" id="6_mute"]
 
 [node name="MainMenu" type="Control" unique_id=2119809034]
 layout_mode = 3
@@ -54,3 +55,14 @@ stream = ExtResource("4_hover")
 
 [node name="ClickSound" type="AudioStreamPlayer" parent="." unique_id=1121798950]
 stream = ExtResource("5_click")
+
+[node name="MuteButton" type="TextureButton" parent="." unique_id=1990139976]
+texture_filter = 1
+layout_mode = 0
+offset_left = 1822.0
+offset_top = 986.0
+offset_right = 1838.0
+offset_bottom = 1002.0
+scale = Vector2(5, 5)
+mouse_default_cursor_shape = 2
+texture_normal = ExtResource("6_mute")

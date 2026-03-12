@@ -12,6 +12,11 @@ signal quit_requested
 @onready var resume_area: Area2D = $ResumeButton/ResumeArea
 @onready var restart_area: Area2D = $RestartButton/RestartArea
 @onready var quit_area: Area2D = $QuitButton/QuitArea
+@onready var mute_btn: Sprite2D = $MuteButton
+@onready var mute_area: Area2D = $MuteButton/MuteArea
+
+var _mute_unmute_tex = preload("res://assets/ui/buttons/mute_unmute.png")
+var _mute_muted_tex = preload("res://assets/ui/buttons/mute_muted.png")
 
 # Normal / hover / clicked textures per button
 var _resume_tex = [
@@ -33,6 +38,7 @@ var _quit_tex = [
 var _resume_tooltip: Label
 var _restart_tooltip: Label
 var _quit_tooltip: Label
+var _mute_tooltip: Label
 
 var _btn_hover_sound = preload("res://assets/sounds/button_hover.mp3")
 var _btn_click_sound = preload("res://assets/sounds/button_click.mp3")
@@ -55,6 +61,7 @@ func _ready() -> void:
 	_resume_tooltip = _create_tooltip("Resume", resume_btn)
 	_restart_tooltip = _create_tooltip("Restart Floor\nResets tickets & keys", restart_btn)
 	_quit_tooltip = _create_tooltip("Quit Game", quit_btn)
+	_mute_tooltip = _create_tooltip("Toggle Mute", mute_btn)
 
 	# Button sounds
 	_hover_player = AudioStreamPlayer.new()
@@ -63,6 +70,10 @@ func _ready() -> void:
 	_click_player = AudioStreamPlayer.new()
 	_click_player.stream = _btn_click_sound
 	add_child(_click_player)
+
+	# Mute button — sync with current state
+	mute_btn.modulate = Color(1, 1, 1, 0)
+	_update_mute_texture()
 
 	_play_intro()
 
@@ -79,6 +90,8 @@ func _process(_delta: float) -> void:
 		new_hover = 1
 	elif _is_in_area(mouse, quit_btn, quit_area):
 		new_hover = 2
+	elif _is_in_area(mouse, mute_btn, mute_area):
+		new_hover = 3
 
 	if new_hover != _hovered:
 		# Unhover old
@@ -88,6 +101,11 @@ func _process(_delta: float) -> void:
 		_hovered = new_hover
 
 func _set_hover(idx: int, hovered: bool) -> void:
+	if idx == 3:
+		_mute_tooltip.visible = hovered
+		if hovered and _hover_player:
+			_hover_player.play()
+		return
 	var btn: Sprite2D
 	var tex: Array
 	var tooltip: Label
@@ -124,6 +142,7 @@ func _play_intro() -> void:
 	tween.tween_property(resume_btn, "modulate:a", 1.0, 0.3)
 	tween.tween_property(restart_btn, "modulate:a", 1.0, 0.3)
 	tween.tween_property(quit_btn, "modulate:a", 1.0, 0.3)
+	tween.tween_property(mute_btn, "modulate:a", 1.0, 0.3)
 
 func _fade_out() -> void:
 	var tween = create_tween().set_parallel(true)
@@ -132,6 +151,7 @@ func _fade_out() -> void:
 	tween.tween_property(resume_btn, "modulate:a", 0.0, 0.3)
 	tween.tween_property(restart_btn, "modulate:a", 0.0, 0.3)
 	tween.tween_property(quit_btn, "modulate:a", 0.0, 0.3)
+	tween.tween_property(mute_btn, "modulate:a", 0.0, 0.3)
 	await tween.finished
 
 func _input(event: InputEvent) -> void:
@@ -154,6 +174,9 @@ func _input(event: InputEvent) -> void:
 			_click_player.play()
 			quit_btn.texture = _quit_tex[2]
 			_on_quit_pressed()
+		elif _is_in_area(click, mute_btn, mute_area):
+			_click_player.play()
+			_on_mute_pressed()
 
 func _is_in_area(click: Vector2, btn: Sprite2D, area: Area2D) -> bool:
 	var col = area.get_child(0) as CollisionShape2D
@@ -176,3 +199,10 @@ func _on_quit_pressed() -> void:
 	_disabled = true
 	await _fade_out()
 	quit_requested.emit()
+
+func _on_mute_pressed() -> void:
+	GameState.toggle_mute()
+	_update_mute_texture()
+
+func _update_mute_texture() -> void:
+	mute_btn.texture = _mute_muted_tex if GameState.muted else _mute_unmute_tex

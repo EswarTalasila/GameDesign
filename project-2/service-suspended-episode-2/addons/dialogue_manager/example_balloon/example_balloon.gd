@@ -36,6 +36,7 @@ var will_hide_balloon: bool = false
 var locals: Dictionary = {}
 
 var _locale: String = TranslationServer.get_locale()
+var _intercom_static: AudioStream = preload("res://assets/sounds/innercom_static.mp3")
 
 ## The current line
 var dialogue_line: DialogueLine:
@@ -143,6 +144,11 @@ func apply_dialogue_line() -> void:
 		character_label.text = "[b][color=%s]%s[/color][/b]" % [character_colors[dialogue_line.character], char_name]
 	else:
 		character_label.text = "[b]%s[/b]" % char_name
+
+	# Play static for intercom lines
+	if dialogue_line.character == "INTERCOM":
+		audio_stream_player.stream = _intercom_static
+		audio_stream_player.play()
 
 	dialogue_label.hide()
 	dialogue_label.dialogue_line = dialogue_line

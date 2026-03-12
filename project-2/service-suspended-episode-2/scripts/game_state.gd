@@ -47,6 +47,9 @@ var lady2_asked_conductor: bool = false
 var lady2_asked_escape: bool = false
 var lady2_asked_before: bool = false
 
+# Audio mute (persists across resets — player preference)
+var muted: bool = false
+
 # Floor/section tracking
 var current_floor: int = 1
 var num_floors: int = 2
@@ -183,3 +186,7 @@ func reset() -> void:
 	lady2_asked_escape = false
 	lady2_asked_before = false
 	_init_section_variants()
+
+func toggle_mute() -> void:
+	muted = not muted
+	AudioServer.set_bus_mute(0, muted)
