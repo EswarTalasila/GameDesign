@@ -100,8 +100,9 @@ Uses Dialogue Manager v3.10.1 with branching dialogue trees. NPCs have proximity
 - **Paper Pack** UI elements — Robin Norkum / LCSkeleton — ~~used for UI component foundations~~ (cut content, unused)
 
 ### Fonts
-- **Godot Default** - used across the game in all text interactions
-- **DotGothic16** — used for the Conductor Hub ending sequence text
+- **Compass 9** — pixel sprite font used in hand-drawn UI sprites (buttons, loading screen, death screen, numbers)
+- **DotGothic16** — used for the objective panel and Conductor Hub ending text
+- **Godot Default** — used across all other in-game text (dialogue, tooltips, labels)
 
 ### Sound Effects
 - Sound effects sourced from **Pixabay** (https://pixabay.com/sound-effects/) and the **Freesound** community — includes door sounds, ambient tracks, pickup effects, and UI feedback sounds
@@ -147,6 +148,7 @@ Main menu art, UI buttons, all character sprites and animations (protagonist, La
 | `text_bubble.aseprite` | Dialog text bubble variants |
 | `Ticket Asset.ase` | Ticket item sprite |
 | `UI_Base.aseprite` | Base UI panel background |
+| `mute_button.aseprite` | Mute toggle button (2 tags: mute/unmute) |
 
 #### Train Level (`assets/levels/train/`)
 | File | Description |
@@ -193,9 +195,9 @@ Main menu art, UI buttons, all character sprites and animations (protagonist, La
 | `golden_ticket_pickup.mp3` | Golden ticket collect sound |
 | `shadow_hit.mp3` | Enemy hit sound |
 | `game_over.mp3` | Death sound |
-| `innercom_static.mp3` | Intercom static sound for conductor hub announcements |
-| `Coductor_theme.wav` | Conductor Hub scene music |
-| `Glass_Break.mp3` | Glass breaking sound effect |
-| `Light_Buzz.mp3` | Electrical light buzz ambient sound |
+| `innercom_static.mp3` | Intercom static sound for INTERCOM dialogue lines |
+| `Coductor_theme.wav` | Main menu background music |
+| `Glass_Break.mp3` | Main menu button click sound |
+| `Light_Buzz.mp3` | Main menu button hover sound |
 | `button_click.mp3` | UI button click sound |
 | `button_hover.mp3` | UI button hover sound |
