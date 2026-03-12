@@ -35,7 +35,7 @@ func _input(event: InputEvent) -> void:
 	if event.is_action_pressed("interact") and _player_nearby:
 		if locked:
 			if special_locked:
-				_show_dialog("A key can't unlock this door...")
+				_show_dialog("This door needs all %d golden tickets. You have %d." % [GameState.special_tickets_required, GameState.special_tickets_collected])
 				return
 			if GameState.use_key():
 				unlock()
