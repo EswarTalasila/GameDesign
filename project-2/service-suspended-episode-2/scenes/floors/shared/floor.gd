@@ -583,8 +583,9 @@ func _punch_ticket() -> void:
 	player.collision_layer = 1
 	player.collision_mask = 1
 	player.visible = true
-	player._invincible = false
 	player.set_physics_process(true)
+	# Grace period — stay invincible for 5 seconds after respawn
+	get_tree().create_timer(5.0).timeout.connect(func(): player._invincible = false)
 	is_animating = false
 	_update_punch_glow()
 

@@ -90,7 +90,6 @@ func _ready() -> void:
 	_music_player = AudioStreamPlayer.new()
 	_music_player.stream = _game_over_music
 	add_child(_music_player)
-	_music_player.finished.connect(_music_player.play)
 	_music_player.play()
 
 	_play_intro()
