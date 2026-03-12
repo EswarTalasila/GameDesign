@@ -11,7 +11,7 @@ Eswar Talasila, Zachary Boston, Mokshagna Kadiyala, Nishil Rally
 | Member | Contributions |
 |--------|---------------|
 | **Zachary Boston** | Asset design and creation, tileset painting, dungeon and train map design, GDScript programming, character design and animation, scene wiring and game flow, sound integration, testing |
-| **Eswar Talasila** | Play testing, game narrative and dialogue script writing |
+| **Eswar Talasila** | Bug fixes, GDScript programming, scene design, game flow, quality of life updates, play testing, game narrative and dialogue script writing |
 | **Mokshagna Kadiyala** | Play testing, asset design and creation, train tileset foundation |
 | **Nishil Rally** | Play testing, sound sourcing and design, narrative and dialogue script writing |
 
@@ -100,7 +100,7 @@ Uses Dialogue Manager v3.10.1 with branching dialogue trees. NPCs have proximity
 - **Paper Pack** UI elements — Robin Norkum / LCSkeleton — ~~used for UI component foundations~~ (cut content, unused)
 
 ### Fonts
-- **Compass 9** pixel font — used for in-game text rendering
+- **Godot Default** - used across the game in all text interactions
 - **DotGothic16** — used for the Conductor Hub ending sequence text
 
 ### Sound Effects
