@@ -24,7 +24,7 @@ func _input(event: InputEvent) -> void:
 		if _unlocked:
 			_activate_exit()
 		else:
-			_show_dialog("A key can't unlock this door...")
+			_show_dialog("This door needs all %d golden tickets. You have %d." % [GameState.special_tickets_required, GameState.special_tickets_collected])
 
 func _on_zone_entered(body: Node2D) -> void:
 	if body is CharacterBody2D:

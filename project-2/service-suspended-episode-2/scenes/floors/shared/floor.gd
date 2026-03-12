@@ -79,6 +79,7 @@ var punch_mode: bool = false
 var is_animating: bool = false
 var _dead: bool = false
 var _paused: bool = false
+var _punch_pulse_tween: Tween = null
 
 
 func _ready() -> void:
@@ -177,6 +178,7 @@ func _ready() -> void:
 
 	# Detect initial section (body_entered won't fire for already-overlapping bodies)
 	_detect_initial_section()
+	_update_punch_glow()
 
 	# Spawn only 2 special tickets from all painted markers across sections
 	_setup_special_tickets()
@@ -277,9 +279,30 @@ func _on_boundary_entered(body: Node2D, section_key: String) -> void:
 	if body == player:
 		_current_section_key = section_key
 		GameState.set_checkpoint(player.global_position, section_key)
+		_update_punch_glow()
 
-func _on_boundary_exited(_body: Node2D, _section_key: String) -> void:
-	pass  # Could clear _current_section_key, but overlapping boundaries handle transitions
+func _on_boundary_exited(body: Node2D, _section_key: String) -> void:
+	if body == player:
+		# Check if still overlapping any other section boundary
+		var boundaries = $Boundaries
+		for key in SECTION_KEYS:
+			var area = boundaries.get_node_or_null("Section" + key.to_upper())
+			if area and area is Area2D and area.overlaps_body(player):
+				_current_section_key = key
+				return
+		_current_section_key = ""
+		_update_punch_glow()
+
+func _update_punch_glow() -> void:
+	if _punch_pulse_tween:
+		_punch_pulse_tween.kill()
+		_punch_pulse_tween = null
+	punch_slot.scale = Vector2(1.0, 1.0)
+	punch_slot.modulate = Color.WHITE
+	if not _current_section_key.is_empty():
+		_punch_pulse_tween = create_tween().set_loops()
+		_punch_pulse_tween.tween_property(punch_slot, "scale", Vector2(1.25, 1.25), 0.5).set_trans(Tween.TRANS_SINE)
+		_punch_pulse_tween.tween_property(punch_slot, "scale", Vector2(1.0, 1.0), 0.5).set_trans(Tween.TRANS_SINE)
 
 func _detect_initial_section() -> void:
 	# body_entered doesn't fire for bodies already inside at _ready time.
@@ -501,9 +524,17 @@ func _cancel_floating_ticket() -> void:
 
 func _punch_ticket() -> void:
 	_dismiss_tip()
+
+	var _outside_section: bool = _current_section_key.is_empty()
+
 	is_animating = true
 	punch_mode = false
 	cursor_sprite.texture = _cursor_default
+	# Stop the pulse while animating
+	if _punch_pulse_tween:
+		_punch_pulse_tween.kill()
+		_punch_pulse_tween = null
+	punch_slot.scale = Vector2(1.0, 1.0)
 	player.set_physics_process(false)
 	player._invincible = true
 
@@ -552,18 +583,23 @@ func _punch_ticket() -> void:
 	player.collision_layer = 1
 	player.collision_mask = 1
 	player.visible = true
-	player._invincible = false
 	player.set_physics_process(true)
+	# Grace period — stay invincible for 5 seconds after respawn
+	get_tree().create_timer(5.0).timeout.connect(func(): player._invincible = false)
 	is_animating = false
+	_update_punch_glow()
 
 	# 6. Uncover loading screen (fades out + self-frees)
 	loading_screen.uncover()
 	await loading_screen.uncover_finished
 
-	# Swap tip (first time)
-	if not GameState.swap_tip_shown:
+	# Wasted ticket (outside section) — show every time
+	if _outside_section:
+		_show_tip("Ticket wasted — you weren't inside a section! Punch tickets while standing inside a room to rotate it.")
+	# Swap tip (first time, inside section)
+	elif not GameState.swap_tip_shown:
 		GameState.swap_tip_shown = true
-		_show_tip("The section changed! New items and enemies have spawned. Be careful — punching a ticket outside a section wastes it!")
+		_show_tip("Section rotated! New enemies and items have spawned, and there was a chance a golden ticket appeared. Collect all 6 golden tickets to unlock the special door.")
 
 func _set_burn_radius(value: float) -> void:
 	flying_ticket.material.set_shader_parameter("radius", value)
@@ -580,7 +616,7 @@ func _on_ticket_picked_up(_held: int) -> void:
 	_update_hud_icons()
 	if not GameState.ticket_tip_shown:
 		GameState.ticket_tip_shown = true
-		_show_tip("Pick up tickets and punch them to rotate sections! Click the ticket icon, then the punch icon, then click the floating ticket.")
+		_show_tip("To punch a ticket: click the TICKET slot to pull it out, then click the HOLE PUNCH slot, then click the floating ticket. Do this inside a section to rotate it and uncover new items!")
 
 func _on_ticket_collected(_current: int, _total: int) -> void:
 	_update_hud_icons()
@@ -592,8 +628,7 @@ func _on_special_ticket_collected(_current: int, _required: int) -> void:
 		_show_tip("I wonder what this is for...", "You")
 	elif floor_id == 1 and GameState.special_tickets_collected >= 2 and not GameState.golden_punch_tip_shown:
 		GameState.golden_punch_tip_shown = true
-		_show_tip("You've collected both golden tickets on this floor — try punching a ticket with
-  the hole puncher to see if you can find more! ")
+		_show_tip("You've collected both golden tickets on this floor — try punching a ticket with the hole puncher to see if you can find more!")
 
 func _on_all_golden_collected() -> void:
 	_play_sfx(_unlock_sound_stream)
@@ -673,7 +708,7 @@ func _on_checkpoint_set(_pos: Vector2, _section: String) -> void:
 	$GameUI/UILayer.add_child(icon)
 	if not GameState.checkpoint_tip_shown:
 		GameState.checkpoint_tip_shown = true
-		_show_tip("That saving icon means you entered a new section. Sections can be rotated when you punch a ticket inside them.")
+		_show_tip("You entered a section! Notice the hole punch icon pulsing — that means punching a ticket here will rotate this section. Each rotation has a chance to spawn a golden ticket and resets enemies and items.")
 
 
 # ── Special exit doors (painted in tilemap, connected via group) ──
