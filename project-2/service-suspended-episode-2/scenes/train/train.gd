@@ -30,6 +30,7 @@ var _play_normal = preload("res://assets/ui/buttons/play_pause/play_normal.png")
 var _train_sounds_stream = preload("res://assets/sounds/train_sounds.mp3")
 var _train_ambience_stream = preload("res://assets/sounds/train_ambience.mp3")
 var _train_ambience_stream_2 = preload("res://assets/sounds/train_ambience_2.mp3")
+var _door_transition_stream = preload("res://assets/sounds/train_door_transition.mp3")
 
 # --- Nodes ---
 @onready var player: CharacterBody2D = $GameWorld/Player
@@ -211,6 +212,13 @@ func _use_connector(connector: Area2D) -> void:
 		return
 	_transitioning = true
 	var target = connector.get_meta("target", "dungeon")
+
+	# Play door transition sound
+	var sfx = AudioStreamPlayer.new()
+	sfx.stream = _door_transition_stream
+	add_child(sfx)
+	sfx.play()
+	sfx.finished.connect(sfx.queue_free)
 
 	# Disable player immediately
 	player.set_physics_process(false)
