@@ -179,14 +179,23 @@ Main menu art, UI buttons, all character sprites and animations (protagonist, La
 |------|-------------|
 | `train_sounds.mp3` | Train mechanical loop |
 | `train_ambience.mp3` / `train_ambience_2.mp3` | Train ambient tracks |
+| `train_door_transition.mp3` | Sliding door sound for scene transitions |
 | `dungeon_ambience.mp3` / `dungeon_ambience_2.mp3` | Dungeon ambient tracks |
 | `heartbeat.mp3` | Low health warning |
+| `player_hit.mp3` | Player taking damage sound |
 | `ticket_punch.mp3` | Punch sound effect |
 | `ticket_burn.mp3` | Burn dissolve sound |
 | `health_pickup.mp3` | Health restore sound |
+| `key_pickup.mp3` | Key pickup sound |
 | `chest_open.wav` | Chest opening sound |
 | `wooden_door_open.mp3` / `metal_door_open.mp3` | Door sounds |
 | `door_unlock.mp3` | Lock opening sound |
 | `golden_ticket_pickup.mp3` | Golden ticket collect sound |
 | `shadow_hit.mp3` | Enemy hit sound |
 | `game_over.mp3` | Death sound |
+| `innercom_static.mp3` | Intercom static sound for conductor hub announcements |
+| `Coductor_theme.wav` | Conductor Hub scene music |
+| `Glass_Break.mp3` | Glass breaking sound effect |
+| `Light_Buzz.mp3` | Electrical light buzz ambient sound |
+| `button_click.mp3` | UI button click sound |
+| `button_hover.mp3` | UI button hover sound |
