@@ -1,0 +1,32 @@
+[gd_resource type="TileSet" format=3 uid="uid://ca433fk50500d"]
+
+[ext_resource type="Texture2D" uid="uid://cge2n6owxdksf" path="res://assets/sprites/pickups/ticket/ticket_spawn_marker.png" id="1_ticket"]
+[ext_resource type="Texture2D" uid="uid://bk6uscbcjunun" path="res://assets/sprites/pickups/key/key_spawn_marker.png" id="2_key"]
+[ext_resource type="Texture2D" uid="uid://ct6nk0b08f1v4" path="res://assets/sprites/pickups/health/health_spawn_marker.png" id="3_health"]
+[ext_resource type="Texture2D" uid="uid://ddodvjd8lsmmy" path="res://assets/sprites/pickups/special_ticket/special_ticket_spawn_marker.png" id="4_special"]
+
+[sub_resource type="TileSetAtlasSource" id="1"]
+texture = ExtResource("1_ticket")
+texture_region_size = Vector2i(16, 32)
+0:0/0 = 0
+
+[sub_resource type="TileSetAtlasSource" id="2"]
+texture = ExtResource("2_key")
+texture_region_size = Vector2i(16, 48)
+0:0/0 = 0
+
+[sub_resource type="TileSetAtlasSource" id="3"]
+texture = ExtResource("3_health")
+texture_region_size = Vector2i(16, 32)
+0:0/0 = 0
+
+[sub_resource type="TileSetAtlasSource" id="4"]
+texture = ExtResource("4_special")
+texture_region_size = Vector2i(16, 32)
+0:0/0 = 0
+
+[resource]
+sources/0 = SubResource("1")
+sources/1 = SubResource("2")
+sources/2 = SubResource("3")
+sources/3 = SubResource("4")
