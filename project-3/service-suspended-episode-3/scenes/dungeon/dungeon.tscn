@@ -1,0 +1,39 @@
+[gd_scene load_steps=7 format=4]
+
+[ext_resource type="PackedScene" uid="uid://c347cqvjvcbip" path="res://scenes/player/player.tscn" id="1_player"]
+[ext_resource type="Script" path="res://scenes/dungeon/dungeon.gd" id="2_script"]
+[ext_resource type="PackedScene" path="res://scenes/ui/dialog_bubble.tscn" id="4_dialog"]
+[ext_resource type="PackedScene" path="res://scenes/doors/exit_door.tscn" id="5_exit"]
+[ext_resource type="TileSet" path="res://assets/tilesets/dungeon/enemy_spawn_markers.tres" id="6_markers"]
+
+[node name="Dungeon" type="Node2D"]
+script = ExtResource("2_script")
+
+[node name="FloorWalls" type="TileMapLayer" parent="."]
+
+[node name="EnemyMarkers" type="TileMapLayer" parent="."]
+tile_set = ExtResource("6_markers")
+
+[node name="Entities" type="Node2D" parent="."]
+y_sort_enabled = true
+
+[node name="Player" parent="Entities" instance=ExtResource("1_player")]
+
+[node name="Tickets" type="Node2D" parent="Entities"]
+
+[node name="Traps" type="Node2D" parent="Entities"]
+
+[node name="Enemies" type="Node2D" parent="Entities"]
+
+[node name="ExitDoor" parent="Entities" instance=ExtResource("5_exit")]
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="TicketCounter" type="Label" parent="CanvasLayer"]
+offset_left = 10.0
+offset_top = 10.0
+offset_right = 200.0
+offset_bottom = 40.0
+text = "Tickets: 0 / 5"
+
+[node name="DialogBubble" parent="CanvasLayer" instance=ExtResource("4_dialog")]

@@ -1,0 +1,10 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scenes/ui/inventory_panel.gd" id="1_script"]
+
+[node name="InventoryPanel" type="Control"]
+offset_left = 20.0
+offset_top = 200.0
+offset_right = 148.0
+offset_bottom = 360.0
+script = ExtResource("1_script")

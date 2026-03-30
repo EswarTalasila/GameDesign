@@ -1,0 +1,78 @@
+[gd_scene format=3 uid="uid://frikkspqj71w"]
+
+[ext_resource type="Script" uid="uid://chr6624xtdqrj" path="res://scenes/ui/pause_menu.gd" id="1_script"]
+[ext_resource type="Texture2D" uid="uid://dmbh61x85lkkb" path="res://assets/ui/clipboard/clipboard.png" id="2_clipboard"]
+[ext_resource type="Texture2D" uid="uid://cw40p8u7nxcsl" path="res://assets/ui/buttons/play/normal.png" id="3_play_n"]
+[ext_resource type="Texture2D" uid="uid://cpojas8f3fiut" path="res://assets/ui/buttons/reload/normal.png" id="6_reload_n"]
+[ext_resource type="Texture2D" uid="uid://b6qc6k18iah17" path="res://assets/ui/buttons/exit/normal.png" id="9_exit_n"]
+[ext_resource type="Texture2D" uid="uid://c24nb05wb83kg" path="res://assets/ui/buttons/mute_unmute.png" id="10_mute_unmute"]
+
+[sub_resource type="RectangleShape2D" id="btn_shape"]
+size = Vector2(53.875, 17)
+
+[sub_resource type="RectangleShape2D" id="mute_shape"]
+size = Vector2(16, 16)
+
+[node name="PauseMenu" type="CanvasLayer" unique_id=1509407733]
+process_mode = 3
+layer = 50
+script = ExtResource("1_script")
+
+[node name="Background" type="ColorRect" parent="." unique_id=934227335]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.6)
+
+[node name="ClipboardSprite" type="Sprite2D" parent="." unique_id=1648368402]
+texture_filter = 1
+position = Vector2(960, 540)
+scale = Vector2(5, 5)
+texture = ExtResource("2_clipboard")
+
+[node name="ResumeButton" type="Sprite2D" parent="." unique_id=474634695]
+texture_filter = 1
+position = Vector2(960, 416)
+scale = Vector2(4, 4)
+texture = ExtResource("3_play_n")
+
+[node name="ResumeArea" type="Area2D" parent="ResumeButton" unique_id=1761755929]
+
+[node name="Col" type="CollisionShape2D" parent="ResumeButton/ResumeArea" unique_id=719067780]
+position = Vector2(0.125, -0.5)
+shape = SubResource("btn_shape")
+
+[node name="RestartButton" type="Sprite2D" parent="." unique_id=1237110720]
+texture_filter = 1
+position = Vector2(960, 546)
+scale = Vector2(4, 4)
+texture = ExtResource("6_reload_n")
+
+[node name="RestartArea" type="Area2D" parent="RestartButton" unique_id=944203284]
+
+[node name="Col" type="CollisionShape2D" parent="RestartButton/RestartArea" unique_id=622170661]
+shape = SubResource("btn_shape")
+
+[node name="QuitButton" type="Sprite2D" parent="." unique_id=517538668]
+texture_filter = 1
+position = Vector2(960, 676)
+scale = Vector2(4, 4)
+texture = ExtResource("9_exit_n")
+
+[node name="QuitArea" type="Area2D" parent="QuitButton" unique_id=1773376174]
+
+[node name="Col" type="CollisionShape2D" parent="QuitButton/QuitArea" unique_id=1039836679]
+shape = SubResource("btn_shape")
+
+[node name="MuteButton" type="Sprite2D" parent="." unique_id=1896017579]
+texture_filter = 1
+position = Vector2(1122, 326)
+scale = Vector2(3, 3)
+texture = ExtResource("10_mute_unmute")
+
+[node name="MuteArea" type="Area2D" parent="MuteButton" unique_id=853843233]
+
+[node name="Col" type="CollisionShape2D" parent="MuteButton/MuteArea" unique_id=983757521]
+shape = SubResource("mute_shape")

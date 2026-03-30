@@ -1,0 +1,92 @@
+[gd_scene load_steps=18 format=4]
+
+[ext_resource type="Texture2D" path="res://assets/sprites/ui/lock/lock_closed_Closed_0.png" id="c0"]
+[ext_resource type="Texture2D" path="res://assets/sprites/ui/lock/lock_closed_Closed_1.png" id="c1"]
+[ext_resource type="Texture2D" path="res://assets/sprites/ui/lock/lock_closed_Closed_2.png" id="c2"]
+[ext_resource type="Texture2D" path="res://assets/sprites/ui/lock/lock_closed_Closed_3.png" id="c3"]
+[ext_resource type="Texture2D" path="res://assets/sprites/ui/lock/lock_closed_Closed_4.png" id="c4"]
+[ext_resource type="Texture2D" path="res://assets/sprites/ui/lock/lock_closed_Closed_5.png" id="c5"]
+[ext_resource type="Texture2D" path="res://assets/sprites/ui/lock/lock_closed_Closed_6.png" id="c6"]
+[ext_resource type="Texture2D" path="res://assets/sprites/ui/lock/lock_unlocking_Unlocking_0.png" id="u0"]
+[ext_resource type="Texture2D" path="res://assets/sprites/ui/lock/lock_unlocking_Unlocking_1.png" id="u1"]
+[ext_resource type="Texture2D" path="res://assets/sprites/ui/lock/lock_unlocking_Unlocking_2.png" id="u2"]
+[ext_resource type="Texture2D" path="res://assets/sprites/ui/lock/lock_open_open_0.png" id="o0"]
+[ext_resource type="Texture2D" path="res://assets/sprites/ui/lock/lock_open_open_1.png" id="o1"]
+[ext_resource type="Texture2D" path="res://assets/sprites/ui/lock/lock_open_open_2.png" id="o2"]
+[ext_resource type="Texture2D" path="res://assets/sprites/ui/lock/lock_open_open_3.png" id="o3"]
+[ext_resource type="Texture2D" path="res://assets/sprites/ui/lock/lock_open_open_4.png" id="o4"]
+[ext_resource type="Texture2D" path="res://assets/sprites/ui/lock/lock_open_open_5.png" id="o5"]
+
+[sub_resource type="SpriteFrames" id="sprite_frames"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("c0")
+}, {
+"duration": 1.0,
+"texture": ExtResource("c1")
+}, {
+"duration": 1.0,
+"texture": ExtResource("c2")
+}, {
+"duration": 1.0,
+"texture": ExtResource("c3")
+}, {
+"duration": 1.0,
+"texture": ExtResource("c4")
+}, {
+"duration": 1.0,
+"texture": ExtResource("c5")
+}, {
+"duration": 1.0,
+"texture": ExtResource("c6")
+}],
+"loop": true,
+"name": &"locked",
+"speed": 4.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("u0")
+}, {
+"duration": 1.0,
+"texture": ExtResource("u1")
+}, {
+"duration": 1.0,
+"texture": ExtResource("u2")
+}],
+"loop": false,
+"name": &"opening",
+"speed": 8.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("o0")
+}, {
+"duration": 1.0,
+"texture": ExtResource("o1")
+}, {
+"duration": 1.0,
+"texture": ExtResource("o2")
+}, {
+"duration": 1.0,
+"texture": ExtResource("o3")
+}, {
+"duration": 1.0,
+"texture": ExtResource("o4")
+}, {
+"duration": 1.0,
+"texture": ExtResource("o5")
+}],
+"loop": false,
+"name": &"unlocked",
+"speed": 8.0
+}]
+
+[node name="LockPrompt" type="AnimatedSprite2D"]
+z_index = 20
+z_as_relative = false
+sprite_frames = SubResource("sprite_frames")
+autoplay = "locked"
+texture_filter = 1
+visible = false

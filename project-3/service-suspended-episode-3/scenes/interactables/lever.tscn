@@ -1,0 +1,38 @@
+[gd_scene load_steps=7 format=4]
+
+[ext_resource type="Script" path="res://scenes/interactables/lever.gd" id="1_script"]
+[ext_resource type="Texture2D" path="res://assets/tilesets/dungeon/dungeon_tileset_decorations.png" id="2_atlas"]
+[ext_resource type="PackedScene" path="res://scenes/ui/press_e_prompt.tscn" id="3_press_e"]
+
+[sub_resource type="AtlasTexture" id="state_0"]
+atlas = ExtResource("2_atlas")
+region = Rect2(144, 48, 16, 16)
+
+[sub_resource type="AtlasTexture" id="state_1"]
+atlas = ExtResource("2_atlas")
+region = Rect2(160, 48, 16, 16)
+
+[sub_resource type="AtlasTexture" id="state_2"]
+atlas = ExtResource("2_atlas")
+region = Rect2(176, 48, 16, 16)
+
+[sub_resource type="RectangleShape2D" id="zone_shape"]
+size = Vector2(48, 48)
+
+[node name="Lever" type="Node2D"]
+script = ExtResource("1_script")
+state_textures = Array[AtlasTexture]([SubResource("state_0"), SubResource("state_1"), SubResource("state_2")])
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = SubResource("state_0")
+texture_filter = 1
+
+[node name="Area2D" type="Area2D" parent="."]
+collision_layer = 0
+collision_mask = 1
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
+shape = SubResource("zone_shape")
+
+[node name="PressEPrompt" parent="Area2D" instance=ExtResource("3_press_e")]
+position = Vector2(0, -17)
