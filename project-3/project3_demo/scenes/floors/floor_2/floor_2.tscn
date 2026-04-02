@@ -1,0 +1,98 @@
+[gd_scene format=4]
+
+[ext_resource type="Script" path="res://scenes/floors/shared/floor.gd" id="1_floor"]
+[ext_resource type="PackedScene" uid="uid://c347cqvjvcbip" path="res://scenes/player/player.tscn" id="2_player"]
+[ext_resource type="PackedScene" path="res://scenes/floors/floor_2/sections/section_a/section_a_v1.tscn" id="3_sa"]
+[ext_resource type="PackedScene" path="res://scenes/floors/floor_2/sections/section_b/section_b_v1.tscn" id="4_sb"]
+[ext_resource type="PackedScene" path="res://scenes/floors/floor_2/sections/section_c/section_c_v1.tscn" id="5_sc"]
+[ext_resource type="PackedScene" path="res://scenes/floors/floor_2/sections/section_d/section_d_v1.tscn" id="6_sd"]
+[ext_resource type="PackedScene" path="res://scenes/ui/game_ui.tscn" id="7_gameui"]
+
+[sub_resource type="RectangleShape2D" id="bound_shape_a"]
+size = Vector2(800, 600)
+
+[sub_resource type="RectangleShape2D" id="bound_shape_b"]
+size = Vector2(800, 600)
+
+[sub_resource type="RectangleShape2D" id="bound_shape_c"]
+size = Vector2(800, 600)
+
+[sub_resource type="RectangleShape2D" id="bound_shape_d"]
+size = Vector2(800, 600)
+
+[node name="Floor2" type="Node2D"]
+script = ExtResource("1_floor")
+floor_id = 2
+
+[node name="Background" type="ColorRect" parent="."]
+offset_right = 3346.0
+offset_bottom = 2296.0
+color = Color(0.06, 0.06, 0.08, 1)
+
+[node name="GameWorld" type="Node2D" parent="."]
+y_sort_enabled = true
+
+[node name="Sections" type="Node2D" parent="GameWorld"]
+y_sort_enabled = true
+
+[node name="SectionA" type="Node2D" parent="GameWorld/Sections"]
+y_sort_enabled = true
+
+[node name="SectionA_V1" parent="GameWorld/Sections/SectionA" instance=ExtResource("3_sa")]
+
+[node name="SectionB" type="Node2D" parent="GameWorld/Sections"]
+y_sort_enabled = true
+position = Vector2(800, 0)
+
+[node name="SectionB_V1" parent="GameWorld/Sections/SectionB" instance=ExtResource("4_sb")]
+
+[node name="SectionC" type="Node2D" parent="GameWorld/Sections"]
+y_sort_enabled = true
+position = Vector2(0, 400)
+
+[node name="SectionC_V1" parent="GameWorld/Sections/SectionC" instance=ExtResource("5_sc")]
+
+[node name="SectionD" type="Node2D" parent="GameWorld/Sections"]
+y_sort_enabled = true
+position = Vector2(800, 400)
+
+[node name="SectionD_V1" parent="GameWorld/Sections/SectionD" instance=ExtResource("6_sd")]
+
+[node name="Player" parent="GameWorld" instance=ExtResource("2_player")]
+position = Vector2(102, 617)
+
+[node name="Boundaries" type="Node2D" parent="."]
+
+[node name="SectionA" type="Area2D" parent="Boundaries"]
+position = Vector2(400, 300)
+collision_layer = 0
+collision_mask = 1
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Boundaries/SectionA"]
+shape = SubResource("bound_shape_a")
+
+[node name="SectionB" type="Area2D" parent="Boundaries"]
+position = Vector2(1200, 300)
+collision_layer = 0
+collision_mask = 1
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Boundaries/SectionB"]
+shape = SubResource("bound_shape_b")
+
+[node name="SectionC" type="Area2D" parent="Boundaries"]
+position = Vector2(400, 700)
+collision_layer = 0
+collision_mask = 1
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Boundaries/SectionC"]
+shape = SubResource("bound_shape_c")
+
+[node name="SectionD" type="Area2D" parent="Boundaries"]
+position = Vector2(1200, 700)
+collision_layer = 0
+collision_mask = 1
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Boundaries/SectionD"]
+shape = SubResource("bound_shape_d")
+
+[node name="GameUI" parent="." instance=ExtResource("7_gameui")]

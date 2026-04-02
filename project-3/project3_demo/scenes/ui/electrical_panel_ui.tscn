@@ -1,0 +1,24 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://scenes/ui/electrical_panel_ui.gd" id="1_script"]
+[ext_resource type="Texture2D" path="res://assets/ui/electrical_panel/panel_closed.png" id="2_closed"]
+
+[node name="ElectricalPanelUI" type="CanvasLayer"]
+layer = 8
+script = ExtResource("1_script")
+
+[node name="Background" type="ColorRect" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+color = Color(0, 0, 0, 0.7)
+mouse_filter = 2
+
+[node name="PanelSprite" type="Sprite2D" parent="."]
+position = Vector2(960, 540)
+scale = Vector2(5, 5)
+texture = ExtResource("2_closed")
+texture_filter = 1
+
+[node name="Wires" type="Node2D" parent="PanelSprite"]
+visible = false

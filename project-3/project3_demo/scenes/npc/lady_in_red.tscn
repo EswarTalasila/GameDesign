@@ -1,0 +1,310 @@
+[gd_scene format=3 uid="uid://cxaj1mcqagq7p"]
+
+[ext_resource type="Script" uid="uid://cumql0asuu3w1" path="res://scenes/npc/red_coat_lady.gd" id="1_script"]
+[ext_resource type="Texture2D" uid="uid://ccavjtgx3afsu" path="res://assets/ui/press_e1.png" id="2_pe1"]
+[ext_resource type="Texture2D" uid="uid://rdgoxqst3j5m" path="res://assets/ui/press_e2.png" id="3_pe2"]
+[ext_resource type="Texture2D" uid="uid://cwgcqhcnhgvid" path="res://assets/ui/press_e3.png" id="4_pe3"]
+[ext_resource type="Texture2D" uid="uid://b48mgv384rlia" path="res://assets/ui/press_e4.png" id="5_pe4"]
+[ext_resource type="Texture2D" uid="uid://dtvvo4i6ueoe2" path="res://assets/ui/press_e5.png" id="6_pe5"]
+[ext_resource type="Texture2D" uid="uid://j1xq55mxeuxr" path="res://assets/ui/press_e6.png" id="7_pe6"]
+[ext_resource type="Texture2D" uid="uid://btxefs7ewe6i4" path="res://assets/ui/press_e7.png" id="8_pe7"]
+[ext_resource type="Texture2D" uid="uid://i5qct7m1ulfu" path="res://assets/ui/press_e8.png" id="9_pe8"]
+[ext_resource type="Texture2D" uid="uid://cfdtyyt0b8ij3" path="res://assets/sprites/npc/lady_in_red_idle/lady_in_red_idle_east_0.png" id="ie0"]
+[ext_resource type="Texture2D" uid="uid://cwsna2bd5cpl5" path="res://assets/sprites/npc/lady_in_red_idle/lady_in_red_idle_east_1.png" id="ie1"]
+[ext_resource type="Texture2D" uid="uid://ccghbvcnalnqb" path="res://assets/sprites/npc/lady_in_red_idle/lady_in_red_idle_east_2.png" id="ie2"]
+[ext_resource type="Texture2D" uid="uid://dchlubfh6w5rj" path="res://assets/sprites/npc/lady_in_red_idle/lady_in_red_idle_east_3.png" id="ie3"]
+[ext_resource type="Texture2D" uid="uid://dapshyw70o3qw" path="res://assets/sprites/npc/lady_in_red_idle/lady_in_red_idle_east_4.png" id="ie4"]
+[ext_resource type="Texture2D" uid="uid://dkqd35wqjdruq" path="res://assets/sprites/npc/lady_in_red_idle/lady_in_red_idle_east_5.png" id="ie5"]
+[ext_resource type="Texture2D" uid="uid://vi6v3b528e0v" path="res://assets/sprites/npc/lady_in_red_idle/lady_in_red_idle_north_0.png" id="in0"]
+[ext_resource type="Texture2D" uid="uid://crnk2v26j8xtn" path="res://assets/sprites/npc/lady_in_red_idle/lady_in_red_idle_north_1.png" id="in1"]
+[ext_resource type="Texture2D" uid="uid://dm8vumy2tbvg4" path="res://assets/sprites/npc/lady_in_red_idle/lady_in_red_idle_north_2.png" id="in2"]
+[ext_resource type="Texture2D" uid="uid://bdgjkvfml4qkl" path="res://assets/sprites/npc/lady_in_red_idle/lady_in_red_idle_north_3.png" id="in3"]
+[ext_resource type="Texture2D" uid="uid://cotry5fij1ffo" path="res://assets/sprites/npc/lady_in_red_idle/lady_in_red_idle_north_4.png" id="in4"]
+[ext_resource type="Texture2D" uid="uid://phy8h0x3kuau" path="res://assets/sprites/npc/lady_in_red_idle/lady_in_red_idle_north_5.png" id="in5"]
+[ext_resource type="Texture2D" uid="uid://oq8jktnan07l" path="res://assets/sprites/npc/lady_in_red_idle/lady_in_red_idle_north_east_0.png" id="ine0"]
+[ext_resource type="Texture2D" uid="uid://dki7tv4cjq64i" path="res://assets/sprites/npc/lady_in_red_idle/lady_in_red_idle_north_east_1.png" id="ine1"]
+[ext_resource type="Texture2D" uid="uid://b5257myr773m7" path="res://assets/sprites/npc/lady_in_red_idle/lady_in_red_idle_north_east_2.png" id="ine2"]
+[ext_resource type="Texture2D" uid="uid://d0x7qptenqgek" path="res://assets/sprites/npc/lady_in_red_idle/lady_in_red_idle_north_east_3.png" id="ine3"]
+[ext_resource type="Texture2D" uid="uid://r6yusaxwv4vm" path="res://assets/sprites/npc/lady_in_red_idle/lady_in_red_idle_north_east_4.png" id="ine4"]
+[ext_resource type="Texture2D" uid="uid://cuktwv8f3tr8" path="res://assets/sprites/npc/lady_in_red_idle/lady_in_red_idle_north_east_5.png" id="ine5"]
+[ext_resource type="Texture2D" uid="uid://cqpk1onte80qd" path="res://assets/sprites/npc/lady_in_red_idle/lady_in_red_idle_north_west_0.png" id="inw0"]
+[ext_resource type="Texture2D" uid="uid://b45e2uetdxvin" path="res://assets/sprites/npc/lady_in_red_idle/lady_in_red_idle_north_west_1.png" id="inw1"]
+[ext_resource type="Texture2D" uid="uid://bf3i3issgm0s5" path="res://assets/sprites/npc/lady_in_red_idle/lady_in_red_idle_north_west_2.png" id="inw2"]
+[ext_resource type="Texture2D" uid="uid://bukfs6kf8ogqv" path="res://assets/sprites/npc/lady_in_red_idle/lady_in_red_idle_north_west_3.png" id="inw3"]
+[ext_resource type="Texture2D" uid="uid://b0hdalyge8qil" path="res://assets/sprites/npc/lady_in_red_idle/lady_in_red_idle_north_west_4.png" id="inw4"]
+[ext_resource type="Texture2D" uid="uid://pekyxpq0df3v" path="res://assets/sprites/npc/lady_in_red_idle/lady_in_red_idle_north_west_5.png" id="inw5"]
+[ext_resource type="Texture2D" uid="uid://wamkfglq15ge" path="res://assets/sprites/npc/lady_in_red_idle/lady_in_red_idle_south_0.png" id="is0"]
+[ext_resource type="Texture2D" uid="uid://ds3kd57p7igkv" path="res://assets/sprites/npc/lady_in_red_idle/lady_in_red_idle_south_1.png" id="is1"]
+[ext_resource type="Texture2D" uid="uid://c3jyfxf4mg3dk" path="res://assets/sprites/npc/lady_in_red_idle/lady_in_red_idle_south_2.png" id="is2"]
+[ext_resource type="Texture2D" uid="uid://p0msy62ll73w" path="res://assets/sprites/npc/lady_in_red_idle/lady_in_red_idle_south_3.png" id="is3"]
+[ext_resource type="Texture2D" uid="uid://77wuktujn2f1" path="res://assets/sprites/npc/lady_in_red_idle/lady_in_red_idle_south_4.png" id="is4"]
+[ext_resource type="Texture2D" uid="uid://b2r6ypcyjohx3" path="res://assets/sprites/npc/lady_in_red_idle/lady_in_red_idle_south_5.png" id="is5"]
+[ext_resource type="Texture2D" uid="uid://cbsus6kixv6c0" path="res://assets/sprites/npc/lady_in_red_idle/lady_in_red_idle_south_east_0.png" id="ise0"]
+[ext_resource type="Texture2D" uid="uid://0ihltfh7psjf" path="res://assets/sprites/npc/lady_in_red_idle/lady_in_red_idle_south_east_1.png" id="ise1"]
+[ext_resource type="Texture2D" uid="uid://ccaj1ygqgowr3" path="res://assets/sprites/npc/lady_in_red_idle/lady_in_red_idle_south_east_2.png" id="ise2"]
+[ext_resource type="Texture2D" uid="uid://l020rah3c0bt" path="res://assets/sprites/npc/lady_in_red_idle/lady_in_red_idle_south_east_3.png" id="ise3"]
+[ext_resource type="Texture2D" uid="uid://h8ccn32sculo" path="res://assets/sprites/npc/lady_in_red_idle/lady_in_red_idle_south_east_4.png" id="ise4"]
+[ext_resource type="Texture2D" uid="uid://ir0x3i5hdv3d" path="res://assets/sprites/npc/lady_in_red_idle/lady_in_red_idle_south_east_5.png" id="ise5"]
+[ext_resource type="Texture2D" uid="uid://bhecs531j1q1q" path="res://assets/sprites/npc/lady_in_red_idle/lady_in_red_idle_south_west_0.png" id="isw0"]
+[ext_resource type="Texture2D" uid="uid://bqnvw12ppqmh6" path="res://assets/sprites/npc/lady_in_red_idle/lady_in_red_idle_south_west_1.png" id="isw1"]
+[ext_resource type="Texture2D" uid="uid://cqjngqq45hsdx" path="res://assets/sprites/npc/lady_in_red_idle/lady_in_red_idle_south_west_2.png" id="isw2"]
+[ext_resource type="Texture2D" uid="uid://bgmc5ov1ufxj" path="res://assets/sprites/npc/lady_in_red_idle/lady_in_red_idle_south_west_3.png" id="isw3"]
+[ext_resource type="Texture2D" uid="uid://brff025xt7cn4" path="res://assets/sprites/npc/lady_in_red_idle/lady_in_red_idle_south_west_4.png" id="isw4"]
+[ext_resource type="Texture2D" uid="uid://b2vwv2wg8gm6c" path="res://assets/sprites/npc/lady_in_red_idle/lady_in_red_idle_south_west_5.png" id="isw5"]
+[ext_resource type="Texture2D" uid="uid://dnl2h51paoxje" path="res://assets/sprites/npc/lady_in_red_idle/lady_in_red_idle_west_0.png" id="iw0"]
+[ext_resource type="Texture2D" uid="uid://cc2nnmmxygpd" path="res://assets/sprites/npc/lady_in_red_idle/lady_in_red_idle_west_1.png" id="iw1"]
+[ext_resource type="Texture2D" uid="uid://bf0x7t5ufvexa" path="res://assets/sprites/npc/lady_in_red_idle/lady_in_red_idle_west_2.png" id="iw2"]
+[ext_resource type="Texture2D" uid="uid://q45fkuopx0h" path="res://assets/sprites/npc/lady_in_red_idle/lady_in_red_idle_west_3.png" id="iw3"]
+[ext_resource type="Texture2D" uid="uid://c1xgot6k3uvn" path="res://assets/sprites/npc/lady_in_red_idle/lady_in_red_idle_west_4.png" id="iw4"]
+[ext_resource type="Texture2D" uid="uid://b5a5v53leivlx" path="res://assets/sprites/npc/lady_in_red_idle/lady_in_red_idle_west_5.png" id="iw5"]
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_idle"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("is0")
+}, {
+"duration": 1.0,
+"texture": ExtResource("is1")
+}, {
+"duration": 1.0,
+"texture": ExtResource("is2")
+}, {
+"duration": 1.0,
+"texture": ExtResource("is3")
+}, {
+"duration": 1.0,
+"texture": ExtResource("is4")
+}, {
+"duration": 1.0,
+"texture": ExtResource("is5")
+}],
+"loop": true,
+"name": &"default",
+"speed": 6.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("ie0")
+}, {
+"duration": 1.0,
+"texture": ExtResource("ie1")
+}, {
+"duration": 1.0,
+"texture": ExtResource("ie2")
+}, {
+"duration": 1.0,
+"texture": ExtResource("ie3")
+}, {
+"duration": 1.0,
+"texture": ExtResource("ie4")
+}, {
+"duration": 1.0,
+"texture": ExtResource("ie5")
+}],
+"loop": true,
+"name": &"idle_east",
+"speed": 6.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("in0")
+}, {
+"duration": 1.0,
+"texture": ExtResource("in1")
+}, {
+"duration": 1.0,
+"texture": ExtResource("in2")
+}, {
+"duration": 1.0,
+"texture": ExtResource("in3")
+}, {
+"duration": 1.0,
+"texture": ExtResource("in4")
+}, {
+"duration": 1.0,
+"texture": ExtResource("in5")
+}],
+"loop": true,
+"name": &"idle_north",
+"speed": 6.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("ine0")
+}, {
+"duration": 1.0,
+"texture": ExtResource("ine1")
+}, {
+"duration": 1.0,
+"texture": ExtResource("ine2")
+}, {
+"duration": 1.0,
+"texture": ExtResource("ine3")
+}, {
+"duration": 1.0,
+"texture": ExtResource("ine4")
+}, {
+"duration": 1.0,
+"texture": ExtResource("ine5")
+}],
+"loop": true,
+"name": &"idle_north_east",
+"speed": 6.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("inw0")
+}, {
+"duration": 1.0,
+"texture": ExtResource("inw1")
+}, {
+"duration": 1.0,
+"texture": ExtResource("inw2")
+}, {
+"duration": 1.0,
+"texture": ExtResource("inw3")
+}, {
+"duration": 1.0,
+"texture": ExtResource("inw4")
+}, {
+"duration": 1.0,
+"texture": ExtResource("inw5")
+}],
+"loop": true,
+"name": &"idle_north_west",
+"speed": 6.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("ise0")
+}, {
+"duration": 1.0,
+"texture": ExtResource("ise1")
+}, {
+"duration": 1.0,
+"texture": ExtResource("ise2")
+}, {
+"duration": 1.0,
+"texture": ExtResource("ise3")
+}, {
+"duration": 1.0,
+"texture": ExtResource("ise4")
+}, {
+"duration": 1.0,
+"texture": ExtResource("ise5")
+}],
+"loop": true,
+"name": &"idle_south_east",
+"speed": 6.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("isw0")
+}, {
+"duration": 1.0,
+"texture": ExtResource("isw1")
+}, {
+"duration": 1.0,
+"texture": ExtResource("isw2")
+}, {
+"duration": 1.0,
+"texture": ExtResource("isw3")
+}, {
+"duration": 1.0,
+"texture": ExtResource("isw4")
+}, {
+"duration": 1.0,
+"texture": ExtResource("isw5")
+}],
+"loop": true,
+"name": &"idle_south_west",
+"speed": 6.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("iw0")
+}, {
+"duration": 1.0,
+"texture": ExtResource("iw1")
+}, {
+"duration": 1.0,
+"texture": ExtResource("iw2")
+}, {
+"duration": 1.0,
+"texture": ExtResource("iw3")
+}, {
+"duration": 1.0,
+"texture": ExtResource("iw4")
+}, {
+"duration": 1.0,
+"texture": ExtResource("iw5")
+}],
+"loop": true,
+"name": &"idle_west",
+"speed": 6.0
+}]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_body"]
+size = Vector2(12, 36)
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_chat"]
+radius = 21.0
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_prompt"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("2_pe1")
+}, {
+"duration": 1.0,
+"texture": ExtResource("3_pe2")
+}, {
+"duration": 1.0,
+"texture": ExtResource("4_pe3")
+}, {
+"duration": 1.0,
+"texture": ExtResource("5_pe4")
+}, {
+"duration": 1.0,
+"texture": ExtResource("6_pe5")
+}, {
+"duration": 1.0,
+"texture": ExtResource("7_pe6")
+}, {
+"duration": 1.0,
+"texture": ExtResource("8_pe7")
+}, {
+"duration": 1.0,
+"texture": ExtResource("9_pe8")
+}],
+"loop": true,
+"name": &"default",
+"speed": 8.0
+}]
+
+[node name="Red Coat Lady" type="CharacterBody2D" unique_id=201135043]
+script = ExtResource("1_script")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=1394701068]
+texture_filter = 1
+position = Vector2(3.5527137e-15, -13.000001)
+scale = Vector2(0.5, 0.498)
+sprite_frames = SubResource("SpriteFrames_idle")
+autoplay = "default"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1299966096]
+position = Vector2(0, -10)
+scale = Vector2(0.5, 0.5)
+shape = SubResource("RectangleShape2D_body")
+
+[node name="chat_detection" type="Area2D" parent="." unique_id=1646001460]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="chat_detection" unique_id=1009641215]
+scale = Vector2(0.5, 0.5)
+shape = SubResource("CircleShape2D_chat")
+
+[node name="PromptSprite" type="AnimatedSprite2D" parent="." unique_id=763860316]
+position = Vector2(0, -35)
+sprite_frames = SubResource("SpriteFrames_prompt")
+autoplay = "default"

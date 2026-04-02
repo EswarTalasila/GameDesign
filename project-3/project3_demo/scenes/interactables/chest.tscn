@@ -1,0 +1,48 @@
+[gd_scene format=3 uid="uid://cqftx4en1mxuw"]
+
+[ext_resource type="Script" uid="uid://dk7bd20d6dwkw" path="res://scenes/interactables/chest.gd" id="1_script"]
+[ext_resource type="Texture2D" uid="uid://d1jf0je6rlmdt" path="res://assets/tilesets/dungeon/dungeon_tileset_decorations.png" id="2_atlas"]
+[ext_resource type="PackedScene" path="res://scenes/ui/press_e_prompt.tscn" id="3_press_e"]
+[ext_resource type="PackedScene" path="res://scenes/ui/lock_prompt.tscn" id="4_lock"]
+
+[sub_resource type="AtlasTexture" id="closed_tex"]
+atlas = ExtResource("2_atlas")
+region = Rect2(80, 80, 48, 32)
+
+[sub_resource type="AtlasTexture" id="open_tex"]
+atlas = ExtResource("2_atlas")
+region = Rect2(128, 80, 48, 32)
+
+[sub_resource type="RectangleShape2D" id="body_shape"]
+size = Vector2(20, 16)
+
+[sub_resource type="RectangleShape2D" id="zone_shape"]
+size = Vector2(80, 64)
+
+[node name="Chest" type="Node2D" unique_id=1084371528]
+y_sort_origin = 16
+script = ExtResource("1_script")
+closed_texture = SubResource("closed_tex")
+open_texture = SubResource("open_tex")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1255563597]
+texture_filter = 1
+texture = SubResource("closed_tex")
+
+[node name="StaticBody2D" type="StaticBody2D" parent="." unique_id=46763502]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D" unique_id=801424205]
+position = Vector2(0, 8)
+shape = SubResource("body_shape")
+
+[node name="Area2D" type="Area2D" parent="." unique_id=1467811712]
+collision_layer = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D" unique_id=1024803504]
+shape = SubResource("zone_shape")
+
+[node name="PressEPrompt" parent="Area2D" unique_id=1761431168 instance=ExtResource("3_press_e")]
+position = Vector2(0, -21)
+
+[node name="LockPrompt" parent="Area2D" instance=ExtResource("4_lock")]
+position = Vector2(0, -21)
