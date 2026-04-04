@@ -86,9 +86,14 @@ func _unhandled_input(event: InputEvent) -> void:
 # ── Tile Scanner ──
 
 func _scan_interactables() -> void:
-	for child in get_children():
+	_scan_node_recursive(self)
+
+func _scan_node_recursive(node: Node) -> void:
+	for child in node.get_children():
 		if child is TileMapLayer:
 			_scan_layer(child)
+		else:
+			_scan_node_recursive(child)
 
 func _scan_layer(layer: TileMapLayer) -> void:
 	var ts = layer.tile_set
