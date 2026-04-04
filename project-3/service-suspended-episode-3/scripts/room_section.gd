@@ -10,6 +10,7 @@ var _bottom_walls: TileMapLayer
 var _top_walls: TileMapLayer
 var _side_walls: TileMapLayer
 var _furniture_layer: TileMapLayer
+var _furniture2_layer: TileMapLayer
 var _overhead_layer: TileMapLayer
 
 func _ready() -> void:
@@ -22,11 +23,12 @@ func _find_layers() -> void:
 	_top_walls = get_node_or_null("TopWalls")
 	_side_walls = get_node_or_null("SideWalls")
 	_furniture_layer = get_node_or_null("Furniture")
+	_furniture2_layer = get_node_or_null("Furniture2")
 	_overhead_layer = get_node_or_null("Overhead")
 
 func _setup_layers() -> void:
 	# Disable tileset collision on ALL layers first
-	for layer in [_floor_layer, _bottom_walls, _top_walls, _side_walls, _furniture_layer, _overhead_layer]:
+	for layer in [_floor_layer, _bottom_walls, _top_walls, _side_walls, _furniture_layer, _furniture2_layer, _overhead_layer]:
 		if layer:
 			layer.collision_enabled = false
 
@@ -41,6 +43,8 @@ func _setup_layers() -> void:
 	# Furniture y-sorted
 	if _furniture_layer:
 		_furniture_layer.y_sort_enabled = true
+	if _furniture2_layer:
+		_furniture2_layer.y_sort_enabled = true
 
 	# Overhead renders on top of everything
 	if _overhead_layer:
@@ -50,6 +54,7 @@ func _setup_layers() -> void:
 	_generate_collision(_bottom_walls)
 	_generate_collision(_side_walls)
 	_generate_collision(_furniture_layer)
+	_generate_collision(_furniture2_layer)
 
 func _generate_collision(layer: TileMapLayer) -> void:
 	if layer == null:
