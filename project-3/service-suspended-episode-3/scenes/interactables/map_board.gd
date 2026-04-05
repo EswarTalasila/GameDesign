@@ -32,11 +32,14 @@ func _unhandled_input(event: InputEvent) -> void:
 func _open_ui() -> void:
 	_ui_open = true
 	_prompt.visible = false
+	# Remove map icon from inventory — pieces go to the board
+	var coordinator = get_tree().root.find_child("Node2D", true, false)
+	if coordinator and coordinator.has_method("remove_item"):
+		coordinator.remove_item("map")
 	get_tree().paused = true
 	_board_ui = _board_ui_scene.instantiate()
 	_board_ui.process_mode = Node.PROCESS_MODE_ALWAYS
 	_board_ui.board_closed.connect(_close_ui)
-	_board_ui.map_completed.connect(_on_map_completed)
 	get_tree().root.add_child(_board_ui)
 
 func _close_ui() -> void:

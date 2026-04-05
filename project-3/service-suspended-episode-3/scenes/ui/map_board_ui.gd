@@ -14,7 +14,7 @@ var _drag_offset: Vector2 = Vector2.ZERO
 var _snapped: Array[bool] = [false, false, false, false]
 var _complete_map_tex = preload("res://assets/ui/map/map_base.png")
 
-const SNAP_DISTANCE = 15.0
+const SNAP_DISTANCE = 30.0
 const PIECE_SCALE = Vector2(5, 5)
 
 @onready var _board_sprite: Sprite2D = $BoardSprite
