@@ -6,14 +6,19 @@ var _pause_menu: CanvasLayer = null
 var _paused: bool = false
 var _game_ui: Node = null
 
-# Item textures
-var _wire_cutter_icon_default = preload("res://assets/ui/wire_cutter/icon_default.png")
-var _wire_cutter_icon_active = preload("res://assets/ui/wire_cutter/icon_active.png")
-var _wire_cutter_cursor_tex = preload("res://assets/ui/wire_cutter/cursor_default.png")
+# Item scenes — edit these in the editor to control scale, offset, etc.
+var _wire_cutter_icon_scene = preload("res://scenes/items/wire_cutter_icon.tscn")
+var _wire_cutter_cursor_scene = preload("res://scenes/items/wire_cutter_cursor.tscn")
 var _wire_cutter_cursor_click = preload("res://assets/ui/wire_cutter/cursor_click.png")
-var _clock_icon_no_hands = preload("res://assets/ui/clock/icon_no_hands.png")
-var _clock_icon_hands = preload("res://assets/ui/clock/icon_hands.png")
-var _clock_hand_icon = preload("res://assets/ui/clock/clock_hand_icon.png")
+var _wire_cutter_icon_active_tex = preload("res://assets/ui/wire_cutter/icon_active.png")
+var _wire_cutter_icon_default_tex = preload("res://assets/ui/wire_cutter/icon_default.png")
+
+var _clock_icon_scene = preload("res://scenes/items/clock_icon.tscn")
+var _clock_hands_icon_scene = preload("res://scenes/items/clock_hands_icon.tscn")
+var _clock_hands_cursor_scene = preload("res://scenes/items/clock_hands_cursor.tscn")
+var _clock_icon_no_hands_tex = preload("res://assets/ui/clock/icon_no_hands.png")
+var _clock_icon_hands_tex = preload("res://assets/ui/clock/icon_hands.png")
+var _clock_hand_icon_tex = preload("res://assets/ui/clock/clock_hand_icon.png")
 
 # Marker tile → interactable scene table.
 var _interactable_table: Array = [
@@ -57,13 +62,15 @@ var _interactable_table: Array = [
 ]
 
 # ── Dynamic inventory slots ──
-# Each entry: { "id": String, "texture": Texture2D, "on_click": Callable }
+# Each entry: { "id", "icon_scene", "on_click", "instance" (runtime) }
 var _inventory_items: Array[Dictionary] = []
-var _slot_sprites: Array[Sprite2D] = []
+var _slot_nodes: Array[Node] = []  # The Slot1-4 parent nodes
 const MAX_SLOTS = 4
 
+# Track which tool cursor is active
+var _active_tool: String = ""
+
 func _ready() -> void:
-	# Always start fresh — reset wire cutter state from any previous run or reload
 	GameState.has_wire_cutter = false
 	GameState.wire_cutter_mode = false
 	CustomCursor.reset_cursor()
@@ -71,7 +78,7 @@ func _ready() -> void:
 	_scan_interactables()
 	_setup_hud()
 	GameState.wire_cutter_collected.connect(_on_wire_cutter_collected)
-	GameState.wire_cutter_mode_changed.connect(_on_wire_cutter_mode_changed)
+	GameState.wire_cutter_mode_changed.connect(func(_a): pass)
 	GameState.clock_collected.connect(_on_clock_collected)
 	GameState.clock_hands_collected.connect(_on_clock_hands_collected)
 	GameState.clock_hands_added.connect(_on_clock_hands_inserted)
@@ -81,37 +88,38 @@ func _ready() -> void:
 func _setup_hud() -> void:
 	_game_ui = _game_ui_scene.instantiate()
 	add_child(_game_ui)
-	# Gather slot sprites
 	for i in range(1, MAX_SLOTS + 1):
 		var slot = _game_ui.get_node("UILayer/InventoryPanel/Slot%d" % i)
-		_slot_sprites.append(slot)
+		_slot_nodes.append(slot)
+		slot.visible = false
 	# Restore inventory from GameState
 	if GameState.has_wire_cutter:
-		_add_inventory_item("wire_cutter", _wire_cutter_icon_default, _on_wire_cutter_clicked)
+		_add_inventory_item("wire_cutter", _wire_cutter_icon_scene, _on_wire_cutter_clicked)
 	if GameState.has_clock:
-		var tex = _clock_icon_hands if GameState.clock_hands_inserted else _clock_icon_no_hands
-		_add_inventory_item("clock", tex, _on_clock_clicked, 0.45)
+		_add_inventory_item("clock", _clock_icon_scene, _on_clock_clicked)
 	if GameState.has_clock_hands and not GameState.clock_hands_inserted:
-		_add_inventory_item("clock_hands", _clock_hand_icon, _on_clock_hands_clicked, 1.5)
+		_add_inventory_item("clock_hands", _clock_hands_icon_scene, _on_clock_hands_clicked)
 
-func _add_inventory_item(id: String, texture: Texture2D, on_click: Callable, icon_scale: float = 1.0) -> void:
-	# Don't add duplicates
+func _add_inventory_item(id: String, icon_scene: PackedScene, on_click: Callable) -> void:
 	for item in _inventory_items:
 		if item["id"] == id:
 			return
 	if _inventory_items.size() >= MAX_SLOTS:
 		return
 	var idx = _inventory_items.size()
-	_inventory_items.append({"id": id, "texture": texture, "on_click": on_click, "icon_scale": icon_scale})
-	_slot_sprites[idx].texture = texture
-	_slot_sprites[idx].scale = Vector2(icon_scale, icon_scale)
-	_slot_sprites[idx].visible = true
+	var instance = icon_scene.instantiate()
+	var slot_node = _slot_nodes[idx]
+	# Clear any existing children
+	for child in slot_node.get_children():
+		child.queue_free()
+	slot_node.add_child(instance)
+	slot_node.visible = true
+	_inventory_items.append({"id": id, "icon_scene": icon_scene, "on_click": on_click, "instance": instance})
 
-func _update_inventory_icon(id: String, texture: Texture2D) -> void:
-	for i in range(_inventory_items.size()):
-		if _inventory_items[i]["id"] == id:
-			_inventory_items[i]["texture"] = texture
-			_slot_sprites[i].texture = texture
+func _update_inventory_texture(id: String, texture: Texture2D) -> void:
+	for item in _inventory_items:
+		if item["id"] == id and item["instance"] is Sprite2D:
+			item["instance"].texture = texture
 			return
 
 func _remove_inventory_item(id: String) -> void:
@@ -122,52 +130,56 @@ func _remove_inventory_item(id: String) -> void:
 			break
 	if remove_idx == -1:
 		return
+	# Remove instance
+	var old = _inventory_items[remove_idx]["instance"]
+	if old and old.get_parent():
+		old.get_parent().remove_child(old)
+		old.queue_free()
 	_inventory_items.remove_at(remove_idx)
-	# Shift remaining items down and rebuild slot visuals
+	# Rebuild all slots
 	for i in range(MAX_SLOTS):
+		var slot = _slot_nodes[i]
+		# Clear slot
+		for child in slot.get_children():
+			child.get_parent().remove_child(child)
+			child.queue_free()
 		if i < _inventory_items.size():
-			_slot_sprites[i].texture = _inventory_items[i]["texture"]
-			var s = _inventory_items[i]["icon_scale"]
-			_slot_sprites[i].scale = Vector2(s, s)
-			_slot_sprites[i].visible = true
+			var item = _inventory_items[i]
+			var new_instance = item["icon_scene"].instantiate()
+			slot.add_child(new_instance)
+			item["instance"] = new_instance
+			slot.visible = true
 		else:
-			_slot_sprites[i].visible = false
+			slot.visible = false
 
-# ── Item callbacks ──
-
-func _on_wire_cutter_collected() -> void:
-	_add_inventory_item("wire_cutter", _wire_cutter_icon_default, _on_wire_cutter_clicked)
-
-var _clock_hand_cursor_tex = preload("res://assets/ui/clock/clock_hand_cursor.png")
-
-# Track which tool cursor is active (only one at a time)
-var _active_tool: String = ""
+# ── Tool activation ──
 
 func _activate_tool(tool_id: String) -> void:
-	# Deactivate current tool first
 	if _active_tool != "":
 		_deactivate_tool()
 	_active_tool = tool_id
 	match tool_id:
 		"wire_cutter":
 			GameState.wire_cutter_mode = true
-			GameState.wire_cutter_mode_changed.emit(true)
-			_update_inventory_icon("wire_cutter", _wire_cutter_icon_active)
-			CustomCursor.set_cursor(_wire_cutter_cursor_tex, _wire_cutter_cursor_click)
+			_update_inventory_texture("wire_cutter", _wire_cutter_icon_active_tex)
+			CustomCursor.set_cursor_scene(_wire_cutter_cursor_scene, _wire_cutter_cursor_click)
 		"clock_hands":
-			_update_inventory_icon("clock_hands", _clock_hand_icon)
-			CustomCursor.set_cursor(_clock_hand_cursor_tex, _clock_hand_cursor_tex, Vector2(-180, -120), Vector2(3, 3))
+			CustomCursor.set_cursor_scene(_clock_hands_cursor_scene)
 
 func _deactivate_tool() -> void:
 	match _active_tool:
 		"wire_cutter":
 			GameState.wire_cutter_mode = false
-			GameState.wire_cutter_mode_changed.emit(false)
-			_update_inventory_icon("wire_cutter", _wire_cutter_icon_default)
+			_update_inventory_texture("wire_cutter", _wire_cutter_icon_default_tex)
 		"clock_hands":
-			_update_inventory_icon("clock_hands", _clock_hand_icon)
+			pass
 	_active_tool = ""
 	CustomCursor.reset_cursor()
+
+# ── Item callbacks ──
+
+func _on_wire_cutter_collected() -> void:
+	_add_inventory_item("wire_cutter", _wire_cutter_icon_scene, _on_wire_cutter_clicked)
 
 func _on_wire_cutter_clicked() -> void:
 	if _active_tool == "wire_cutter":
@@ -175,17 +187,14 @@ func _on_wire_cutter_clicked() -> void:
 	else:
 		_activate_tool("wire_cutter")
 
-func _on_wire_cutter_mode_changed(_active: bool) -> void:
-	pass  # Handled by _activate_tool/_deactivate_tool now
-
 func _on_clock_collected() -> void:
-	_add_inventory_item("clock", _clock_icon_no_hands, _on_clock_clicked, 0.45)
+	_add_inventory_item("clock", _clock_icon_scene, _on_clock_clicked)
 
 func _on_clock_clicked() -> void:
 	_open_clock_ui()
 
 func _on_clock_hands_collected() -> void:
-	_add_inventory_item("clock_hands", _clock_hand_icon, _on_clock_hands_clicked, 1.5)
+	_add_inventory_item("clock_hands", _clock_hands_icon_scene, _on_clock_hands_clicked)
 
 func _on_clock_hands_clicked() -> void:
 	if _active_tool == "clock_hands":
@@ -195,7 +204,7 @@ func _on_clock_hands_clicked() -> void:
 
 func _on_clock_hands_inserted() -> void:
 	_deactivate_tool()
-	_update_inventory_icon("clock", _clock_icon_hands)
+	_update_inventory_texture("clock", _clock_icon_hands_tex)
 	_remove_inventory_item("clock_hands")
 
 # ── Input ──
@@ -203,7 +212,6 @@ func _on_clock_hands_inserted() -> void:
 func _unhandled_input(event: InputEvent) -> void:
 	if event.is_action_pressed("ui_cancel"):
 		get_viewport().set_input_as_handled()
-		# ESC first deactivates any active tool cursor
 		if _active_tool != "":
 			_deactivate_tool()
 			return
@@ -218,7 +226,7 @@ func _unhandled_input(event: InputEvent) -> void:
 
 func _handle_inventory_click(mouse: Vector2) -> bool:
 	for i in range(_inventory_items.size()):
-		var slot = _slot_sprites[i]
+		var slot = _slot_nodes[i]
 		if slot.visible:
 			var slot_pos = slot.global_position
 			var half = Vector2(24, 24)

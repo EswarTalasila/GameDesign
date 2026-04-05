@@ -1981,7 +1981,7 @@ bulb_width = 35.0
 bulb_glow = 33.0
 
 [node name="ItemMarkers" type="TileMapLayer" parent="." unique_id=1526446248]
-tile_map_data = PackedByteArray("AAAXABMABAAAAAAAAAA=")
+tile_map_data = PackedByteArray("AAAYABIAAAAAAAAAAAA=")
 tile_set = ExtResource("8_markers")
 
 [node name="Player" parent="." unique_id=390407475 instance=ExtResource("5_rtcgv")]
