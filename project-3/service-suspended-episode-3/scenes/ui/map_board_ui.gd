@@ -1,11 +1,10 @@
 extends CanvasLayer
 
 ## Map assembly UI. Drag pieces into position on the board.
-## When all 4 are snapped, they merge into the complete map.
-## Requires all 4 pieces to be collected before completion.
+## When all 4 snapped, they lock in and map is assembled.
+## Reopening after assembly shows the completed map.
 
 signal board_closed
-signal map_completed
 
 var _piece_textures: Array = []
 var _piece_sprites: Array[Sprite2D] = []
@@ -23,7 +22,22 @@ func _ready() -> void:
 	layer = 8
 	for i in range(1, 5):
 		_piece_textures.append(load("res://assets/ui/map/piece_%d.png" % i))
-	_spawn_pieces()
+
+	if GameState.map_assembled:
+		# Already completed — show finished map
+		_show_completed_map()
+	else:
+		_spawn_pieces()
+
+func _show_completed_map() -> void:
+	# Show all pieces locked in place
+	for i in range(4):
+		var sprite = Sprite2D.new()
+		sprite.texture = _piece_textures[i]
+		sprite.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+		sprite.scale = PIECE_SCALE
+		sprite.position = _board_sprite.position
+		add_child(sprite)
 
 func _spawn_pieces() -> void:
 	var scatter_positions = [
@@ -50,6 +64,9 @@ func _input(event: InputEvent) -> void:
 		get_viewport().set_input_as_handled()
 		board_closed.emit()
 		return
+
+	if GameState.map_assembled:
+		return  # No interaction needed, just viewing
 
 	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT:
 		if event.pressed:
@@ -92,18 +109,10 @@ func _release() -> void:
 	_check_complete()
 
 func _check_complete() -> void:
-	# Need all 4 pieces collected AND all snapped
 	if GameState.collected_map_pieces.size() < 4:
 		return
 	for i in range(4):
 		if not _snapped[i]:
 			return
-	# All 4 snapped — merge into complete map
-	_merge_into_map()
-
-func _merge_into_map() -> void:
-	# All pieces are already snapped at the board position — just lock them in
-	# and mark assembled. The overlaid pieces ARE the complete map visually.
-	for sprite in _piece_sprites:
-		sprite.set_meta("locked", true)
+	# All 4 snapped — mark assembled, pieces stay visible
 	GameState.map_assembled = true
