@@ -6,7 +6,7 @@ extends Node
 ## Optional metadata on the scene root:
 ##   click_texture: Texture2D — shown while mouse button held
 
-var _default_scene: PackedScene = preload("res://scenes/items/default_cursor.tscn")
+var _default_scene: PackedScene = preload("res://scenes/items/cursors/default_cursor.tscn")
 var _layer: CanvasLayer
 var _sprite: Sprite2D = null
 var _normal_texture: Texture2D = null
@@ -15,7 +15,7 @@ var _offset: Vector2 = Vector2.ZERO
 
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
-	Input.mouse_mode = Input.MOUSE_MODE_HIDDEN
+	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE  # DEBUG: show OS cursor to see offset
 	_layer = CanvasLayer.new()
 	_layer.layer = 128
 	add_child(_layer)

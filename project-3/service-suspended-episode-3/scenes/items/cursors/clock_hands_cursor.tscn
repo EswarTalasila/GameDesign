@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3]
 
-[ext_resource type="Texture2D" path="res://assets/ui/clock/clock_hand_cursor.png" id="1_cursor"]
+[ext_resource type="Texture2D" path="res://assets/ui/cursors/clock_hands.png" id="1_cursor"]
 
 [node name="ClockHandsCursor" type="Sprite2D"]
 texture_filter = 1

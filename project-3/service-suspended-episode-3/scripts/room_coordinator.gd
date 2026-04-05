@@ -8,11 +8,11 @@ var _game_ui: Node = null
 
 # Item scenes — the source of truth for how things look.
 # Edit these in the Godot editor to change scale, offset, textures.
-var _wire_cutter_icon_scene = preload("res://scenes/items/wire_cutter_icon.tscn")
-var _wire_cutter_cursor_scene = preload("res://scenes/items/wire_cutter_cursor.tscn")
-var _clock_icon_scene = preload("res://scenes/items/clock_icon.tscn")
-var _clock_hands_icon_scene = preload("res://scenes/items/clock_hands_icon.tscn")
-var _clock_hands_cursor_scene = preload("res://scenes/items/clock_hands_cursor.tscn")
+var _wire_cutter_icon_scene = preload("res://scenes/items/icons/wire_cutter_icon.tscn")
+var _wire_cutter_cursor_scene = preload("res://scenes/items/cursors/wire_cutter_cursor.tscn")
+var _clock_icon_scene = preload("res://scenes/items/icons/clock_icon.tscn")
+var _clock_hands_icon_scene = preload("res://scenes/items/icons/clock_hands_icon.tscn")
+var _clock_hands_cursor_scene = preload("res://scenes/items/cursors/clock_hands_cursor.tscn")
 
 # Marker tile → interactable scene table.
 var _interactable_table: Array = [
@@ -227,7 +227,7 @@ func _handle_inventory_click(mouse: Vector2) -> bool:
 		var slot = _slots[i]
 		if slot.visible:
 			var slot_pos = slot.global_position
-			var half = Vector2(24, 24)
+			var half = Vector2(48, 48)
 			if Rect2(slot_pos - half, half * 2).has_point(mouse):
 				_inventory[i]["on_click"].call()
 				get_viewport().set_input_as_handled()

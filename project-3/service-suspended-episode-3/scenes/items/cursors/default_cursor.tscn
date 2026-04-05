@@ -1,0 +1,9 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Texture2D" path="res://assets/ui/cursors/default.png" id="1_default"]
+[ext_resource type="Texture2D" path="res://assets/ui/cursors/default_click.png" id="2_click"]
+
+[node name="DefaultCursor" type="Sprite2D"]
+texture_filter = 1
+texture = ExtResource("1_default")
+metadata/click_texture = ExtResource("2_click")

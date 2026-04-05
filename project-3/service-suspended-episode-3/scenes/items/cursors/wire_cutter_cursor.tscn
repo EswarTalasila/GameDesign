@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://cdqk0u21jf5ip"]
 
-[ext_resource type="Texture2D" uid="uid://cc41mlxwndaq6" path="res://assets/ui/wire_cutter/cursor_default.png" id="1_default"]
-[ext_resource type="Texture2D" path="res://assets/ui/wire_cutter/cursor_click.png" id="2_click"]
+[ext_resource type="Texture2D" path="res://assets/ui/cursors/wire_cutter.png" id="1_default"]
+[ext_resource type="Texture2D" path="res://assets/ui/cursors/wire_cutter_click.png" id="2_click"]
 
 [node name="WireCutterCursor" type="Sprite2D" unique_id=144461151]
 texture_filter = 1
