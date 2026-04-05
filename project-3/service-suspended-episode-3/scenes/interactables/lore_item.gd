@@ -34,7 +34,8 @@ func _unhandled_input(event: InputEvent) -> void:
 		_collect()
 
 func _collect() -> void:
-	var icon_tex: Texture2D = $Sprite2D.texture if $Sprite2D.texture else null
+	var anim = $AnimatedSprite2D
+	var icon_tex: Texture2D = anim.sprite_frames.get_frame_texture("default", 0) if anim.sprite_frames else null
 	GameState.collect_lore(lore_id, lore_title, lore_body, icon_tex)
 
 	# Open the inventory overlay to show what was just picked up
