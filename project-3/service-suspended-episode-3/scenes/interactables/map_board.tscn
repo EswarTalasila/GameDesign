@@ -4,7 +4,7 @@
 [ext_resource type="PackedScene" path="res://scenes/ui/press_e_prompt.tscn" id="2_prompt"]
 
 [sub_resource type="RectangleShape2D" id="interact_shape"]
-size = Vector2(96, 96)
+size = Vector2(128, 128)
 
 [node name="MapBoard" type="Area2D"]
 collision_layer = 0

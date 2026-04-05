@@ -15,7 +15,7 @@ func _ready() -> void:
 	body_exited.connect(_on_body_exited)
 
 func _on_body_entered(body: Node2D) -> void:
-	if body.name == "Player" and GameState.collected_map_pieces.size() > 0 and not GameState.map_assembled:
+	if body.name == "Player" and not GameState.map_assembled:
 		_player_in_range = true
 		_prompt.visible = true
 
@@ -25,7 +25,7 @@ func _on_body_exited(body: Node2D) -> void:
 		_prompt.visible = false
 
 func _unhandled_input(event: InputEvent) -> void:
-	if _player_in_range and not _ui_open and not GameState.map_assembled and event.is_action_pressed("interact"):
+	if _player_in_range and not _ui_open and event.is_action_pressed("interact"):
 		get_viewport().set_input_as_handled()
 		_open_ui()
 
