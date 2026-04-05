@@ -79,13 +79,16 @@ func _tween_screen_tinge(on: bool) -> void:
 		_watch_label = Label.new()
 		_watch_label.text = "The conductor is watching — do not move!"
 		_watch_label.modulate = Color(1, 1, 1, 0)
-		_watch_label.add_theme_color_override("font_color", Color(1, 0.8, 0.8))
+		_watch_label.add_theme_color_override("font_color", Color.WHITE)
 		_watch_label.add_theme_font_override("font", dot_gothic)
 		_watch_label.add_theme_font_size_override("font_size", 28)
 		_watch_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		_watch_label.set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_WIDE)
 		_watch_label.offset_top = -60
-		tinge_layer.add_child(_watch_label)
+		var label_layer = CanvasLayer.new()
+		label_layer.layer = 9  # above tinge (4), above vision (5), below HUD (10)
+		add_child(label_layer)
+		label_layer.add_child(_watch_label)
 
 	var tween = create_tween().set_parallel(true)
 	if on:
