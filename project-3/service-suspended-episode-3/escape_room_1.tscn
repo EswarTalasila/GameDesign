@@ -1906,6 +1906,8 @@ texture = ExtResource("2_de28u")
 44:20/0 = 0
 45:20/0 = 0
 46:20/0 = 0
+43:21/0 = 0
+46:21/0 = 0
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_kgchb"]
 texture = ExtResource("3_31ipf")
