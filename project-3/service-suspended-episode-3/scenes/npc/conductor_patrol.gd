@@ -39,6 +39,13 @@ var _conductor_scene = preload("res://scenes/npc/conductor.tscn")
 var _conductor: CharacterBody2D = null
 var _sprite: AnimatedSprite2D = null
 var _patrolling: bool = false
+var _intercom_scene = preload("res://scenes/ui/intercom.tscn")
+
+## If true, play intercom announcement before first patrol
+@export var play_intercom: bool = true
+
+## Delay after intercom before first patrol (seconds)
+@export var post_intercom_delay: float = 5.0
 
 func _ready() -> void:
 	if Engine.is_editor_hint():
@@ -46,7 +53,10 @@ func _ready() -> void:
 	# Render behind walls
 	z_index = -2
 	_spawn_conductor()
-	_start_patrol_loop()
+	if play_intercom and GameState.current_variant == 1:
+		_play_intercom_then_patrol()
+	else:
+		_start_patrol_loop()
 
 func _spawn_conductor() -> void:
 	_conductor = _conductor_scene.instantiate()
@@ -56,6 +66,19 @@ func _spawn_conductor() -> void:
 	_sprite = _conductor.get_node("AnimatedSprite2D")
 	# Disable physics on the conductor — we move it with tweens
 	_conductor.get_node("CollisionShape2D").disabled = true
+
+func _play_intercom_then_patrol() -> void:
+	# Wait a moment after room loads
+	await get_tree().create_timer(2.0).timeout
+	var intercom = _intercom_scene.instantiate()
+	get_tree().root.add_child(intercom)
+	intercom.play_messages([
+		{"text": "*bzzt* ... Attention. The time is now 6:47.", "duration": 3.5},
+		{"text": "*bzzt* ... The conductor will be making his rounds shortly.", "duration": 3.5},
+	])
+	await intercom.finished
+	await get_tree().create_timer(post_intercom_delay).timeout
+	_start_patrol_loop()
 
 func _start_patrol_loop() -> void:
 	while true:
