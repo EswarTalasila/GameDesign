@@ -363,6 +363,7 @@ func _open_clock_ui() -> void:
 
 func _close_clock_ui() -> void:
 	get_tree().paused = false
+	stop_pulse("clock_hands")
 	if _clock_ui:
 		_clock_ui.queue_free()
 		_clock_ui = null

@@ -51,5 +51,8 @@ func _close_puzzle() -> void:
 	if _puzzle_ui:
 		_puzzle_ui.queue_free()
 		_puzzle_ui = null
+	var coordinator = get_tree().root.find_child("Node2D", true, false)
+	if coordinator and coordinator.has_method("stop_pulse"):
+		coordinator.stop_pulse("wire_cutter")
 	if _player_in_range:
 		_prompt.visible = true

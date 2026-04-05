@@ -107,6 +107,9 @@ func _open_ui() -> void:
 func _close_ui() -> void:
 	_ui_open = false
 	get_tree().paused = false
+	var coordinator = get_tree().root.find_child("Node2D", true, false)
+	if coordinator and coordinator.has_method("stop_pulse"):
+		coordinator.stop_pulse("clock")
 	if _board_ui:
 		_board_ui.queue_free()
 		_board_ui = null
