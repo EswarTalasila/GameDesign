@@ -1,0 +1,103 @@
+extends CanvasLayer
+
+## Map assembly UI. Player drags pieces into position.
+## Pieces snap when close enough to their correct position.
+
+signal board_closed
+signal map_completed
+
+var _piece_textures: Array = []
+var _piece_sprites: Array[Sprite2D] = []
+var _dragging: Sprite2D = null
+var _drag_offset: Vector2 = Vector2.ZERO
+var _snapped: Array[bool] = [false, false, false, false]
+
+const SNAP_DISTANCE = 15.0  # pixels in local coords to snap
+const PIECE_SCALE = Vector2(5, 5)
+
+@onready var _board_sprite: Sprite2D = $BoardSprite
+
+func _ready() -> void:
+	layer = 8
+	for i in range(1, 5):
+		_piece_textures.append(load("res://assets/ui/map/piece_%d.png" % i))
+	_spawn_pieces()
+
+func _spawn_pieces() -> void:
+	var viewport_center = Vector2(960, 540)
+	var scatter_positions = [
+		viewport_center + Vector2(-300, -200),
+		viewport_center + Vector2(300, -150),
+		viewport_center + Vector2(-250, 200),
+		viewport_center + Vector2(280, 180),
+	]
+
+	for i in range(4):
+		if not GameState.has_map_piece(i + 1):
+			continue
+		var sprite = Sprite2D.new()
+		sprite.texture = _piece_textures[i]
+		sprite.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+		sprite.scale = PIECE_SCALE
+		sprite.position = scatter_positions[i]
+		sprite.set_meta("piece_id", i)
+		add_child(sprite)
+		_piece_sprites.append(sprite)
+
+func _input(event: InputEvent) -> void:
+	if event.is_action_pressed("ui_cancel"):
+		get_viewport().set_input_as_handled()
+		board_closed.emit()
+		return
+
+	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT:
+		if event.pressed:
+			_try_grab(event.position)
+		else:
+			_release()
+
+	if event is InputEventMouseMotion and _dragging:
+		_dragging.position = event.position + _drag_offset
+
+func _try_grab(mouse: Vector2) -> void:
+	# Check inventory clicks first
+	var coordinator = get_tree().root.find_child("Node2D", true, false)
+	if coordinator and coordinator.has_method("_handle_inventory_click"):
+		if coordinator._handle_inventory_click(mouse):
+			return
+
+	# Try to grab a piece (check in reverse order so top pieces are grabbed first)
+	for i in range(_piece_sprites.size() - 1, -1, -1):
+		var sprite = _piece_sprites[i]
+		var piece_id = sprite.get_meta("piece_id")
+		if _snapped[piece_id]:
+			continue
+		var half = Vector2(sprite.texture.get_width(), sprite.texture.get_height()) * sprite.scale / 2.0
+		var rect = Rect2(sprite.position - half, half * 2)
+		if rect.has_point(mouse):
+			_dragging = sprite
+			_drag_offset = sprite.position - mouse
+			# Move to top
+			move_child(sprite, -1)
+			return
+
+func _release() -> void:
+	if _dragging == null:
+		return
+	var piece_id = _dragging.get_meta("piece_id")
+	# Check if close enough to the correct position (center of board)
+	var target = _board_sprite.position  # All pieces overlay at center when correct
+	var dist = _dragging.position.distance_to(target)
+	if dist < SNAP_DISTANCE * PIECE_SCALE.x:
+		_dragging.position = target
+		_snapped[piece_id] = true
+		_check_complete()
+	_dragging = null
+
+func _check_complete() -> void:
+	for i in range(4):
+		if GameState.has_map_piece(i + 1) and not _snapped[i]:
+			return
+	# All collected pieces are snapped
+	if GameState.collected_map_pieces.size() == 4:
+		map_completed.emit()

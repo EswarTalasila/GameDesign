@@ -17,6 +17,7 @@ var _wire_cutter_cursor_scene = preload("res://scenes/items/cursors/wire_cutter_
 var _clock_icon_scene = preload("res://scenes/items/icons/clock_icon.tscn")
 var _clock_hands_icon_scene = preload("res://scenes/items/icons/clock_hands_icon.tscn")
 var _clock_hands_cursor_scene = preload("res://scenes/items/cursors/clock_hands_cursor.tscn")
+var _map_icon_scene = preload("res://scenes/items/icons/map_icon.tscn")
 
 # Marker tile → interactable scene table.
 var _interactable_table: Array = [
@@ -50,6 +51,13 @@ var _interactable_table: Array = [
 		"no_erase": true,
 	},
 	{
+		"atlas_min": Vector2i(43, 27),
+		"atlas_max": Vector2i(46, 29),
+		"source": 1,
+		"scene": preload("res://scenes/interactables/map_board.tscn"),
+		"no_erase": true,
+	},
+	{
 		"atlas_min": Vector2i(0, 0),
 		"atlas_max": Vector2i(0, 0),
 		"source": 0,
@@ -76,6 +84,7 @@ func _ready() -> void:
 	GameState.clock_collected.connect(_on_clock_collected)
 	GameState.clock_hands_collected.connect(_on_clock_hands_collected)
 	GameState.clock_hands_added.connect(_on_clock_hands_inserted)
+	GameState.map_piece_collected.connect(_on_map_piece_collected)
 	GameState.player_died.connect(_on_player_died)
 
 # ── HUD Setup ──
@@ -94,6 +103,8 @@ func _setup_hud() -> void:
 			set_item_active("clock")
 	if GameState.has_clock_hands and not GameState.clock_hands_inserted:
 		add_item("clock_hands", _clock_hands_icon_scene, _clock_hands_cursor_scene, _on_clock_hands_clicked)
+	if GameState.collected_map_pieces.size() > 0 and not GameState.map_assembled:
+		add_item("map", _map_icon_scene, null, func(): pass)
 
 # ── Inventory API ──
 
@@ -204,10 +215,24 @@ func _on_clock_hands_clicked() -> void:
 	else:
 		_activate_tool("clock_hands")
 
+func _on_map_piece_collected(_piece_id: int) -> void:
+	# Add map icon on first piece, it stays for subsequent pieces
+	if GameState.collected_map_pieces.size() == 1:
+		add_item("map", _map_icon_scene, null, func(): pass)
+
 func _on_clock_hands_inserted() -> void:
 	_deactivate_tool()
 	set_item_active("clock")  # swap clock icon to "with hands" version
 	remove_item("clock_hands")
+
+func pulse_inventory_item(id: String) -> void:
+	for item in _inventory:
+		if item["id"] == id and item["instance"]:
+			var sprite = item["instance"]
+			var base_scale = sprite.scale
+			var tween = create_tween().set_loops(3)
+			tween.tween_property(sprite, "scale", base_scale * 1.3, 0.2)
+			tween.tween_property(sprite, "scale", base_scale, 0.2)
 
 # ── Input ──
 

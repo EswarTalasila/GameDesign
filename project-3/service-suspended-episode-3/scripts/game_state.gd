@@ -22,6 +22,8 @@ signal clock_hands_added
 signal clock_mode_changed(active: bool)
 signal conductor_watching_changed(watching: bool)
 signal lore_collected(lore_entry: Dictionary)
+signal map_piece_collected(piece_id: int)
+signal map_assembled_signal
 
 var current_cart_index: int = 0
 var dungeon_type: String = "standard"
@@ -68,6 +70,10 @@ var clock_mode: bool = false
 var current_variant: int = 1
 var has_selected_variant: bool = false
 var suitcase_solved: bool = false
+
+# Map pieces
+var collected_map_pieces: Array[int] = []  # which piece numbers collected (1-4)
+var map_assembled: bool = false
 
 # Conductor
 var conductor_watching: bool = false
@@ -181,6 +187,15 @@ func set_clock_mode(active: bool) -> void:
 	clock_mode = active
 	clock_mode_changed.emit(active)
 
+func collect_map_piece(piece_id: int) -> void:
+	if piece_id in collected_map_pieces:
+		return
+	collected_map_pieces.append(piece_id)
+	map_piece_collected.emit(piece_id)
+
+func has_map_piece(piece_id: int) -> bool:
+	return piece_id in collected_map_pieces
+
 func set_conductor_watching(watching: bool) -> void:
 	conductor_watching = watching
 	conductor_watching_changed.emit(watching)
@@ -269,6 +284,8 @@ func reset() -> void:
 	suitcase_solved = false
 	conductor_watching = false
 	lore_open = false
+	collected_map_pieces.clear()
+	map_assembled = false
 	collected_lore.clear()
 	_init_section_variants()
 
