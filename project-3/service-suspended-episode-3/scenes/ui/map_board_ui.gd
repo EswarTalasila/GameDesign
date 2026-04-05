@@ -102,8 +102,8 @@ func _check_complete() -> void:
 	_merge_into_map()
 
 func _merge_into_map() -> void:
+	# All pieces are already snapped at the board position — just lock them in
+	# and mark assembled. The overlaid pieces ARE the complete map visually.
 	for sprite in _piece_sprites:
-		sprite.queue_free()
-	_piece_sprites.clear()
-	_board_sprite.texture = _complete_map_tex
+		sprite.set_meta("locked", true)
 	GameState.map_assembled = true
