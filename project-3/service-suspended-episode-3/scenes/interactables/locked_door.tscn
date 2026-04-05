@@ -2,13 +2,13 @@
 
 [ext_resource type="Script" uid="uid://ctxlr5mx8dj6u" path="res://scenes/interactables/locked_door.gd" id="1_script"]
 [ext_resource type="PackedScene" path="res://scenes/ui/press_e_prompt.tscn" id="2_prompt"]
-[ext_resource type="Texture2D" uid="uid://cnrkidvpkxnsv" path="res://assets/sprites/ui/lock/lock_closed_Closed_0.png" id="3_lock0"]
-[ext_resource type="Texture2D" uid="uid://ii4cw05bt2c1" path="res://assets/sprites/ui/lock/lock_closed_Closed_1.png" id="4_lock1"]
-[ext_resource type="Texture2D" uid="uid://6533ix65if3g" path="res://assets/sprites/ui/lock/lock_closed_Closed_2.png" id="5_lock2"]
-[ext_resource type="Texture2D" uid="uid://yfquv4s544rq" path="res://assets/sprites/ui/lock/lock_closed_Closed_3.png" id="6_lock3"]
-[ext_resource type="Texture2D" uid="uid://bdt3bhghnxoox" path="res://assets/sprites/ui/lock/lock_closed_Closed_4.png" id="7_lock4"]
-[ext_resource type="Texture2D" uid="uid://fkvievbayohj" path="res://assets/sprites/ui/lock/lock_closed_Closed_5.png" id="8_lock5"]
-[ext_resource type="Texture2D" uid="uid://73ur5bd884e3" path="res://assets/sprites/ui/lock/lock_closed_Closed_6.png" id="9_lock6"]
+[ext_resource type="Texture2D" uid="uid://cnrkidvpkxnsv" path="res://assets/ui/lock/lock_closed_Closed_0.png" id="3_lock0"]
+[ext_resource type="Texture2D" uid="uid://ii4cw05bt2c1" path="res://assets/ui/lock/lock_closed_Closed_1.png" id="4_lock1"]
+[ext_resource type="Texture2D" uid="uid://6533ix65if3g" path="res://assets/ui/lock/lock_closed_Closed_2.png" id="5_lock2"]
+[ext_resource type="Texture2D" uid="uid://yfquv4s544rq" path="res://assets/ui/lock/lock_closed_Closed_3.png" id="6_lock3"]
+[ext_resource type="Texture2D" uid="uid://bdt3bhghnxoox" path="res://assets/ui/lock/lock_closed_Closed_4.png" id="7_lock4"]
+[ext_resource type="Texture2D" uid="uid://fkvievbayohj" path="res://assets/ui/lock/lock_closed_Closed_5.png" id="8_lock5"]
+[ext_resource type="Texture2D" uid="uid://73ur5bd884e3" path="res://assets/ui/lock/lock_closed_Closed_6.png" id="9_lock6"]
 
 [sub_resource type="RectangleShape2D" id="interact_shape"]
 size = Vector2(112, 96)
