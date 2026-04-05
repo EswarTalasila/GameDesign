@@ -61,22 +61,39 @@ func _tween_light_tint(color: Vector3, strength: float, duration: float) -> void
 		cur_s if cur_s else 0.0, strength, duration)
 
 var _red_tinge: ColorRect = null
+var _watch_label: Label = null
 
 func _tween_screen_tinge(on: bool) -> void:
 	if _red_tinge == null:
 		var tinge_layer = CanvasLayer.new()
-		tinge_layer.layer = 4  # below vision overlay (5) but above game
+		tinge_layer.layer = 4
 		add_child(tinge_layer)
 		_red_tinge = ColorRect.new()
 		_red_tinge.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 		_red_tinge.color = Color(0.6, 0.0, 0.0, 0.0)
 		_red_tinge.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		tinge_layer.add_child(_red_tinge)
-	var tween = create_tween()
+
+		# Warning label
+		var dot_gothic = load("res://assets/fonts/DotGothic16-Regular.ttf")
+		_watch_label = Label.new()
+		_watch_label.text = "The conductor is watching — do not move!"
+		_watch_label.modulate = Color(1, 1, 1, 0)
+		_watch_label.add_theme_color_override("font_color", Color(1, 0.8, 0.8))
+		_watch_label.add_theme_font_override("font", dot_gothic)
+		_watch_label.add_theme_font_size_override("font_size", 28)
+		_watch_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		_watch_label.set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_WIDE)
+		_watch_label.offset_top = -60
+		tinge_layer.add_child(_watch_label)
+
+	var tween = create_tween().set_parallel(true)
 	if on:
 		tween.tween_property(_red_tinge, "color:a", 0.25, 0.5)
+		tween.tween_property(_watch_label, "modulate:a", 1.0, 0.5)
 	else:
 		tween.tween_property(_red_tinge, "color:a", 0.0, 0.5)
+		tween.tween_property(_watch_label, "modulate:a", 0.0, 0.5)
 
 func _setup_vision_overlay() -> void:
 	var layer = CanvasLayer.new()
