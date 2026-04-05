@@ -2,7 +2,11 @@ extends Node2D
 
 var _pause_menu_scene = preload("res://scenes/ui/pause_menu.tscn")
 var _game_ui_scene = preload("res://scenes/ui/game_ui.tscn")
+var _loading_screen_scene = preload("res://scenes/ui/loading_screen.tscn")
+var _death_screen_scene = preload("res://scenes/ui/death_screen.tscn")
+var _saving_icon_scene = preload("res://scenes/ui/saving_icon.tscn")
 var _pause_menu: CanvasLayer = null
+var _death_screen: CanvasLayer = null
 var _paused: bool = false
 var _game_ui: Node = null
 
@@ -72,6 +76,7 @@ func _ready() -> void:
 	GameState.clock_collected.connect(_on_clock_collected)
 	GameState.clock_hands_collected.connect(_on_clock_hands_collected)
 	GameState.clock_hands_added.connect(_on_clock_hands_inserted)
+	GameState.player_died.connect(_on_player_died)
 
 # ── HUD Setup ──
 
@@ -257,8 +262,12 @@ func _close_clock_ui() -> void:
 
 func _on_variant_selected(variant: int) -> void:
 	_close_clock_ui()
-	# For now, reload the same room. Later this will load the variant scene.
-	get_tree().reload_current_scene()
+	_show_saving_icon()
+	# Loading screen → reload room as new variant
+	var loading = _loading_screen_scene.instantiate()
+	loading.process_mode = Node.PROCESS_MODE_ALWAYS
+	get_tree().root.add_child(loading)
+	loading.transition_to("res://escape_room_1.tscn")
 
 # ── Tile Scanner ──
 
@@ -354,7 +363,46 @@ func _resume() -> void:
 func _restart() -> void:
 	_paused = false
 	get_tree().paused = false
-	get_tree().reload_current_scene()
+	var loading = _loading_screen_scene.instantiate()
+	loading.process_mode = Node.PROCESS_MODE_ALWAYS
+	get_tree().root.add_child(loading)
+	loading.transition_to("res://escape_room_1.tscn")
 
 func _quit() -> void:
 	get_tree().quit()
+
+# ── Death Screen ──
+
+func _on_player_died() -> void:
+	get_tree().paused = true
+	_death_screen = _death_screen_scene.instantiate()
+	_death_screen.process_mode = Node.PROCESS_MODE_ALWAYS
+	_death_screen.reload_requested.connect(_on_death_reload)
+	_death_screen.respawn_requested.connect(_on_death_respawn)
+	get_tree().root.add_child(_death_screen)
+
+func _on_death_reload() -> void:
+	get_tree().paused = false
+	if _death_screen:
+		_death_screen.queue_free()
+		_death_screen = null
+	GameState.reset_health()
+	var loading = _loading_screen_scene.instantiate()
+	loading.process_mode = Node.PROCESS_MODE_ALWAYS
+	get_tree().root.add_child(loading)
+	loading.transition_to("res://escape_room_1.tscn")
+
+func _on_death_respawn() -> void:
+	get_tree().paused = false
+	if _death_screen:
+		_death_screen.queue_free()
+		_death_screen = null
+	GameState.reset_health()
+	# Respawn at checkpoint or reload
+	get_tree().reload_current_scene()
+
+# ── Saving Icon ──
+
+func _show_saving_icon() -> void:
+	var icon = _saving_icon_scene.instantiate()
+	get_tree().root.add_child(icon)
