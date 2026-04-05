@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://jgacxl8j1kp"
-path="res://.godot/imported/panel_closed2.png-00297332f1432c7cbf35fec690b916e3.ctex"
+uid="uid://cmjve0tk5jiqh"
+path="res://.godot/imported/wire_green.png-a3b9ee038ee3c2bffcd9d9627a5ecac0.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/ui/electrical_panel/panel_closed2.png"
-dest_files=["res://.godot/imported/panel_closed2.png-00297332f1432c7cbf35fec690b916e3.ctex"]
+source_file="res://assets/ui/electrical_panel/wire_green.png"
+dest_files=["res://.godot/imported/wire_green.png-a3b9ee038ee3c2bffcd9d9627a5ecac0.ctex"]
 
 [params]
 

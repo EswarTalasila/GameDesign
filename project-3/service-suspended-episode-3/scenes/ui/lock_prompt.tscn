@@ -1,21 +1,21 @@
-[gd_scene load_steps=18 format=4]
+[gd_scene format=3 uid="uid://binqaub8pixog"]
 
-[ext_resource type="Texture2D" path="res://assets/sprites/ui/lock/lock_closed_Closed_0.png" id="c0"]
-[ext_resource type="Texture2D" path="res://assets/sprites/ui/lock/lock_closed_Closed_1.png" id="c1"]
-[ext_resource type="Texture2D" path="res://assets/sprites/ui/lock/lock_closed_Closed_2.png" id="c2"]
-[ext_resource type="Texture2D" path="res://assets/sprites/ui/lock/lock_closed_Closed_3.png" id="c3"]
-[ext_resource type="Texture2D" path="res://assets/sprites/ui/lock/lock_closed_Closed_4.png" id="c4"]
-[ext_resource type="Texture2D" path="res://assets/sprites/ui/lock/lock_closed_Closed_5.png" id="c5"]
-[ext_resource type="Texture2D" path="res://assets/sprites/ui/lock/lock_closed_Closed_6.png" id="c6"]
-[ext_resource type="Texture2D" path="res://assets/sprites/ui/lock/lock_unlocking_Unlocking_0.png" id="u0"]
-[ext_resource type="Texture2D" path="res://assets/sprites/ui/lock/lock_unlocking_Unlocking_1.png" id="u1"]
-[ext_resource type="Texture2D" path="res://assets/sprites/ui/lock/lock_unlocking_Unlocking_2.png" id="u2"]
-[ext_resource type="Texture2D" path="res://assets/sprites/ui/lock/lock_open_open_0.png" id="o0"]
-[ext_resource type="Texture2D" path="res://assets/sprites/ui/lock/lock_open_open_1.png" id="o1"]
-[ext_resource type="Texture2D" path="res://assets/sprites/ui/lock/lock_open_open_2.png" id="o2"]
-[ext_resource type="Texture2D" path="res://assets/sprites/ui/lock/lock_open_open_3.png" id="o3"]
-[ext_resource type="Texture2D" path="res://assets/sprites/ui/lock/lock_open_open_4.png" id="o4"]
-[ext_resource type="Texture2D" path="res://assets/sprites/ui/lock/lock_open_open_5.png" id="o5"]
+[ext_resource type="Texture2D" uid="uid://cnrkidvpkxnsv" path="res://assets/sprites/ui/lock/lock_closed_Closed_0.png" id="c0"]
+[ext_resource type="Texture2D" uid="uid://ii4cw05bt2c1" path="res://assets/sprites/ui/lock/lock_closed_Closed_1.png" id="c1"]
+[ext_resource type="Texture2D" uid="uid://6533ix65if3g" path="res://assets/sprites/ui/lock/lock_closed_Closed_2.png" id="c2"]
+[ext_resource type="Texture2D" uid="uid://yfquv4s544rq" path="res://assets/sprites/ui/lock/lock_closed_Closed_3.png" id="c3"]
+[ext_resource type="Texture2D" uid="uid://bdt3bhghnxoox" path="res://assets/sprites/ui/lock/lock_closed_Closed_4.png" id="c4"]
+[ext_resource type="Texture2D" uid="uid://fkvievbayohj" path="res://assets/sprites/ui/lock/lock_closed_Closed_5.png" id="c5"]
+[ext_resource type="Texture2D" uid="uid://73ur5bd884e3" path="res://assets/sprites/ui/lock/lock_closed_Closed_6.png" id="c6"]
+[ext_resource type="Texture2D" uid="uid://t3p1pu6akoe5" path="res://assets/sprites/ui/lock/lock_open_open_0.png" id="o0"]
+[ext_resource type="Texture2D" uid="uid://cvph8im8g3cj6" path="res://assets/sprites/ui/lock/lock_open_open_1.png" id="o1"]
+[ext_resource type="Texture2D" uid="uid://bwfimpsp8j0q6" path="res://assets/sprites/ui/lock/lock_open_open_2.png" id="o2"]
+[ext_resource type="Texture2D" uid="uid://xtq0t2ssrt1h" path="res://assets/sprites/ui/lock/lock_open_open_3.png" id="o3"]
+[ext_resource type="Texture2D" uid="uid://b4cawu4hk0ny5" path="res://assets/sprites/ui/lock/lock_open_open_4.png" id="o4"]
+[ext_resource type="Texture2D" uid="uid://8ar05uodftds" path="res://assets/sprites/ui/lock/lock_open_open_5.png" id="o5"]
+[ext_resource type="Texture2D" uid="uid://b1vh184q6pjcm" path="res://assets/sprites/ui/lock/lock_unlocking_Unlocking_0.png" id="u0"]
+[ext_resource type="Texture2D" uid="uid://d263wlnlnjka0" path="res://assets/sprites/ui/lock/lock_unlocking_Unlocking_1.png" id="u1"]
+[ext_resource type="Texture2D" uid="uid://cmvahcnbsdyei" path="res://assets/sprites/ui/lock/lock_unlocking_Unlocking_2.png" id="u2"]
 
 [sub_resource type="SpriteFrames" id="sprite_frames"]
 animations = [{
@@ -83,10 +83,10 @@ animations = [{
 "speed": 8.0
 }]
 
-[node name="LockPrompt" type="AnimatedSprite2D"]
+[node name="LockPrompt" type="AnimatedSprite2D" unique_id=1485717946]
 z_index = 20
 z_as_relative = false
-sprite_frames = SubResource("sprite_frames")
-autoplay = "locked"
 texture_filter = 1
-visible = false
+sprite_frames = SubResource("sprite_frames")
+animation = &"locked"
+autoplay = "locked"

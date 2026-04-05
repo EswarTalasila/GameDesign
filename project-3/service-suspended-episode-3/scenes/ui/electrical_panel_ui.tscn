@@ -1,24 +1,47 @@
-[gd_scene load_steps=3 format=3]
+[gd_scene format=3 uid="uid://bdidoq81ygb47"]
 
-[ext_resource type="Script" path="res://scenes/ui/electrical_panel_ui.gd" id="1_script"]
-[ext_resource type="Texture2D" path="res://assets/ui/electrical_panel/panel_closed.png" id="2_closed"]
+[ext_resource type="Script" uid="uid://cdyfl51qdonv7" path="res://scenes/ui/electrical_panel_ui.gd" id="1_script"]
+[ext_resource type="Texture2D" uid="uid://b80bc6nyxf5t5" path="res://assets/ui/electrical_panel/panel_open.png" id="3_open"]
+[ext_resource type="Texture2D" uid="uid://vew3108a83ai" path="res://assets/ui/electrical_panel/wire_red.png" id="4_red"]
+[ext_resource type="Texture2D" uid="uid://b8n42mt7id81k" path="res://assets/ui/electrical_panel/wire_blue.png" id="6_blue"]
+[ext_resource type="Texture2D" uid="uid://cmjve0tk5jiqh" path="res://assets/ui/electrical_panel/wire_green.png" id="8_green"]
+[ext_resource type="Texture2D" uid="uid://b11ravo6j7moh" path="res://assets/ui/electrical_panel/wire_black.png" id="10_black"]
 
-[node name="ElectricalPanelUI" type="CanvasLayer"]
+[node name="ElectricalPanelUI" type="CanvasLayer" unique_id=1845315905]
 layer = 8
 script = ExtResource("1_script")
 
-[node name="Background" type="ColorRect" parent="."]
+[node name="Background" type="ColorRect" parent="." unique_id=1340513579]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-color = Color(0, 0, 0, 0.7)
 mouse_filter = 2
+color = Color(0, 0, 0, 0.7)
 
-[node name="PanelSprite" type="Sprite2D" parent="."]
+[node name="PanelSprite" type="Sprite2D" parent="." unique_id=393213807]
+texture_filter = 1
 position = Vector2(960, 540)
 scale = Vector2(5, 5)
-texture = ExtResource("2_closed")
-texture_filter = 1
+texture = ExtResource("3_open")
 
-[node name="Wires" type="Node2D" parent="PanelSprite"]
-visible = false
+[node name="Wires" type="Node2D" parent="PanelSprite" unique_id=261988436]
+
+[node name="WireRed" type="Sprite2D" parent="PanelSprite/Wires" unique_id=1319283000]
+texture_filter = 1
+position = Vector2(-15.000122, 8.999989)
+texture = ExtResource("4_red")
+
+[node name="WireBlue" type="Sprite2D" parent="PanelSprite/Wires" unique_id=1034256142]
+texture_filter = 1
+position = Vector2(-7, 2.9999967)
+texture = ExtResource("6_blue")
+
+[node name="WireGreen" type="Sprite2D" parent="PanelSprite/Wires" unique_id=501673102]
+texture_filter = 1
+position = Vector2(0, 3.9999995)
+texture = ExtResource("8_green")
+
+[node name="WireBlack" type="Sprite2D" parent="PanelSprite/Wires" unique_id=350369248]
+texture_filter = 1
+position = Vector2(5.9999995, 3.999997)
+texture = ExtResource("10_black")
