@@ -27,7 +27,7 @@ extends Node2D
 		queue_redraw()
 
 ## How long the conductor stares through the window (seconds)
-@export var watch_duration: float = 3.0
+@export var watch_duration: float = 8.0
 
 ## Time between patrols (seconds)
 @export var patrol_interval: float = 15.0

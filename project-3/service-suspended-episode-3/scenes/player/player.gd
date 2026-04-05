@@ -39,9 +39,24 @@ func _on_conductor_watching_changed(watching: bool) -> void:
 	if watching:
 		_conductor_grace = 1.0
 		_conductor_cd = 0.0
+		_tween_light_tint(Vector3(0.8, 0.1, 0.1), 0.6, 0.5)
 	else:
 		_conductor_grace = 0.0
 		_conductor_cd = 0.0
+		_tween_light_tint(Vector3(0.0, 0.0, 0.0), 0.0, 0.5)
+
+func _tween_light_tint(color: Vector3, strength: float, duration: float) -> void:
+	if not _vision_material:
+		return
+	var tween = create_tween().set_parallel(true)
+	var cur_r = _vision_material.get_shader_parameter("light_tint")
+	var cur_s = _vision_material.get_shader_parameter("light_tint_strength")
+	# Tween tint color
+	tween.tween_method(func(v: Vector3): _vision_material.set_shader_parameter("light_tint", v),
+		cur_r if cur_r else Vector3.ZERO, color, duration)
+	# Tween tint strength
+	tween.tween_method(func(v: float): _vision_material.set_shader_parameter("light_tint_strength", v),
+		cur_s if cur_s else 0.0, strength, duration)
 
 func _setup_vision_overlay() -> void:
 	var layer = CanvasLayer.new()
