@@ -65,6 +65,38 @@ var _interactable_table: Array = [
 		"no_erase": false,
 		"skip_if": "has_wire_cutter",
 	},
+	{
+		"atlas_min": Vector2i(0, 0),
+		"atlas_max": Vector2i(0, 0),
+		"source": 1,
+		"scene": preload("res://scenes/pickups/map_piece_pickup.tscn"),
+		"no_erase": false,
+		"props": {"piece_id": 1},
+	},
+	{
+		"atlas_min": Vector2i(0, 0),
+		"atlas_max": Vector2i(0, 0),
+		"source": 2,
+		"scene": preload("res://scenes/pickups/map_piece_pickup.tscn"),
+		"no_erase": false,
+		"props": {"piece_id": 2},
+	},
+	{
+		"atlas_min": Vector2i(0, 0),
+		"atlas_max": Vector2i(0, 0),
+		"source": 3,
+		"scene": preload("res://scenes/pickups/map_piece_pickup.tscn"),
+		"no_erase": false,
+		"props": {"piece_id": 3},
+	},
+	{
+		"atlas_min": Vector2i(0, 0),
+		"atlas_max": Vector2i(0, 0),
+		"source": 4,
+		"scene": preload("res://scenes/pickups/map_piece_pickup.tscn"),
+		"no_erase": false,
+		"props": {"piece_id": 4},
+	},
 ]
 
 # ── Inventory System ──
@@ -347,6 +379,11 @@ func _scan_layer(layer: TileMapLayer) -> void:
 
 		var instance = entry["scene"].instantiate()
 		instance.position = center_px
+		# Apply props (e.g. piece_id) to the spawned instance
+		var props = entry.get("props", {})
+		for key in props:
+			if key in instance:
+				instance.set(key, props[key])
 		add_child(instance)
 
 		if not entry.get("no_erase", false):
