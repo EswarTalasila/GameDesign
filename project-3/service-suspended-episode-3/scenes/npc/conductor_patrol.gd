@@ -39,7 +39,8 @@ var _conductor_scene = preload("res://scenes/npc/conductor.tscn")
 var _conductor: CharacterBody2D = null
 var _sprite: AnimatedSprite2D = null
 var _patrolling: bool = false
-var _intercom_scene = preload("res://scenes/ui/intercom.tscn")
+var _intercom_dialogue = preload("res://dialogues/intercom.dialogue")
+var _intercom_static = preload("res://assets/sounds/innercom_static.mp3")
 
 ## If true, play intercom announcement before first patrol
 @export var play_intercom: bool = true
@@ -68,15 +69,18 @@ func _spawn_conductor() -> void:
 	_conductor.get_node("CollisionShape2D").disabled = true
 
 func _play_intercom_then_patrol() -> void:
-	# Wait a moment after room loads
 	await get_tree().create_timer(2.0).timeout
-	var intercom = _intercom_scene.instantiate()
-	get_tree().root.add_child(intercom)
-	intercom.play_messages([
-		{"text": "*bzzt* ... Attention. The time is now 6:47.", "duration": 3.5},
-		{"text": "*bzzt* ... The conductor will be making his rounds shortly.", "duration": 3.5},
-	])
-	await intercom.finished
+	# Play static sound
+	var sfx = AudioStreamPlayer.new()
+	sfx.stream = _intercom_static
+	sfx.volume_db = -8
+	add_child(sfx)
+	sfx.play()
+	# Show dialogue balloon (same style as project 2)
+	DialogueManager.show_dialogue_balloon(_intercom_dialogue, "announcement")
+	await DialogueManager.dialogue_ended
+	sfx.stop()
+	sfx.queue_free()
 	await get_tree().create_timer(post_intercom_delay).timeout
 	_start_patrol_loop()
 

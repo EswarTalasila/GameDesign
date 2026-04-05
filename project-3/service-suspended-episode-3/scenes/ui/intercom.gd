@@ -11,7 +11,7 @@ var _dot_gothic = preload("res://assets/fonts/DotGothic16-Regular.ttf")
 var _label: Label
 var _bg: ColorRect
 var _audio: AudioStreamPlayer
-var _messages: Array[Dictionary] = []
+var _messages: Array = []
 var _current: int = 0
 
 func _ready() -> void:
@@ -45,7 +45,7 @@ func _ready() -> void:
 
 ## Play a sequence of messages.
 ## Each entry: { "text": String, "duration": float }
-func play_messages(messages: Array[Dictionary]) -> void:
+func play_messages(messages: Array) -> void:
 	_messages = messages
 	_current = 0
 	_play_next()
