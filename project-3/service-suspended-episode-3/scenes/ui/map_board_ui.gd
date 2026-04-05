@@ -102,12 +102,8 @@ func _check_complete() -> void:
 	_merge_into_map()
 
 func _merge_into_map() -> void:
-	# Remove individual pieces
 	for sprite in _piece_sprites:
 		sprite.queue_free()
 	_piece_sprites.clear()
-	# Show complete map on the board
 	_board_sprite.texture = _complete_map_tex
-	# Brief pause to show the assembled map, then signal completion
-	await get_tree().create_timer(1.5).timeout
-	map_completed.emit()
+	GameState.map_assembled = true

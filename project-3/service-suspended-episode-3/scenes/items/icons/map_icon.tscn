@@ -1,16 +1,15 @@
-[gd_scene load_steps=3 format=3]
+[gd_scene format=3 uid="uid://bygg158bkogqm"]
 
-[ext_resource type="Texture2D" path="res://assets/ui/map/icon.png" id="1_icon"]
-[ext_resource type="Texture2D" path="res://assets/ui/numbers/1.png" id="2_num"]
+[ext_resource type="Texture2D" uid="uid://daaj5nc5yrraq" path="res://assets/ui/map/icon.png" id="1_icon"]
+[ext_resource type="Texture2D" uid="uid://dw3427fkvlqqj" path="res://assets/ui/numbers/1.png" id="2_num"]
 
-[node name="MapIcon" type="Node2D"]
+[node name="MapIcon" type="Node2D" unique_id=1354913126]
 
-[node name="Icon" type="Sprite2D" parent="."]
+[node name="Icon" type="Sprite2D" parent="." unique_id=2010831649]
 texture_filter = 1
-scale = Vector2(0.5, 0.5)
 texture = ExtResource("1_icon")
 
-[node name="Number" type="Sprite2D" parent="."]
+[node name="Number" type="Sprite2D" parent="." unique_id=1736253175]
 texture_filter = 1
-position = Vector2(10, 10)
+position = Vector2(17, 18)
 texture = ExtResource("2_num")
