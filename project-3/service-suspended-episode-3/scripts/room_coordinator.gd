@@ -285,10 +285,33 @@ func pulse_inventory_item(id: String) -> void:
 						target = child
 						break
 			var base_scale = target.scale
-			var tween = create_tween().set_loops(3)
+			# Stop any existing pulse
+			if target.has_meta("pulse_tween"):
+				var old: Tween = target.get_meta("pulse_tween")
+				if old and old.is_valid():
+					old.kill()
+				target.scale = base_scale
+			var tween = create_tween().set_loops(0)  # infinite
 			tween.set_pause_mode(Tween.TWEEN_PAUSE_PROCESS)
-			tween.tween_property(target, "scale", base_scale * 1.3, 0.2)
-			tween.tween_property(target, "scale", base_scale, 0.2)
+			tween.tween_property(target, "scale", base_scale * 1.1, 0.4).set_ease(Tween.EASE_IN_OUT).set_trans(Tween.TRANS_SINE)
+			tween.tween_property(target, "scale", base_scale, 0.4).set_ease(Tween.EASE_IN_OUT).set_trans(Tween.TRANS_SINE)
+			target.set_meta("pulse_tween", tween)
+
+func stop_pulse(id: String) -> void:
+	for item in _inventory:
+		if item["id"] == id and item["instance"]:
+			var node = item["instance"]
+			var target = node
+			if not node is Sprite2D:
+				for child in node.get_children():
+					if child is Sprite2D:
+						target = child
+						break
+			if target.has_meta("pulse_tween"):
+				var tween: Tween = target.get_meta("pulse_tween")
+				if tween and tween.is_valid():
+					tween.kill()
+				target.remove_meta("pulse_tween")
 
 # ── Input ──
 
