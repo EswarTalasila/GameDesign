@@ -7,6 +7,7 @@
 [ext_resource type="Script" uid="uid://be3o5uj34x317" path="res://scripts/room_coordinator.gd" id="6_coord"]
 [ext_resource type="PackedScene" path="res://scenes/interactables/door_light.tscn" id="6_x2d86"]
 [ext_resource type="TileSet" uid="uid://ca433fk50500d" path="res://assets/tilesets/dungeon/item_spawn_markers.tres" id="8_markers"]
+[ext_resource type="PackedScene" uid="uid://4k2tbk61oax0" path="res://scenes/npc/conductor_patrol.tscn" id="9_26wit"]
 [ext_resource type="Script" path="res://scripts/room_section.gd" id="9_section"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_31ipf"]
@@ -1987,3 +1988,6 @@ tile_set = ExtResource("8_markers")
 [node name="Player" parent="." unique_id=390407475 instance=ExtResource("5_rtcgv")]
 position = Vector2(325, 261)
 scale = Vector2(2, 2)
+
+[node name="ConductorPatrol" parent="." unique_id=1859744232 instance=ExtResource("9_26wit")]
+position = Vector2(92, 134)
