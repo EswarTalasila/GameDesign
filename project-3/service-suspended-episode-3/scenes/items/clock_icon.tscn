@@ -5,4 +5,7 @@
 
 [node name="ClockIcon" type="Sprite2D"]
 texture_filter = 1
+scale = Vector2(0.45, 0.45)
 texture = ExtResource("1_no_hands")
+metadata/default_texture = ExtResource("1_no_hands")
+metadata/active_texture = ExtResource("2_hands")

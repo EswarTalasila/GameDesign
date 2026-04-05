@@ -6,3 +6,4 @@
 [node name="DefaultCursor" type="Sprite2D"]
 texture_filter = 1
 texture = ExtResource("1_default")
+metadata/click_texture = ExtResource("2_click")
