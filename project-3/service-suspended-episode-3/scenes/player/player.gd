@@ -17,6 +17,10 @@ var _invincible: bool = false
 var _dead: bool = false
 var _vision_material: ShaderMaterial
 
+# Conductor watching penalty
+var _conductor_grace: float = 0.0
+var _conductor_cd: float = 0.0
+
 const _dir_vectors = {
 	"east": Vector2(1, 0), "west": Vector2(-1, 0),
 	"north": Vector2(0, -1), "south": Vector2(0, 1),
@@ -29,6 +33,15 @@ func _ready() -> void:
 	_hitbox.monitoring = false
 	_hitbox.monitorable = false
 	_setup_vision_overlay()
+	GameState.conductor_watching_changed.connect(_on_conductor_watching_changed)
+
+func _on_conductor_watching_changed(watching: bool) -> void:
+	if watching:
+		_conductor_grace = 1.0
+		_conductor_cd = 0.0
+	else:
+		_conductor_grace = 0.0
+		_conductor_cd = 0.0
 
 func _setup_vision_overlay() -> void:
 	var layer = CanvasLayer.new()
@@ -70,11 +83,30 @@ func _get_direction_name(dir: Vector2) -> String:
 		return "north_east"
 	return "south"
 
-func _physics_process(_delta: float) -> void:
+func _physics_process(delta: float) -> void:
+	# Freeze movement when reading lore
+	if GameState.lore_open:
+		velocity = Vector2.ZERO
+		move_and_slide()
+		return
+
 	if _attacking or _hit_stunned:
 		velocity = Vector2.ZERO
 		move_and_slide()
 		return
+
+	# Conductor watching — damage if player moves while being watched
+	if GameState.conductor_watching:
+		if _conductor_grace > 0.0:
+			_conductor_grace -= delta
+		else:
+			if _conductor_cd > 0.0:
+				_conductor_cd -= delta
+			var moving = Input.get_vector("move_left", "move_right", "move_up", "move_down") != Vector2.ZERO
+			if moving and _conductor_cd <= 0.0:
+				_play_sfx(_hit_sound)
+				GameState.damage_player(ceili(GameState.max_health / 4.0))
+				_conductor_cd = 1.5
 
 	direction = Input.get_vector("move_left", "move_right", "move_up", "move_down")
 
