@@ -1,10 +1,9 @@
-[gd_scene load_steps=2 format=4]
+[gd_scene format=3 uid="uid://by65qhf3c3u70"]
 
-[ext_resource type="Script" path="res://scripts/custom_cursor.gd" id="1_script"]
+[ext_resource type="Script" uid="uid://wftltf030tip" path="res://scripts/custom_cursor.gd" id="1_script"]
 
-[node name="CustomCursor" type="CanvasLayer"]
+[node name="CustomCursor" type="CanvasLayer" unique_id=632510321]
 layer = 128
 script = ExtResource("1_script")
 
-[node name="Sprite2D" type="Sprite2D" parent="."]
-texture_filter = 0
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1852734978]

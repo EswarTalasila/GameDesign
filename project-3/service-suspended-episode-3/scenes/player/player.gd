@@ -110,9 +110,59 @@ func _update_hitbox_position() -> void:
 	$AttackHitBox/CollisionShape2D.position = offsets.get(last_direction, Vector2(0, 12))
 
 func _update_vision() -> void:
-	if _vision_material:
-		var face_dir = _dir_vectors.get(last_direction, Vector2(0, 1))
-		_vision_material.set_shader_parameter("cone_direction", face_dir)
+	if not _vision_material:
+		return
+	var face_dir = _dir_vectors.get(last_direction, Vector2(0, 1))
+	_vision_material.set_shader_parameter("cone_direction", face_dir)
+	_update_world_lights()
+
+func _update_world_lights() -> void:
+	var lights = get_tree().get_nodes_in_group("world_lights")
+	var cam = get_viewport().get_camera_2d()
+	if cam == null:
+		return
+	var vp_size = get_viewport().get_visible_rect().size
+	var cam_pos = cam.get_screen_center_position()
+	var zoom = cam.zoom
+
+	var positions: Array = []
+	var directions: Array = []
+	var ranges: Array = []
+	var angles: Array = []
+	var pools: Array = []
+	var widths: Array = []
+	var glows: Array = []
+	var count = mini(lights.size(), 8)
+
+	for i in range(count):
+		var light = lights[i]
+		var screen_offset = (light.global_position - cam_pos) * zoom
+		var uv = Vector2(0.5 + screen_offset.x / vp_size.x, 0.5 + screen_offset.y / vp_size.y)
+		positions.append(uv)
+		directions.append(light.light_direction.normalized())
+		ranges.append((light.light_range * zoom.y) / vp_size.y)
+		angles.append(light.light_half_angle)
+		pools.append((light.pool_radius * zoom.y) / vp_size.y)
+		widths.append((light.bulb_width * zoom.y) / vp_size.y)
+		glows.append((light.bulb_glow * zoom.y) / vp_size.y)
+
+	while positions.size() < 8:
+		positions.append(Vector2(-10, -10))
+		directions.append(Vector2(0, 1))
+		ranges.append(0.0)
+		angles.append(0.0)
+		pools.append(0.0)
+		widths.append(0.0)
+		glows.append(0.0)
+
+	_vision_material.set_shader_parameter("light_count", count)
+	_vision_material.set_shader_parameter("light_positions", positions)
+	_vision_material.set_shader_parameter("light_directions", directions)
+	_vision_material.set_shader_parameter("light_ranges", ranges)
+	_vision_material.set_shader_parameter("light_angles", angles)
+	_vision_material.set_shader_parameter("light_pools", pools)
+	_vision_material.set_shader_parameter("light_widths", widths)
+	_vision_material.set_shader_parameter("light_glows", glows)
 
 func _play_sfx(stream: AudioStream) -> void:
 	var sfx = AudioStreamPlayer.new()

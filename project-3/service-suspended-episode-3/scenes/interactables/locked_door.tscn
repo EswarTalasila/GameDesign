@@ -1,0 +1,63 @@
+[gd_scene format=3 uid="uid://cdwj37m0utyao"]
+
+[ext_resource type="Script" uid="uid://ctxlr5mx8dj6u" path="res://scenes/interactables/locked_door.gd" id="1_script"]
+[ext_resource type="PackedScene" path="res://scenes/ui/press_e_prompt.tscn" id="2_prompt"]
+[ext_resource type="Texture2D" uid="uid://cnrkidvpkxnsv" path="res://assets/ui/lock/lock_closed_Closed_0.png" id="3_lock0"]
+[ext_resource type="Texture2D" uid="uid://ii4cw05bt2c1" path="res://assets/ui/lock/lock_closed_Closed_1.png" id="4_lock1"]
+[ext_resource type="Texture2D" uid="uid://6533ix65if3g" path="res://assets/ui/lock/lock_closed_Closed_2.png" id="5_lock2"]
+[ext_resource type="Texture2D" uid="uid://yfquv4s544rq" path="res://assets/ui/lock/lock_closed_Closed_3.png" id="6_lock3"]
+[ext_resource type="Texture2D" uid="uid://bdt3bhghnxoox" path="res://assets/ui/lock/lock_closed_Closed_4.png" id="7_lock4"]
+[ext_resource type="Texture2D" uid="uid://fkvievbayohj" path="res://assets/ui/lock/lock_closed_Closed_5.png" id="8_lock5"]
+[ext_resource type="Texture2D" uid="uid://73ur5bd884e3" path="res://assets/ui/lock/lock_closed_Closed_6.png" id="9_lock6"]
+
+[sub_resource type="RectangleShape2D" id="interact_shape"]
+size = Vector2(112, 96)
+
+[sub_resource type="SpriteFrames" id="lock_frames"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("3_lock0")
+}, {
+"duration": 1.0,
+"texture": ExtResource("4_lock1")
+}, {
+"duration": 1.0,
+"texture": ExtResource("5_lock2")
+}, {
+"duration": 1.0,
+"texture": ExtResource("6_lock3")
+}, {
+"duration": 1.0,
+"texture": ExtResource("7_lock4")
+}, {
+"duration": 1.0,
+"texture": ExtResource("8_lock5")
+}, {
+"duration": 1.0,
+"texture": ExtResource("9_lock6")
+}],
+"loop": true,
+"name": &"closed",
+"speed": 6.0
+}]
+
+[node name="LockedDoor" type="Area2D" unique_id=1052258501]
+collision_layer = 0
+script = ExtResource("1_script")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=131269248]
+position = Vector2(0, 16)
+shape = SubResource("interact_shape")
+
+[node name="LockIcon" type="AnimatedSprite2D" parent="." unique_id=1383418406]
+texture_filter = 1
+position = Vector2(1, -20)
+scale = Vector2(1.5, 1.5)
+sprite_frames = SubResource("lock_frames")
+animation = &"closed"
+autoplay = "closed"
+
+[node name="PressEPrompt" parent="." unique_id=1654980339 instance=ExtResource("2_prompt")]
+position = Vector2(0, -40)
+scale = Vector2(1.5, 1.5)

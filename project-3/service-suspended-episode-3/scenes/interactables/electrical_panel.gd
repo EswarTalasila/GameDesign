@@ -36,7 +36,14 @@ func _open_puzzle() -> void:
 	_puzzle_ui = _puzzle_ui_scene.instantiate()
 	_puzzle_ui.process_mode = Node.PROCESS_MODE_ALWAYS
 	_puzzle_ui.puzzle_closed.connect(_close_puzzle)
+	_puzzle_ui.puzzle_solved.connect(_on_puzzle_solved)
 	get_tree().root.add_child(_puzzle_ui)
+
+func _on_puzzle_solved() -> void:
+	# Unlock all locked doors in the scene
+	for door in get_tree().get_nodes_in_group("locked_doors"):
+		door.unlock()
+	_close_puzzle()
 
 func _close_puzzle() -> void:
 	_puzzle_open = false

@@ -1,0 +1,19 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://scenes/interactables/desk_clock.gd" id="1_script"]
+[ext_resource type="PackedScene" path="res://scenes/ui/press_e_prompt.tscn" id="2_prompt"]
+
+[sub_resource type="RectangleShape2D" id="interact_shape"]
+size = Vector2(128, 128)
+
+[node name="DeskClock" type="Area2D"]
+collision_layer = 0
+collision_mask = 1
+script = ExtResource("1_script")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("interact_shape")
+
+[node name="PressEPrompt" parent="." instance=ExtResource("2_prompt")]
+position = Vector2(0, -20)
+scale = Vector2(1.5, 1.5)

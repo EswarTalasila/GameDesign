@@ -1,0 +1,13 @@
+[gd_scene format=3 uid="uid://krnydhjoila"]
+
+[ext_resource type="Script" uid="uid://c2ijnah1cvgx2" path="res://scenes/ui/clock_debug_overlay.gd" id="1_script"]
+[ext_resource type="Texture2D" uid="uid://dru34pm3qmfn" path="res://assets/ui/clock/closeup_no_selection.png" id="2_clock"]
+
+[node name="ClockDebugOverlay" type="Sprite2D" unique_id=115273717]
+texture_filter = 1
+scale = Vector2(5, 5)
+texture = ExtResource("2_clock")
+script = ExtResource("1_script")
+clock_center = Vector2(65, 66)
+clock_radius = 24.0
+bounds_rotation = -25.0

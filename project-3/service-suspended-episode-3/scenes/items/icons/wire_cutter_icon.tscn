@@ -1,0 +1,10 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Texture2D" path="res://assets/ui/wire_cutter/icon_default.png" id="1_default"]
+[ext_resource type="Texture2D" path="res://assets/ui/wire_cutter/icon_active.png" id="2_active"]
+
+[node name="WireCutterIcon" type="Sprite2D"]
+texture_filter = 1
+texture = ExtResource("1_default")
+metadata/active_texture = ExtResource("2_active")
+metadata/default_texture = ExtResource("1_default")
