@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://bwvb80n65ooht"
-path="res://.godot/imported/frame_006.png-e3d9c34e934b228f1af9281996d33eda.ctex"
+path="res://.godot/imported/frame_006.png-97e1981b7250bf7fd0c0ba5ebc2106c3.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/ui/health_bar/full_to_two_thirds/frame_006.png"
-dest_files=["res://.godot/imported/frame_006.png-e3d9c34e934b228f1af9281996d33eda.ctex"]
+source_file="res://assets/ui/health_bar/full_to_two_thirds/frame_006.png"
+dest_files=["res://.godot/imported/frame_006.png-97e1981b7250bf7fd0c0ba5ebc2106c3.ctex"]
 
 [params]
 

@@ -49,7 +49,7 @@ var _interactable_table: Array = [
 	{
 		"atlas_min": Vector2i(0, 0),
 		"atlas_max": Vector2i(0, 0),
-		"source": 4,
+		"source": 0,
 		"scene": preload("res://scenes/pickups/wire_cutter_pickup.tscn"),
 		"no_erase": false,
 		"skip_if": "has_wire_cutter",
