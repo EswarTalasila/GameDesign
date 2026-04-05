@@ -1,0 +1,16 @@
+[remap]
+
+importer="dialogue_manager"
+importer_version=15
+type="Resource"
+uid="uid://colv8gqemm8b0"
+path="res://.godot/imported/intercom.dialogue-afbb8c8be1edf41efe60ece943bb1655.tres"
+
+[deps]
+
+source_file="res://dialogues/intercom.dialogue"
+dest_files=["res://.godot/imported/intercom.dialogue-afbb8c8be1edf41efe60ece943bb1655.tres"]
+
+[params]
+
+defaults=true

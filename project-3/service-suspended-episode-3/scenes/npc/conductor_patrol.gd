@@ -39,7 +39,7 @@ var _conductor_scene = preload("res://scenes/npc/conductor.tscn")
 var _conductor: CharacterBody2D = null
 var _sprite: AnimatedSprite2D = null
 var _patrolling: bool = false
-var _intercom_dialogue = preload("res://dialogues/intercom.dialogue")
+var _intercom_dialogue = load("res://dialogues/intercom.dialogue")
 var _intercom_static = preload("res://assets/sounds/innercom_static.mp3")
 
 ## If true, play intercom announcement before first patrol
