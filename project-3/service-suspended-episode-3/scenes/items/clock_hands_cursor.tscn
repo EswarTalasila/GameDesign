@@ -1,0 +1,7 @@
+[gd_scene format=3 uid="uid://mndq2ebtuycx"]
+
+[ext_resource type="Texture2D" path="res://assets/ui/clock/clock_hand_cursor.png" id="1_cursor"]
+
+[node name="ClockHandsCursor" type="Sprite2D" unique_id=402979247]
+texture_filter = 1
+texture = ExtResource("1_cursor")

@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://b62brsagajndl"
-path="res://.godot/imported/cursor_click.png-dd38a52fe44e18f7191af01d62c0f008.ctex"
+path="res://.godot/imported/wire_cutter_click.png-13204a8e02d0449ad746df9f9a9eb070.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/ui/wire_cutter/cursor_click.png"
-dest_files=["res://.godot/imported/cursor_click.png-dd38a52fe44e18f7191af01d62c0f008.ctex"]
+source_file="res://assets/ui/cursors/wire_cutter_click.png"
+dest_files=["res://.godot/imported/wire_cutter_click.png-13204a8e02d0449ad746df9f9a9eb070.ctex"]
 
 [params]
 

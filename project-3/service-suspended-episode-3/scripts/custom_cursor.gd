@@ -25,10 +25,9 @@ func _ready() -> void:
 func _process(_delta: float) -> void:
 	if _sprite:
 		_sprite.global_position = get_viewport().get_mouse_position() + _offset
-
-func _input(event: InputEvent) -> void:
-	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and _sprite:
-		_sprite.texture = _click_texture if event.pressed else _normal_texture
+		# Check mouse state directly so UI consuming clicks doesn't block the visual
+		var pressed = Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT)
+		_sprite.texture = _click_texture if pressed else _normal_texture
 
 ## Swap to a different cursor scene. What you set in the editor is what shows.
 func set_cursor_scene(scene: PackedScene) -> void:

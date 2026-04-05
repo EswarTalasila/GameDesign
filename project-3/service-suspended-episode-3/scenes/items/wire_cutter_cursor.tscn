@@ -1,0 +1,11 @@
+[gd_scene format=3 uid="uid://ctvmtall5m4s3"]
+
+[ext_resource type="Texture2D" path="res://assets/ui/wire_cutter/cursor_default.png" id="1_default"]
+[ext_resource type="Texture2D" path="res://assets/ui/wire_cutter/cursor_click.png" id="2_click"]
+
+[node name="WireCutterCursor" type="Sprite2D" unique_id=144461151]
+texture_filter = 1
+position = Vector2(48, 48.000004)
+scale = Vector2(1.5, 1.5)
+texture = ExtResource("1_default")
+metadata/click_texture = ExtResource("2_click")
