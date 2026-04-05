@@ -91,3 +91,43 @@ Pause / Menu
 ## Image Citations
 None
 
+
+# Game 3: Escape Room
+
+## Setup
+
+**Source File:**
+1. Install Godot Engine (version 3.5 or later recommended).
+2. Open Godot and click “Import”.
+3. Select the project folder from src/ labelled EscapeRoom (project3).
+4. Open the project.
+5. Click Play Scene or press F5 to start the game.
+
+## Team Members
+Eswar Talasila, Zachary Boston, Mokshagna Kadiyala, Nishil Rally
+
+## Story Format
+Pixel-style dungeon exploration with interactive combat and ticket collection mechanics.
+
+## Controls
+Move with WASD
+Punch with Spacebar
+Open Inventory / Collect Ticket / Collect Health with	E
+Pause / Menu
+
+## Gameplay Features
+1. Ticket Punching: Collect tickets scattered throughout each dungeon floor.
+2. Combat: Fight enemies using spacebar. Punch enemies to reduce their health.
+3. Obstacles: Avoid spikes and hazards. Timing and positioning are key.
+4. Levels: Explore dungeon floors and loop through to change position in dungeon.
+5. Health and Resources: Manage your health and energy while fighting enemies and navigating obstacles.
+
+## Tips for Players
+1. Explore every corner; some tickets are hidden in chests and others are in extreme corners of the dungeon.
+2. Watch enemy patterns to avoid taking damage unnecessarily.
+3. Punching tickets and defeating enemies helps to complete the game, but survival is key.
+4. Interacting with the environment (doors, levers, traps) may help to escape.
+
+## Image Citations
+None
+
