@@ -247,6 +247,7 @@ func _open_clock_ui() -> void:
 	_clock_ui.process_mode = Node.PROCESS_MODE_ALWAYS
 	_clock_ui.clock_closed.connect(_close_clock_ui)
 	_clock_ui.hands_inserted.connect(_on_clock_hands_inserted)
+	_clock_ui.variant_selected.connect(_on_variant_selected)
 	get_tree().root.add_child(_clock_ui)
 
 func _close_clock_ui() -> void:
@@ -254,6 +255,11 @@ func _close_clock_ui() -> void:
 	if _clock_ui:
 		_clock_ui.queue_free()
 		_clock_ui = null
+
+func _on_variant_selected(variant: int) -> void:
+	_close_clock_ui()
+	# For now, reload the same room. Later this will load the variant scene.
+	get_tree().reload_current_scene()
 
 # ── Tile Scanner ──
 
