@@ -263,11 +263,11 @@ func _close_clock_ui() -> void:
 func _on_variant_selected(variant: int) -> void:
 	_close_clock_ui()
 	_show_saving_icon()
-	# Loading screen → reload room as new variant
+	var scene_path = "res://escape_room_%d.tscn" % variant
 	var loading = _loading_screen_scene.instantiate()
 	loading.process_mode = Node.PROCESS_MODE_ALWAYS
 	get_tree().root.add_child(loading)
-	loading.transition_to("res://escape_room_1.tscn")
+	loading.transition_to(scene_path)
 
 # ── Tile Scanner ──
 
@@ -363,10 +363,11 @@ func _resume() -> void:
 func _restart() -> void:
 	_paused = false
 	get_tree().paused = false
+	var scene_path = "res://escape_room_%d.tscn" % GameState.current_variant
 	var loading = _loading_screen_scene.instantiate()
 	loading.process_mode = Node.PROCESS_MODE_ALWAYS
 	get_tree().root.add_child(loading)
-	loading.transition_to("res://escape_room_1.tscn")
+	loading.transition_to(scene_path)
 
 func _quit() -> void:
 	get_tree().quit()
@@ -387,10 +388,11 @@ func _on_death_reload() -> void:
 		_death_screen.queue_free()
 		_death_screen = null
 	GameState.reset_health()
+	var scene_path = "res://escape_room_%d.tscn" % GameState.current_variant
 	var loading = _loading_screen_scene.instantiate()
 	loading.process_mode = Node.PROCESS_MODE_ALWAYS
 	get_tree().root.add_child(loading)
-	loading.transition_to("res://escape_room_1.tscn")
+	loading.transition_to(scene_path)
 
 func _on_death_respawn() -> void:
 	get_tree().paused = false
