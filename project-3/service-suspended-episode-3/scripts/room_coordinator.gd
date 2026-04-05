@@ -63,7 +63,6 @@ const MAX_SLOTS = 4
 var _active_tool: String = ""
 
 func _ready() -> void:
-	GameState.has_wire_cutter = false
 	GameState.wire_cutter_mode = false
 	CustomCursor.reset_cursor()
 

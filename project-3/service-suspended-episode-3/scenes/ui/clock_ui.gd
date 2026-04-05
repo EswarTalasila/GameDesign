@@ -19,10 +19,12 @@ var _ui_with_hands = preload("res://assets/ui/clock/ui_with_hands.png")
 var _closeup_no_selection = preload("res://assets/ui/clock/closeup_no_selection.png")
 var _closeup_variants: Array[Texture2D] = []
 
-# Clock face center in the 128x128 sprite (approximate)
-const CLOCK_CENTER = Vector2(52, 48)
+# Clock face center in the 128x128 sprite — matched from debug overlay
+const CLOCK_CENTER = Vector2(65, 66)
 # Radius from center that counts as "on the clock face"
-const CLOCK_RADIUS = 30.0
+const CLOCK_RADIUS = 24.0
+# Rotation offset for quadrant boundaries (degrees)
+const BOUNDS_ROTATION = -25.0
 
 var _has_hands: bool = false
 var _hovered_variant: int = 0  # 0 = none, 1-4 = quadrant
@@ -58,7 +60,9 @@ func _process(_delta: float) -> void:
 	if not _has_hands:
 		return
 	var mouse = get_viewport().get_mouse_position()
-	var local = (mouse - _clock_sprite.position) / _clock_sprite.scale
+	# Convert mouse to local 128x128 sprite coords
+	# Sprite is centered, so (0,0) in local = center of the 128x128 image
+	var local = (mouse - _clock_sprite.position) / _clock_sprite.scale + Vector2(64, 64)
 	var from_center = local - CLOCK_CENTER
 	var dist = from_center.length()
 
@@ -73,21 +77,21 @@ func _process(_delta: float) -> void:
 			_update_display()
 
 func _get_quadrant(from_center: Vector2) -> int:
-	# Angle from 12 o'clock position, going clockwise
-	# atan2 gives angle from +X axis, so rotate to start from -Y (12 o'clock)
-	var angle = atan2(from_center.x, -from_center.y)
+	# Angle from 12 o'clock, going clockwise, with rotation offset
+	var rot = deg_to_rad(BOUNDS_ROTATION)
+	var angle = atan2(from_center.x, -from_center.y) - rot
 	if angle < 0:
 		angle += TAU
-	# 0 = 12 o'clock, PI/2 = 3 o'clock, PI = 6 o'clock, 3PI/2 = 9 o'clock
-	# Quadrants: 1-3 = 0 to PI/2, 4-6 = PI/2 to PI, 7-9 = PI to 3PI/2, 10-12 = 3PI/2 to TAU
+	if angle >= TAU:
+		angle -= TAU
 	if angle < PI / 2.0:
-		return 1  # 12-3 → Variant 1
+		return 1  # Variant 1
 	elif angle < PI:
-		return 2  # 3-6 → Variant 2
+		return 2  # Variant 2
 	elif angle < 3.0 * PI / 2.0:
-		return 3  # 6-9 → Variant 3
+		return 3  # Variant 3
 	else:
-		return 4  # 9-12 → Variant 4
+		return 4  # Variant 4
 
 func _input(event: InputEvent) -> void:
 	if event.is_action_pressed("ui_cancel"):

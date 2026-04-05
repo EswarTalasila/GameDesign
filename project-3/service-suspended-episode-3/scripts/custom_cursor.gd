@@ -15,7 +15,7 @@ var _offset: Vector2 = Vector2.ZERO
 
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
-	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE  # DEBUG: show OS cursor to see offset
+	Input.mouse_mode = Input.MOUSE_MODE_HIDDEN
 	_layer = CanvasLayer.new()
 	_layer.layer = 128
 	add_child(_layer)

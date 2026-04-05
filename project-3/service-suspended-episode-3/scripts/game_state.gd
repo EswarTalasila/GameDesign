@@ -65,6 +65,7 @@ var clock_hands_inserted: bool = false
 var clock_mode: bool = false
 var current_variant: int = 1
 var has_selected_variant: bool = false
+var suitcase_solved: bool = false
 
 # Audio mute (persists across resets — player preference)
 var muted: bool = false
@@ -238,6 +239,7 @@ func reset() -> void:
 	clock_mode = false
 	current_variant = 1
 	has_selected_variant = false
+	suitcase_solved = false
 	_init_section_variants()
 
 func toggle_mute() -> void:
