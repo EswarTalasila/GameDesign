@@ -1,0 +1,8 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Texture2D" path="res://assets/ui/wire_cutter/cursor_default.png" id="1_default"]
+[ext_resource type="Texture2D" path="res://assets/ui/wire_cutter/cursor_click.png" id="2_click"]
+
+[node name="WireCutterCursor" type="Sprite2D"]
+texture_filter = 1
+texture = ExtResource("1_default")

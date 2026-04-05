@@ -1,13 +1,13 @@
 [gd_scene load_steps=10 format=4]
 
-[ext_resource type="Texture2D" path="res://assets/ui/press_e1.png" id="1"]
-[ext_resource type="Texture2D" path="res://assets/ui/press_e2.png" id="2"]
-[ext_resource type="Texture2D" path="res://assets/ui/press_e3.png" id="3"]
-[ext_resource type="Texture2D" path="res://assets/ui/press_e4.png" id="4"]
-[ext_resource type="Texture2D" path="res://assets/ui/press_e5.png" id="5"]
-[ext_resource type="Texture2D" path="res://assets/ui/press_e6.png" id="6"]
-[ext_resource type="Texture2D" path="res://assets/ui/press_e7.png" id="7"]
-[ext_resource type="Texture2D" path="res://assets/ui/press_e8.png" id="8"]
+[ext_resource type="Texture2D" path="res://assets/ui/press_e/press_e1.png" id="1"]
+[ext_resource type="Texture2D" path="res://assets/ui/press_e/press_e2.png" id="2"]
+[ext_resource type="Texture2D" path="res://assets/ui/press_e/press_e3.png" id="3"]
+[ext_resource type="Texture2D" path="res://assets/ui/press_e/press_e4.png" id="4"]
+[ext_resource type="Texture2D" path="res://assets/ui/press_e/press_e5.png" id="5"]
+[ext_resource type="Texture2D" path="res://assets/ui/press_e/press_e6.png" id="6"]
+[ext_resource type="Texture2D" path="res://assets/ui/press_e/press_e7.png" id="7"]
+[ext_resource type="Texture2D" path="res://assets/ui/press_e/press_e8.png" id="8"]
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_1"]
 animations = [{
