@@ -276,11 +276,19 @@ func _on_clock_hands_inserted() -> void:
 func pulse_inventory_item(id: String) -> void:
 	for item in _inventory:
 		if item["id"] == id and item["instance"]:
-			var sprite = item["instance"]
-			var base_scale = sprite.scale
+			var node = item["instance"]
+			# Find the actual Sprite2D to pulse
+			var target = node
+			if not node is Sprite2D:
+				for child in node.get_children():
+					if child is Sprite2D:
+						target = child
+						break
+			var base_scale = target.scale
 			var tween = create_tween().set_loops(3)
-			tween.tween_property(sprite, "scale", base_scale * 1.3, 0.2)
-			tween.tween_property(sprite, "scale", base_scale, 0.2)
+			tween.set_pause_mode(Tween.TWEEN_PAUSE_PROCESS)
+			tween.tween_property(target, "scale", base_scale * 1.3, 0.2)
+			tween.tween_property(target, "scale", base_scale, 0.2)
 
 # ── Input ──
 

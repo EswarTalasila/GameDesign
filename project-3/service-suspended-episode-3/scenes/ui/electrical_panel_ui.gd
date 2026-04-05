@@ -70,6 +70,11 @@ func _open_panel() -> void:
 	_panel_sprite.texture = _open_tex
 	if _wire_container:
 		_wire_container.visible = true
+	# Pulse wire cutter icon now that wires are visible
+	if GameState.has_wire_cutter:
+		var coordinator = get_tree().root.find_child("Node2D", true, false)
+		if coordinator and coordinator.has_method("pulse_inventory_item"):
+			coordinator.pulse_inventory_item("wire_cutter")
 
 func _try_cut_at(mouse_pos: Vector2) -> void:
 	# Convert mouse to local space of the wire container

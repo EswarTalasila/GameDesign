@@ -38,11 +38,6 @@ func _open_puzzle() -> void:
 	_puzzle_ui.puzzle_closed.connect(_close_puzzle)
 	_puzzle_ui.puzzle_solved.connect(_on_puzzle_solved)
 	get_tree().root.add_child(_puzzle_ui)
-	# Pulse wire cutter icon if player has it
-	if GameState.has_wire_cutter:
-		var coordinator = get_tree().root.find_child("Node2D", true, false)
-		if coordinator and coordinator.has_method("pulse_inventory_item"):
-			coordinator.pulse_inventory_item("wire_cutter")
 
 func _on_puzzle_solved() -> void:
 	# Unlock all locked doors in the scene
