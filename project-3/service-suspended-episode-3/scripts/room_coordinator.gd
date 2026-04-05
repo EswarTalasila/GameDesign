@@ -326,6 +326,9 @@ func _open_clock_ui() -> void:
 	_clock_ui.hands_inserted.connect(_on_clock_hands_inserted)
 	_clock_ui.variant_selected.connect(_on_variant_selected)
 	get_tree().root.add_child(_clock_ui)
+	# Pulse clock hands if player has them to insert
+	if GameState.has_clock_hands and not GameState.clock_hands_inserted:
+		pulse_inventory_item("clock_hands")
 
 func _close_clock_ui() -> void:
 	get_tree().paused = false

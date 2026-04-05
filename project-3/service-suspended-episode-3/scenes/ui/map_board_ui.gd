@@ -116,3 +116,7 @@ func _check_complete() -> void:
 			return
 	# All 4 snapped — mark assembled, pieces stay visible
 	GameState.map_assembled = true
+	# Pulse clock icon to hint player should use clock on the map
+	var coordinator = get_tree().root.find_child("Node2D", true, false)
+	if coordinator and coordinator.has_method("pulse_inventory_item"):
+		coordinator.pulse_inventory_item("clock")
