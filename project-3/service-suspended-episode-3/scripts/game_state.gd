@@ -16,6 +16,10 @@ signal special_ticket_collected(current: int, required: int)
 signal all_special_tickets_collected
 signal wire_cutter_collected
 signal wire_cutter_mode_changed(active: bool)
+signal clock_collected
+signal clock_hands_collected
+signal clock_hands_added
+signal clock_mode_changed(active: bool)
 
 var current_cart_index: int = 0
 var dungeon_type: String = "standard"
@@ -53,6 +57,13 @@ var lady2_asked_before: bool = false
 # Wire cutter
 var has_wire_cutter: bool = false
 var wire_cutter_mode: bool = false
+
+# Clock
+var has_clock: bool = false
+var has_clock_hands: bool = false
+var clock_hands_inserted: bool = false
+var clock_mode: bool = false
+var current_variant: int = 1
 
 # Audio mute (persists across resets — player preference)
 var muted: bool = false
@@ -142,6 +153,23 @@ func set_wire_cutter_mode(active: bool) -> void:
 	wire_cutter_mode = active
 	wire_cutter_mode_changed.emit(active)
 
+func collect_clock() -> void:
+	has_clock = true
+	clock_collected.emit()
+
+func collect_clock_hands() -> void:
+	has_clock_hands = true
+	clock_hands_collected.emit()
+
+func insert_clock_hands() -> void:
+	clock_hands_inserted = true
+	has_clock_hands = false
+	clock_hands_added.emit()
+
+func set_clock_mode(active: bool) -> void:
+	clock_mode = active
+	clock_mode_changed.emit(active)
+
 func set_checkpoint(pos: Vector2, section: String = "") -> void:
 	checkpoint_position = pos
 	checkpoint_section = section
@@ -203,6 +231,11 @@ func reset() -> void:
 	lady2_asked_before = false
 	has_wire_cutter = false
 	wire_cutter_mode = false
+	has_clock = false
+	has_clock_hands = false
+	clock_hands_inserted = false
+	clock_mode = false
+	current_variant = 1
 	_init_section_variants()
 
 func toggle_mute() -> void:

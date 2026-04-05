@@ -13,10 +13,28 @@ scale = Vector2(4.4843745, 4.4843745)
 texture = ExtResource("2_inv")
 centered = false
 
-[node name="PunchSlot" type="Sprite2D" parent="." unique_id=554701086]
+[node name="Slot1" type="Sprite2D" parent="."]
 texture_filter = 1
-position = Vector2(137.66666, 133.33331)
-scale = Vector2(0.96809906, 0.96809906)
+position = Vector2(137.33333, 133.33331)
+scale = Vector2(0.96, 0.96)
+visible = false
+
+[node name="Slot2" type="Sprite2D" parent="."]
+texture_filter = 1
+position = Vector2(236.33334, 128.66667)
+scale = Vector2(0.96, 0.96)
+visible = false
+
+[node name="Slot3" type="Sprite2D" parent="."]
+texture_filter = 1
+position = Vector2(137.66666, 225.00002)
+scale = Vector2(0.96, 0.96)
+visible = false
+
+[node name="Slot4" type="Sprite2D" parent="."]
+texture_filter = 1
+position = Vector2(235.33331, 224.00002)
+scale = Vector2(0.96, 0.96)
 visible = false
 
 [node name="PauseSlot" type="Sprite2D" parent="." unique_id=762424516]

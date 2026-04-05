@@ -1,0 +1,83 @@
+[gd_scene format=3 uid="uid://bcxqpijxroswg"]
+
+[ext_resource type="Script" uid="uid://c46288rc3ndeq" path="res://scenes/ui/suitcase_ui.gd" id="1_script"]
+[ext_resource type="Texture2D" uid="uid://ynskcwd6y85t" path="res://assets/ui/suitcase/ui_base.png" id="2_base"]
+[ext_resource type="Texture2D" uid="uid://cuti5wflwpfgj" path="res://assets/ui/suitcase/up_normal.png" id="3_up"]
+[ext_resource type="Texture2D" uid="uid://culh4y1roicm2" path="res://assets/ui/suitcase/digit_0.png" id="4_digit"]
+[ext_resource type="Texture2D" uid="uid://1xt4lx7hen7a" path="res://assets/ui/suitcase/down_normal.png" id="5_down"]
+
+[node name="SuitcaseUI" type="CanvasLayer" unique_id=1511101727]
+layer = 8
+script = ExtResource("1_script")
+
+[node name="Background" type="ColorRect" parent="." unique_id=1350607741]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+color = Color(0, 0, 0, 0.7)
+
+[node name="UIBase" type="Sprite2D" parent="." unique_id=507855562]
+texture_filter = 1
+position = Vector2(960, 540)
+scale = Vector2(5, 5)
+texture = ExtResource("2_base")
+
+[node name="Slot1" type="Node2D" parent="UIBase" unique_id=1888908404]
+
+[node name="Up" type="Sprite2D" parent="UIBase/Slot1" unique_id=2106764122]
+texture_filter = 1
+texture = ExtResource("3_up")
+
+[node name="Digit" type="Sprite2D" parent="UIBase/Slot1" unique_id=619876713]
+texture_filter = 1
+texture = ExtResource("4_digit")
+
+[node name="Down" type="Sprite2D" parent="UIBase/Slot1" unique_id=628458061]
+texture_filter = 1
+texture = ExtResource("5_down")
+
+[node name="Slot2" type="Node2D" parent="UIBase" unique_id=1163924434]
+position = Vector2(13.199999, 0)
+
+[node name="Up" type="Sprite2D" parent="UIBase/Slot2" unique_id=1170834528]
+texture_filter = 1
+texture = ExtResource("3_up")
+
+[node name="Digit" type="Sprite2D" parent="UIBase/Slot2" unique_id=1790957426]
+texture_filter = 1
+texture = ExtResource("4_digit")
+
+[node name="Down" type="Sprite2D" parent="UIBase/Slot2" unique_id=174523621]
+texture_filter = 1
+texture = ExtResource("5_down")
+
+[node name="Slot3" type="Node2D" parent="UIBase" unique_id=937717394]
+position = Vector2(25.999998, 0)
+
+[node name="Up" type="Sprite2D" parent="UIBase/Slot3" unique_id=1148474221]
+texture_filter = 1
+texture = ExtResource("3_up")
+
+[node name="Digit" type="Sprite2D" parent="UIBase/Slot3" unique_id=268752160]
+texture_filter = 1
+texture = ExtResource("4_digit")
+
+[node name="Down" type="Sprite2D" parent="UIBase/Slot3" unique_id=1895411145]
+texture_filter = 1
+texture = ExtResource("5_down")
+
+[node name="Slot4" type="Node2D" parent="UIBase" unique_id=822249313]
+position = Vector2(38.999996, 0)
+
+[node name="Up" type="Sprite2D" parent="UIBase/Slot4" unique_id=248099396]
+texture_filter = 1
+texture = ExtResource("3_up")
+
+[node name="Digit" type="Sprite2D" parent="UIBase/Slot4" unique_id=1046297419]
+texture_filter = 1
+texture = ExtResource("4_digit")
+
+[node name="Down" type="Sprite2D" parent="UIBase/Slot4" unique_id=740637100]
+texture_filter = 1
+texture = ExtResource("5_down")
