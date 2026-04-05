@@ -40,10 +40,12 @@ func _on_conductor_watching_changed(watching: bool) -> void:
 		_conductor_grace = 1.0
 		_conductor_cd = 0.0
 		_tween_light_tint(Vector3(0.8, 0.1, 0.1), 0.6, 0.5)
+		_tween_screen_tinge(true)
 	else:
 		_conductor_grace = 0.0
 		_conductor_cd = 0.0
 		_tween_light_tint(Vector3(0.0, 0.0, 0.0), 0.0, 0.5)
+		_tween_screen_tinge(false)
 
 func _tween_light_tint(color: Vector3, strength: float, duration: float) -> void:
 	if not _vision_material:
@@ -57,6 +59,24 @@ func _tween_light_tint(color: Vector3, strength: float, duration: float) -> void
 	# Tween tint strength
 	tween.tween_method(func(v: float): _vision_material.set_shader_parameter("light_tint_strength", v),
 		cur_s if cur_s else 0.0, strength, duration)
+
+var _red_tinge: ColorRect = null
+
+func _tween_screen_tinge(on: bool) -> void:
+	if _red_tinge == null:
+		var tinge_layer = CanvasLayer.new()
+		tinge_layer.layer = 4  # below vision overlay (5) but above game
+		add_child(tinge_layer)
+		_red_tinge = ColorRect.new()
+		_red_tinge.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+		_red_tinge.color = Color(0.6, 0.0, 0.0, 0.0)
+		_red_tinge.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		tinge_layer.add_child(_red_tinge)
+	var tween = create_tween()
+	if on:
+		tween.tween_property(_red_tinge, "color:a", 0.25, 0.5)
+	else:
+		tween.tween_property(_red_tinge, "color:a", 0.0, 0.5)
 
 func _setup_vision_overlay() -> void:
 	var layer = CanvasLayer.new()

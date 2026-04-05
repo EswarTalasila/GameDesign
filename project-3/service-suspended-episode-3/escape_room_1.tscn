@@ -1991,3 +1991,4 @@ scale = Vector2(2, 2)
 
 [node name="ConductorPatrol" parent="." unique_id=1859744232 instance=ExtResource("9_26wit")]
 position = Vector2(92, 134)
+patrol_interval = 25.0
