@@ -1,7 +1,8 @@
 extends CanvasLayer
 
-## Map assembly UI. Player drags pieces into position.
-## Pieces snap when close enough to their correct position.
+## Map assembly UI. Drag pieces into position on the board.
+## When all 4 are snapped, they merge into the complete map.
+## Requires all 4 pieces to be collected before completion.
 
 signal board_closed
 signal map_completed
@@ -11,8 +12,9 @@ var _piece_sprites: Array[Sprite2D] = []
 var _dragging: Sprite2D = null
 var _drag_offset: Vector2 = Vector2.ZERO
 var _snapped: Array[bool] = [false, false, false, false]
+var _complete_map_tex = preload("res://assets/ui/map/map_base.png")
 
-const SNAP_DISTANCE = 15.0  # pixels in local coords to snap
+const SNAP_DISTANCE = 15.0
 const PIECE_SCALE = Vector2(5, 5)
 
 @onready var _board_sprite: Sprite2D = $BoardSprite
@@ -24,12 +26,11 @@ func _ready() -> void:
 	_spawn_pieces()
 
 func _spawn_pieces() -> void:
-	var viewport_center = Vector2(960, 540)
 	var scatter_positions = [
-		viewport_center + Vector2(-300, -200),
-		viewport_center + Vector2(300, -150),
-		viewport_center + Vector2(-250, 200),
-		viewport_center + Vector2(280, 180),
+		Vector2(300, 300),
+		Vector2(1600, 250),
+		Vector2(350, 750),
+		Vector2(1550, 700),
 	]
 
 	for i in range(4):
@@ -60,13 +61,11 @@ func _input(event: InputEvent) -> void:
 		_dragging.position = event.position + _drag_offset
 
 func _try_grab(mouse: Vector2) -> void:
-	# Check inventory clicks first
 	var coordinator = get_tree().root.find_child("Node2D", true, false)
 	if coordinator and coordinator.has_method("_handle_inventory_click"):
 		if coordinator._handle_inventory_click(mouse):
 			return
 
-	# Try to grab a piece (check in reverse order so top pieces are grabbed first)
 	for i in range(_piece_sprites.size() - 1, -1, -1):
 		var sprite = _piece_sprites[i]
 		var piece_id = sprite.get_meta("piece_id")
@@ -77,7 +76,6 @@ func _try_grab(mouse: Vector2) -> void:
 		if rect.has_point(mouse):
 			_dragging = sprite
 			_drag_offset = sprite.position - mouse
-			# Move to top
 			move_child(sprite, -1)
 			return
 
@@ -85,19 +83,31 @@ func _release() -> void:
 	if _dragging == null:
 		return
 	var piece_id = _dragging.get_meta("piece_id")
-	# Check if close enough to the correct position (center of board)
-	var target = _board_sprite.position  # All pieces overlay at center when correct
+	var target = _board_sprite.position
 	var dist = _dragging.position.distance_to(target)
 	if dist < SNAP_DISTANCE * PIECE_SCALE.x:
 		_dragging.position = target
 		_snapped[piece_id] = true
-		_check_complete()
 	_dragging = null
+	_check_complete()
 
 func _check_complete() -> void:
+	# Need all 4 pieces collected AND all snapped
+	if GameState.collected_map_pieces.size() < 4:
+		return
 	for i in range(4):
-		if GameState.has_map_piece(i + 1) and not _snapped[i]:
+		if not _snapped[i]:
 			return
-	# All collected pieces are snapped
-	if GameState.collected_map_pieces.size() == 4:
-		map_completed.emit()
+	# All 4 snapped — merge into complete map
+	_merge_into_map()
+
+func _merge_into_map() -> void:
+	# Remove individual pieces
+	for sprite in _piece_sprites:
+		sprite.queue_free()
+	_piece_sprites.clear()
+	# Show complete map on the board
+	_board_sprite.texture = _complete_map_tex
+	# Brief pause to show the assembled map, then signal completion
+	await get_tree().create_timer(1.5).timeout
+	map_completed.emit()

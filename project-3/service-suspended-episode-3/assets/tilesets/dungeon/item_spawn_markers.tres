@@ -1,10 +1,10 @@
 [gd_resource type="TileSet" format=3 uid="uid://ca433fk50500d"]
 
 [ext_resource type="Texture2D" uid="uid://m7ysgb2fu6at" path="res://assets/sprites/pickups/wire_cutter/wire_cutter_spawn_marker.png" id="5_wc"]
-[ext_resource type="Texture2D" path="res://assets/sprites/pickups/map_piece_1/spawn_marker.png" id="6_map1"]
-[ext_resource type="Texture2D" path="res://assets/sprites/pickups/map_piece_2/spawn_marker.png" id="7_map2"]
-[ext_resource type="Texture2D" path="res://assets/sprites/pickups/map_piece_3/spawn_marker.png" id="8_map3"]
-[ext_resource type="Texture2D" path="res://assets/sprites/pickups/map_piece_4/spawn_marker.png" id="9_map4"]
+[ext_resource type="Texture2D" uid="uid://bc2jxfdytg73b" path="res://assets/sprites/pickups/map_piece_1/spawn_marker.png" id="6_map1"]
+[ext_resource type="Texture2D" uid="uid://ddx4x8m3f867h" path="res://assets/sprites/pickups/map_piece_2/spawn_marker.png" id="7_map2"]
+[ext_resource type="Texture2D" uid="uid://b8rcjrwdfjn5r" path="res://assets/sprites/pickups/map_piece_3/spawn_marker.png" id="8_map3"]
+[ext_resource type="Texture2D" uid="uid://bpm7mabeyuyi" path="res://assets/sprites/pickups/map_piece_4/spawn_marker.png" id="9_map4"]
 
 [sub_resource type="TileSetAtlasSource" id="5"]
 texture = ExtResource("5_wc")

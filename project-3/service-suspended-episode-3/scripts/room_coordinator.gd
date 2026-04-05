@@ -248,9 +248,18 @@ func _on_clock_hands_clicked() -> void:
 		_activate_tool("clock_hands")
 
 func _on_map_piece_collected(_piece_id: int) -> void:
-	# Add map icon on first piece, it stays for subsequent pieces
 	if GameState.collected_map_pieces.size() == 1:
 		add_item("map", _map_icon_scene, null, func(): pass)
+	# Update the number on the map icon
+	_update_map_count()
+
+func _update_map_count() -> void:
+	for item in _inventory:
+		if item["id"] == "map" and item["instance"]:
+			var number_sprite = item["instance"].get_node_or_null("Number")
+			if number_sprite:
+				var count = GameState.collected_map_pieces.size()
+				number_sprite.texture = load("res://assets/ui/numbers/%d.png" % clampi(count, 0, 9))
 
 func _on_clock_hands_inserted() -> void:
 	_deactivate_tool()
