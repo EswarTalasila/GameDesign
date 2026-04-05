@@ -248,9 +248,8 @@ func _on_clock_hands_clicked() -> void:
 		_activate_tool("clock_hands")
 
 func _on_map_piece_collected(_piece_id: int) -> void:
-	if GameState.collected_map_pieces.size() == 1:
-		add_item("map", _map_icon_scene, null, func(): pass)
-	# Update the number on the map icon
+	# Add map icon (add_item ignores if already exists)
+	add_item("map", _map_icon_scene, null, func(): pass)
 	_update_map_count()
 
 func _update_map_count() -> void:

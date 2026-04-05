@@ -108,12 +108,5 @@ func _close_ui() -> void:
 		_board_ui.queue_free()
 		_board_ui = null
 	_update_board_tiles()
-	# Re-add map icon if not all assembled yet
-	if not GameState.map_assembled and GameState.collected_map_pieces.size() > 0:
-		var coordinator = get_tree().root.find_child("Node2D", true, false)
-		if coordinator and coordinator.has_method("add_item"):
-			var map_icon = load("res://scenes/items/icons/map_icon.tscn")
-			coordinator.add_item("map", map_icon, null, func(): pass)
-			coordinator._update_map_count()
 	if _player_in_range:
 		_prompt.visible = true
