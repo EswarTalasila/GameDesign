@@ -72,7 +72,8 @@ var has_selected_variant: bool = false
 var suitcase_solved: bool = false
 
 # Map pieces
-var collected_map_pieces: Array[int] = []  # which piece numbers collected (1-4)
+var collected_map_pieces: Array[int] = []  # total ever collected (1-4)
+var board_pieces: Array[int] = []  # pieces placed on the board
 var map_assembled: bool = false
 
 # Conductor
@@ -285,6 +286,7 @@ func reset() -> void:
 	conductor_watching = false
 	lore_open = false
 	collected_map_pieces.clear()
+	board_pieces.clear()
 	map_assembled = false
 	collected_lore.clear()
 	_init_section_variants()

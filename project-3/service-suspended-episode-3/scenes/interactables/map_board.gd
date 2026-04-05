@@ -89,11 +89,14 @@ func _unhandled_input(event: InputEvent) -> void:
 func _open_ui() -> void:
 	_ui_open = true
 	_prompt.visible = false
+	# Move all collected pieces to the board
+	for piece_id in GameState.collected_map_pieces:
+		if piece_id not in GameState.board_pieces:
+			GameState.board_pieces.append(piece_id)
 	# Remove map icon from inventory
 	var coordinator = get_tree().root.find_child("Node2D", true, false)
 	if coordinator and coordinator.has_method("remove_item"):
 		coordinator.remove_item("map")
-	# Update board tiles to show loaded state
 	_update_board_tiles()
 	get_tree().paused = true
 	_board_ui = _board_ui_scene.instantiate()

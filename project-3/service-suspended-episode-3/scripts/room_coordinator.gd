@@ -135,8 +135,13 @@ func _setup_hud() -> void:
 			set_item_active("clock")
 	if GameState.has_clock_hands and not GameState.clock_hands_inserted:
 		add_item("clock_hands", _clock_hands_icon_scene, _clock_hands_cursor_scene, _on_clock_hands_clicked)
-	if GameState.collected_map_pieces.size() > 0 and not GameState.map_assembled:
+	var _pieces_in_hand = 0
+	for p in GameState.collected_map_pieces:
+		if p not in GameState.board_pieces:
+			_pieces_in_hand += 1
+	if _pieces_in_hand > 0 and not GameState.map_assembled:
 		add_item("map", _map_icon_scene, null, func(): pass)
+		_update_map_count()
 
 # ── Inventory API ──
 
@@ -257,8 +262,11 @@ func _update_map_count() -> void:
 		if item["id"] == "map" and item["instance"]:
 			var number_sprite = item["instance"].get_node_or_null("Number")
 			if number_sprite:
-				var count = GameState.collected_map_pieces.size()
-				number_sprite.texture = load("res://assets/ui/numbers/%d.png" % clampi(count, 0, 9))
+				var in_hand = 0
+				for p in GameState.collected_map_pieces:
+					if p not in GameState.board_pieces:
+						in_hand += 1
+				number_sprite.texture = load("res://assets/ui/numbers/%d.png" % clampi(in_hand, 0, 9))
 
 func _on_clock_hands_inserted() -> void:
 	_deactivate_tool()
