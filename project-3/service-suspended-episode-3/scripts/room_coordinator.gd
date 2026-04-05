@@ -38,6 +38,11 @@ var _interactable_table: Array = [
 ]
 
 func _ready() -> void:
+	# Always start fresh — reset wire cutter state from any previous run or reload
+	GameState.has_wire_cutter = false
+	GameState.wire_cutter_mode = false
+	CustomCursor.reset_cursor()
+
 	_scan_interactables()
 	_setup_hud()
 	GameState.wire_cutter_collected.connect(_on_wire_cutter_collected)
