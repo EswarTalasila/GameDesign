@@ -1,7 +1,8 @@
-[gd_scene load_steps=2 format=3]
+[gd_scene format=3 uid="uid://b1p7ddfc2ogdy"]
 
-[ext_resource type="Texture2D" path="res://assets/ui/clock/clock_hand_icon.png" id="1_icon"]
+[ext_resource type="Texture2D" uid="uid://bpj02mb53o0tb" path="res://assets/ui/clock/clock_hand_icon.png" id="1_icon"]
 
-[node name="ClockHandsIcon" type="Sprite2D"]
+[node name="ClockHandsIcon" type="Sprite2D" unique_id=916524520]
 texture_filter = 1
+position = Vector2(0, 1)
 texture = ExtResource("1_icon")

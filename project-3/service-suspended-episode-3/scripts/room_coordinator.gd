@@ -138,16 +138,45 @@ func _remove_inventory_item(id: String) -> void:
 func _on_wire_cutter_collected() -> void:
 	_add_inventory_item("wire_cutter", _wire_cutter_icon_default, _on_wire_cutter_clicked)
 
-func _on_wire_cutter_clicked() -> void:
-	GameState.set_wire_cutter_mode(not GameState.wire_cutter_mode)
+var _clock_hand_cursor_tex = preload("res://assets/ui/clock/clock_hand_cursor.png")
 
-func _on_wire_cutter_mode_changed(active: bool) -> void:
-	var tex = _wire_cutter_icon_active if active else _wire_cutter_icon_default
-	_update_inventory_icon("wire_cutter", tex)
-	if active:
-		CustomCursor.set_cursor(_wire_cutter_cursor_tex, _wire_cutter_cursor_click)
+# Track which tool cursor is active (only one at a time)
+var _active_tool: String = ""
+
+func _activate_tool(tool_id: String) -> void:
+	# Deactivate current tool first
+	if _active_tool != "":
+		_deactivate_tool()
+	_active_tool = tool_id
+	match tool_id:
+		"wire_cutter":
+			GameState.wire_cutter_mode = true
+			GameState.wire_cutter_mode_changed.emit(true)
+			_update_inventory_icon("wire_cutter", _wire_cutter_icon_active)
+			CustomCursor.set_cursor(_wire_cutter_cursor_tex, _wire_cutter_cursor_click)
+		"clock_hands":
+			_update_inventory_icon("clock_hands", _clock_hand_icon)
+			CustomCursor.set_cursor(_clock_hand_cursor_tex, _clock_hand_cursor_tex, Vector2(-180, -120), Vector2(3, 3))
+
+func _deactivate_tool() -> void:
+	match _active_tool:
+		"wire_cutter":
+			GameState.wire_cutter_mode = false
+			GameState.wire_cutter_mode_changed.emit(false)
+			_update_inventory_icon("wire_cutter", _wire_cutter_icon_default)
+		"clock_hands":
+			_update_inventory_icon("clock_hands", _clock_hand_icon)
+	_active_tool = ""
+	CustomCursor.reset_cursor()
+
+func _on_wire_cutter_clicked() -> void:
+	if _active_tool == "wire_cutter":
+		_deactivate_tool()
 	else:
-		CustomCursor.reset_cursor()
+		_activate_tool("wire_cutter")
+
+func _on_wire_cutter_mode_changed(_active: bool) -> void:
+	pass  # Handled by _activate_tool/_deactivate_tool now
 
 func _on_clock_collected() -> void:
 	_add_inventory_item("clock", _clock_icon_no_hands, _on_clock_clicked, 0.45)
@@ -155,23 +184,17 @@ func _on_clock_collected() -> void:
 func _on_clock_clicked() -> void:
 	_open_clock_ui()
 
-var _clock_hand_cursor_tex = preload("res://assets/ui/clock/clock_hand_cursor.png")
-var _clock_hands_mode: bool = false
-
 func _on_clock_hands_collected() -> void:
 	_add_inventory_item("clock_hands", _clock_hand_icon, _on_clock_hands_clicked, 1.5)
 
 func _on_clock_hands_clicked() -> void:
-	_clock_hands_mode = not _clock_hands_mode
-	if _clock_hands_mode:
-		# Offset so the tip of the hands aligns with the mouse pointer
-		# Scale down since the 128x128 canvas is large
-		# Tweak offset to position the hands tip at the click point
-		CustomCursor.set_cursor(_clock_hand_cursor_tex, _clock_hand_cursor_tex, Vector2(-180, -120), Vector2(3, 3))
+	if _active_tool == "clock_hands":
+		_deactivate_tool()
 	else:
-		CustomCursor.reset_cursor()
+		_activate_tool("clock_hands")
 
 func _on_clock_hands_inserted() -> void:
+	_deactivate_tool()
 	_update_inventory_icon("clock", _clock_icon_hands)
 	_remove_inventory_item("clock_hands")
 
@@ -180,6 +203,10 @@ func _on_clock_hands_inserted() -> void:
 func _unhandled_input(event: InputEvent) -> void:
 	if event.is_action_pressed("ui_cancel"):
 		get_viewport().set_input_as_handled()
+		# ESC first deactivates any active tool cursor
+		if _active_tool != "":
+			_deactivate_tool()
+			return
 		if _paused:
 			_resume()
 		else:
@@ -187,17 +214,19 @@ func _unhandled_input(event: InputEvent) -> void:
 		return
 
 	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
-		var mouse = get_viewport().get_mouse_position()
-		# Check inventory slot clicks
-		for i in range(_inventory_items.size()):
-			var slot = _slot_sprites[i]
-			if slot.visible:
-				var slot_pos = slot.global_position
-				var half = Vector2(24, 24)
-				if Rect2(slot_pos - half, half * 2).has_point(mouse):
-					_inventory_items[i]["on_click"].call()
-					get_viewport().set_input_as_handled()
-					return
+		_handle_inventory_click(get_viewport().get_mouse_position())
+
+func _handle_inventory_click(mouse: Vector2) -> bool:
+	for i in range(_inventory_items.size()):
+		var slot = _slot_sprites[i]
+		if slot.visible:
+			var slot_pos = slot.global_position
+			var half = Vector2(24, 24)
+			if Rect2(slot_pos - half, half * 2).has_point(mouse):
+				_inventory_items[i]["on_click"].call()
+				get_viewport().set_input_as_handled()
+				return true
+	return false
 
 # ── Clock UI ──
 

@@ -41,16 +41,11 @@ func _input(event: InputEvent) -> void:
 	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
 		var mouse = event.position
 
-		# Check inventory click (wire cutter toggle) first
-		if GameState.has_wire_cutter:
-			var punch_slot = get_tree().root.find_child("PunchSlot", true, false)
-			if punch_slot and punch_slot.visible:
-				var slot_pos = punch_slot.global_position
-				var half = Vector2(24, 24)
-				if Rect2(slot_pos - half, half * 2).has_point(mouse):
-					GameState.set_wire_cutter_mode(not GameState.wire_cutter_mode)
-					get_viewport().set_input_as_handled()
-					return
+		# Let inventory clicks through — delegate to room coordinator
+		var coordinator = get_tree().root.find_child("Node2D", true, false)
+		if coordinator and coordinator.has_method("_handle_inventory_click"):
+			if coordinator._handle_inventory_click(mouse):
+				return
 
 		# Panel area
 		var panel_center = _panel_sprite.position
