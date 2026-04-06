@@ -79,6 +79,10 @@ var clock_on_map: bool = false
 var wire_cut_order: Array = []
 var path_assignments: Array = []  # [{path: int, color: String}, ...]
 
+# Simon says puzzle
+var simon_solved: bool = false
+var simon_key_sequence: Array = []
+
 # Conductor
 var conductor_watching: bool = false
 
@@ -294,6 +298,8 @@ func reset() -> void:
 	clock_on_map = false
 	wire_cut_order.clear()
 	path_assignments.clear()
+	simon_solved = false
+	simon_key_sequence.clear()
 	collected_lore.clear()
 	_init_section_variants()
 

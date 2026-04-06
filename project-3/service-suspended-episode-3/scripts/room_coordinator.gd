@@ -58,6 +58,13 @@ var _interactable_table: Array = [
 		"no_erase": true,
 	},
 	{
+		"atlas_min": Vector2i(42, 8),
+		"atlas_max": Vector2i(44, 11),
+		"source": 0,
+		"scene": preload("res://scenes/interactables/simon_says_panel.tscn"),
+		"no_erase": true,
+	},
+	{
 		"atlas_min": Vector2i(0, 0),
 		"atlas_max": Vector2i(0, 0),
 		"source": 0,
