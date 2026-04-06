@@ -107,26 +107,25 @@ None
 Eswar Talasila, Zachary Boston, Mokshagna Kadiyala, Nishil Rally
 
 ## Story Format
-Pixel-style dungeon exploration with interactive combat and ticket collection mechanics.
+Pixel-style escape room with looping structure to change environment of room. Collecting items in the room helps you to escape.
 
 ## Controls
 Move with WASD
-Punch with Spacebar
-Open Inventory / Collect Ticket / Collect Health with	E
+Open Inventory
 Pause / Menu
 
 ## Gameplay Features
-1. Ticket Punching: Collect tickets scattered throughout each dungeon floor.
-2. Combat: Fight enemies using spacebar. Punch enemies to reduce their health.
-3. Obstacles: Avoid spikes and hazards. Timing and positioning are key.
-4. Levels: Explore dungeon floors and loop through to change position in dungeon.
-5. Health and Resources: Manage your health and energy while fighting enemies and navigating obstacles.
+1. Collecting items: Use keys to navigate throughout the room, collecting map pieces, clock hands, etc to help you escape.
+2. Limited visibility: The room is dark, only allowing a certain amount of visibility from the current position. Moving through the room is key to finding items.
+3. Conductor messages: Stop what you're doing when the conductor arrives to avoid losing items!
+4. Loops: Explore the escape room, using the clock to loop through various environments of the same room and collecting items.
+5. Health and Resources: Manage your health and collect and combine items together to escape the room.
 
 ## Tips for Players
-1. Explore every corner; some tickets are hidden in chests and others are in extreme corners of the dungeon.
-2. Watch enemy patterns to avoid taking damage unnecessarily.
-3. Punching tickets and defeating enemies helps to complete the game, but survival is key.
-4. Interacting with the environment (doors, levers, traps) may help to escape.
+1. Explore every corner of the escape room.
+2. Stop moving when the "Conductor Arriving" announcement comes on. Continuing to move will result in losing some retrieved items.
+3. Using the clock will help you to move through the loops, finding new items to help you escape.
+4. Interacting with the environment will help you find new items and learn more about the looping system.
 
 ## Image Citations
 None
