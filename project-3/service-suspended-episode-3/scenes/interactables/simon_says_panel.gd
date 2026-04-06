@@ -27,14 +27,19 @@ func _ready() -> void:
 		var key = ["red", "blue", "green", "black"]
 		key.shuffle()
 		GameState.simon_key_sequence = key
-	# Flash light sequence after 5 second delay
 	if not GameState.simon_solved:
-		_flash_lights_on_entry()
+		_start_light_loop()
 
-func _flash_lights_on_entry() -> void:
+func _start_light_loop() -> void:
 	await get_tree().create_timer(5.0).timeout
-	if not is_inside_tree():
-		return
+	while is_inside_tree() and not GameState.simon_solved:
+		if GameState.conductor_watching:
+			await get_tree().create_timer(1.0).timeout
+			continue
+		await _flash_key_sequence()
+		await get_tree().create_timer(8.0).timeout
+
+func _flash_key_sequence() -> void:
 	var player = get_tree().root.find_child("Player", true, false)
 	if player == null:
 		return
