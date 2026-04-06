@@ -91,8 +91,12 @@ func _play_intercom_then_patrol() -> void:
 	# Repeat greeting + time twice more with 10s gaps
 	for _i in range(2):
 		await get_tree().create_timer(10.0).timeout
-		if not is_inside_tree() or get_tree().paused:
-			continue
+		if not is_inside_tree():
+			return
+		while get_tree().paused:
+			await get_tree().create_timer(0.5).timeout
+		if not is_inside_tree():
+			return
 		var repeat_sfx = AudioStreamPlayer.new()
 		repeat_sfx.stream = _intercom_static
 		repeat_sfx.volume_db = -8

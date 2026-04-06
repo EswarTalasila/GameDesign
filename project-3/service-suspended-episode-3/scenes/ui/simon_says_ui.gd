@@ -43,24 +43,6 @@ func _ready() -> void:
 		key.shuffle()
 		GameState.set("simon_key_sequence", key)
 	_key_sequence = GameState.get("simon_key_sequence")
-	_setup_hint()
-
-func _setup_hint() -> void:
-	var dot_gothic = load("res://assets/fonts/DotGothic16-Regular.ttf")
-	_hint_label = Label.new()
-	_hint_label.text = "Press the buttons in the order of the colors."
-	_hint_label.add_theme_font_override("font", dot_gothic)
-	_hint_label.add_theme_font_size_override("font_size", 28)
-	_hint_label.add_theme_color_override("font_color", Color(0.85, 0.8, 0.65))
-	_hint_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	_hint_label.set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_WIDE)
-	_hint_label.offset_top = -80
-	_hint_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	add_child(_hint_label)
-	# Fade out after a few seconds
-	var tween = create_tween()
-	tween.tween_interval(3.0)
-	tween.tween_property(_hint_label, "modulate:a", 0.0, 1.0)
 
 func _input(event: InputEvent) -> void:
 	if event.is_action_pressed("ui_cancel"):
@@ -99,6 +81,23 @@ func _open_panel() -> void:
 	_is_open = true
 	_panel_sprite.texture = _panel_open_tex
 	_create_buttons()
+	_show_hint()
+
+func _show_hint() -> void:
+	var dot_gothic = load("res://assets/fonts/DotGothic16-Regular.ttf")
+	_hint_label = Label.new()
+	_hint_label.text = "Press the buttons in the order of the colors."
+	_hint_label.add_theme_font_override("font", dot_gothic)
+	_hint_label.add_theme_font_size_override("font_size", 28)
+	_hint_label.add_theme_color_override("font_color", Color(0.85, 0.8, 0.65))
+	_hint_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_hint_label.set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_WIDE)
+	_hint_label.offset_top = -80
+	_hint_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	add_child(_hint_label)
+	var tween = create_tween()
+	tween.tween_interval(3.0)
+	tween.tween_property(_hint_label, "modulate:a", 0.0, 1.0)
 
 func _create_buttons() -> void:
 	for color in COLORS:
