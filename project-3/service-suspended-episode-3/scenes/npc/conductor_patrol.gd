@@ -72,6 +72,11 @@ func _spawn_conductor() -> void:
 
 func _play_intercom_then_patrol() -> void:
 	await get_tree().create_timer(2.0).timeout
+	# Wait until player is not in any UI (game not paused)
+	while get_tree().paused:
+		await get_tree().create_timer(0.5).timeout
+	if not is_inside_tree():
+		return
 	# Play static sound
 	var sfx = AudioStreamPlayer.new()
 	sfx.stream = _intercom_static
