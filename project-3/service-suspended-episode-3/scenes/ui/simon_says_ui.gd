@@ -131,8 +131,7 @@ func _handle_key_input(color: String) -> void:
 		_key_complete = true
 		_key_input.clear()
 		# Start simon says after brief pause
-		await get_tree().create_timer(0.5).timeout
-		_start_simon_round()
+		get_tree().create_timer(0.5).timeout.connect(_start_simon_round)
 
 # Phase 2: Simon says
 func _start_simon_round() -> void:
@@ -162,15 +161,13 @@ func _handle_simon_input(color: String) -> void:
 	_simon_input.append(color)
 	var idx = _simon_input.size() - 1
 	if _simon_input[idx] != _simon_sequence[idx]:
-		# Wrong - restart current round
+		# Wrong - restart
 		_simon_input.clear()
 		_simon_sequence.clear()
 		_simon_round = 0
-		await get_tree().create_timer(0.5).timeout
-		_start_simon_round()
+		get_tree().create_timer(0.5).timeout.connect(_start_simon_round)
 		return
 	if _simon_input.size() == _simon_sequence.size():
 		# Correct round
 		_simon_input.clear()
-		await get_tree().create_timer(0.5).timeout
-		_start_simon_round()
+		get_tree().create_timer(0.5).timeout.connect(_start_simon_round)

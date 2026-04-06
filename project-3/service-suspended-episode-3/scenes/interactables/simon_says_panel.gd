@@ -15,7 +15,7 @@ const COLOR_TINTS = {
 	"red": Vector3(0.8, 0.1, 0.1),
 	"blue": Vector3(0.1, 0.1, 0.8),
 	"green": Vector3(0.1, 0.8, 0.1),
-	"black": Vector3(0.4, 0.4, 0.4),
+	"black": Vector3(0.0, 0.0, 0.0),
 }
 
 func _ready() -> void:
@@ -45,8 +45,13 @@ func _flash_lights_on_entry() -> void:
 		if not is_inside_tree():
 			return
 		var tint = COLOR_TINTS.get(color_name, Vector3.ZERO)
-		mat.set_shader_parameter("light_tint", tint)
-		mat.set_shader_parameter("light_tint_strength", 0.6)
+		if color_name == "black":
+			# Turn lights off briefly
+			mat.set_shader_parameter("light_tint", Vector3(0, 0, 0))
+			mat.set_shader_parameter("light_tint_strength", -0.8)
+		else:
+			mat.set_shader_parameter("light_tint", tint)
+			mat.set_shader_parameter("light_tint_strength", 0.6)
 		await get_tree().create_timer(0.6).timeout
 		mat.set_shader_parameter("light_tint", Vector3.ZERO)
 		mat.set_shader_parameter("light_tint_strength", 0.0)
