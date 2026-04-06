@@ -83,17 +83,25 @@ func _play_intercom_then_patrol() -> void:
 	sfx.volume_db = -8
 	add_child(sfx)
 	sfx.play()
-	# Show dialogue balloon (same style as project 2)
+	# First play: full announcement (greeting + time + conductor rounds)
 	DialogueManager.show_dialogue_balloon(_intercom_dialogue, "announcement")
 	await DialogueManager.dialogue_ended
 	sfx.stop()
 	sfx.queue_free()
-	# Player reacts to the intercom
-	if is_inside_tree():
-		var reactions = load("res://dialogues/player_reactions.dialogue")
-		await get_tree().create_timer(0.5).timeout
-		DialogueManager.show_dialogue_balloon(reactions, "after_intercom")
+	# Repeat greeting + time twice more with 10s gaps
+	for _i in range(2):
+		await get_tree().create_timer(10.0).timeout
+		if not is_inside_tree() or get_tree().paused:
+			continue
+		var repeat_sfx = AudioStreamPlayer.new()
+		repeat_sfx.stream = _intercom_static
+		repeat_sfx.volume_db = -8
+		add_child(repeat_sfx)
+		repeat_sfx.play()
+		DialogueManager.show_dialogue_balloon(_intercom_dialogue, "greeting")
 		await DialogueManager.dialogue_ended
+		repeat_sfx.stop()
+		repeat_sfx.queue_free()
 	await get_tree().create_timer(post_intercom_delay).timeout
 	_start_patrol_loop()
 
