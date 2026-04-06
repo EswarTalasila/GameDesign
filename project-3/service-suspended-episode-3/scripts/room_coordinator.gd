@@ -530,7 +530,6 @@ func _on_player_died() -> void:
 	_death_screen = _death_screen_scene.instantiate()
 	_death_screen.process_mode = Node.PROCESS_MODE_ALWAYS
 	_death_screen.reload_requested.connect(_on_death_reload)
-	_death_screen.respawn_requested.connect(_on_death_respawn)
 	get_tree().root.add_child(_death_screen)
 
 func _on_death_reload() -> void:
@@ -544,15 +543,6 @@ func _on_death_reload() -> void:
 	loading.process_mode = Node.PROCESS_MODE_ALWAYS
 	get_tree().root.add_child(loading)
 	loading.transition_to(scene_path)
-
-func _on_death_respawn() -> void:
-	get_tree().paused = false
-	if _death_screen:
-		_death_screen.queue_free()
-		_death_screen = null
-	GameState.reset_health()
-	# Respawn at checkpoint or reload
-	get_tree().reload_current_scene()
 
 # ── Saving Icon ──
 
