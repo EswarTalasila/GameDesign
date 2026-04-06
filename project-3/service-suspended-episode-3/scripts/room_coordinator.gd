@@ -556,5 +556,10 @@ func _on_death_respawn() -> void:
 # ── Saving Icon ──
 
 func _show_saving_icon() -> void:
+	var layer = CanvasLayer.new()
+	layer.layer = 11  # above HUD (10)
 	var icon = _saving_icon_scene.instantiate()
-	get_tree().root.add_child(icon)
+	layer.add_child(icon)
+	get_tree().root.add_child(layer)
+	# Clean up the CanvasLayer when the icon frees itself
+	icon.tree_exited.connect(layer.queue_free)

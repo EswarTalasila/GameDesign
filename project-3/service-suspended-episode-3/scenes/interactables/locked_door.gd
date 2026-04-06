@@ -54,6 +54,5 @@ func _flash_lock() -> void:
 	tween.tween_property(_lock_icon, "modulate", Color.WHITE, 0.15)
 
 func _on_door_used() -> void:
-	if next_scene.is_empty():
-		return
-	get_tree().change_scene_to_file(next_scene)
+	var ending = preload("res://scenes/ui/ending_screen.tscn").instantiate()
+	get_tree().root.add_child(ending)
