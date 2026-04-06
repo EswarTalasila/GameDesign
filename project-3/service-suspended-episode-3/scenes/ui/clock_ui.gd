@@ -29,6 +29,7 @@ var _hovered_variant: int = 0  # 0 = none, 1-4 = quadrant
 var _tooltip: Label = null
 var _message_label: Label = null
 var _message_tween: Tween = null
+var _insert_cooldown: float = 0.0
 
 func _ready() -> void:
 	layer = 8
@@ -110,7 +111,10 @@ func _update_tooltip(variant: int) -> void:
 	_tooltip.text = "Variant %d" % variant
 	_tooltip.visible = true
 
-func _process(_delta: float) -> void:
+func _process(delta: float) -> void:
+	if _insert_cooldown > 0:
+		_insert_cooldown -= delta
+		return
 	if not _has_hands:
 		return
 	var mouse = get_viewport().get_mouse_position()
@@ -180,7 +184,10 @@ func _input(event: InputEvent) -> void:
 func _insert_hands() -> void:
 	GameState.insert_clock_hands()
 	_has_hands = true
+	_hovered_variant = 0
+	_insert_cooldown = 0.5
 	_clock_sprite.texture = _closeup_no_selection
+	_update_tooltip(0)
 	hands_inserted.emit()
 
 func _select_variant(variant: int) -> void:

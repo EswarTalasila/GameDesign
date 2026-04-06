@@ -553,7 +553,9 @@ func _on_death_reload() -> void:
 func _show_saving_icon() -> void:
 	var layer = CanvasLayer.new()
 	layer.layer = 11  # above HUD (10)
+	layer.process_mode = Node.PROCESS_MODE_ALWAYS
 	var icon = _saving_icon_scene.instantiate()
+	icon.process_mode = Node.PROCESS_MODE_ALWAYS
 	layer.add_child(icon)
 	get_tree().root.add_child(layer)
 	# Clean up the CanvasLayer when the icon frees itself
