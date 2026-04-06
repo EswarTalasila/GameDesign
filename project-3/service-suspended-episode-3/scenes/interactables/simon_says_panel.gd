@@ -14,11 +14,16 @@ var _simon_ui: CanvasLayer = null
 func _ready() -> void:
 	body_entered.connect(_on_body_entered)
 	body_exited.connect(_on_body_exited)
-	if GameState.get("simon_solved"):
+	if GameState.simon_solved:
 		_prompt.visible = false
+	# Generate key sequence early so door lights can flash it
+	if GameState.simon_key_sequence.size() == 0:
+		var key = ["red", "blue", "green", "black"]
+		key.shuffle()
+		GameState.simon_key_sequence = key
 
 func _on_body_entered(body: Node2D) -> void:
-	if body.name == "Player" and not GameState.get("simon_solved"):
+	if body.name == "Player" and not GameState.simon_solved:
 		_player_in_range = true
 		_prompt.visible = true
 
@@ -28,7 +33,7 @@ func _on_body_exited(body: Node2D) -> void:
 		_prompt.visible = false
 
 func _unhandled_input(event: InputEvent) -> void:
-	if _player_in_range and not _ui_open and not GameState.get("simon_solved") and event.is_action_pressed("interact"):
+	if _player_in_range and not _ui_open and not GameState.simon_solved and event.is_action_pressed("interact"):
 		get_viewport().set_input_as_handled()
 		_open_ui()
 
@@ -48,7 +53,7 @@ func _close_ui() -> void:
 	if _simon_ui:
 		_simon_ui.queue_free()
 		_simon_ui = null
-	if _player_in_range and not GameState.get("simon_solved"):
+	if _player_in_range and not GameState.simon_solved:
 		_prompt.visible = true
 
 func _on_solved() -> void:

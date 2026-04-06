@@ -24,14 +24,14 @@ var _interactable_table: Array = [
 	{
 		"atlas_min": Vector2i(42, 4),
 		"atlas_max": Vector2i(44, 7),
-		"source": -1,
+		"source": 0,
 		"scene": preload("res://scenes/interactables/electrical_panel.tscn"),
 		"no_erase": true,
 	},
 	{
 		"atlas_min": Vector2i(33, 3),
 		"atlas_max": Vector2i(38, 8),
-		"source": -1,
+		"source": 0,
 		"scene": preload("res://scenes/interactables/locked_door.tscn"),
 		"no_erase": true,
 	},
