@@ -20,6 +20,7 @@ func _ready() -> void:
 	layer = 8
 	_screen.play("no_input")
 	_setup_message_label()
+	_show_message("Enter the password.")
 
 func _setup_message_label() -> void:
 	var dot_gothic = load("res://assets/fonts/DotGothic16-Regular.ttf")
@@ -75,7 +76,7 @@ func _input(event: InputEvent) -> void:
 					_input_buffer += c
 					_update_display()
 			else:
-				_show_message("Letters only.")
+				_show_message("Letters only")
 
 func _update_display() -> void:
 	var count = _input_buffer.length()
