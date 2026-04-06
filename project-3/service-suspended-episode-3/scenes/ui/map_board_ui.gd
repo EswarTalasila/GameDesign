@@ -151,8 +151,20 @@ func _setup_random_paths() -> void:
 		colors.shuffle()
 		for i in range(4):
 			assignments.append({"path": chosen_paths[i], "color": colors[i]})
+		# Sort assignments by clockwise angle from 12 o'clock
+		# Approximate angular position for each path on the map
+		var path_angles = {
+			1: 0.0,     # ~12 o'clock
+			2: 50.0,    # ~1-2 o'clock
+			3: 100.0,   # ~3-4 o'clock
+			4: 150.0,   # ~5 o'clock
+			5: 200.0,   # ~7 o'clock
+			6: 260.0,   # ~9 o'clock
+			7: 320.0,   # ~11 o'clock
+		}
+		assignments.sort_custom(func(a, b): return path_angles[a["path"]] < path_angles[b["path"]])
 		GameState.path_assignments = assignments
-		# Store wire order
+		# Wire order from clockwise reading
 		var wire_order: Array = []
 		for a in assignments:
 			wire_order.append("Wire" + a["color"])
