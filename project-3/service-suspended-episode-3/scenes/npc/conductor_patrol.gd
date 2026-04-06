@@ -88,6 +88,12 @@ func _play_intercom_then_patrol() -> void:
 	await DialogueManager.dialogue_ended
 	sfx.stop()
 	sfx.queue_free()
+	# Player reacts to the intercom
+	if is_inside_tree():
+		var reactions = load("res://dialogues/player_reactions.dialogue")
+		await get_tree().create_timer(0.5).timeout
+		DialogueManager.show_dialogue_balloon(reactions, "after_intercom")
+		await DialogueManager.dialogue_ended
 	await get_tree().create_timer(post_intercom_delay).timeout
 	_start_patrol_loop()
 

@@ -147,6 +147,11 @@ func _ready() -> void:
 	GameState.map_piece_collected.connect(_on_map_piece_collected)
 	GameState.player_died.connect(_on_player_died)
 
+	# Variant 3 first-entry dialogue
+	if GameState.current_variant == 3 and not GameState.get("variant3_dialogue_shown"):
+		GameState.set("variant3_dialogue_shown", true)
+		_play_variant3_dialogue()
+
 # ── HUD Setup ──
 
 func _setup_hud() -> void:
@@ -547,6 +552,16 @@ func _on_death_reload() -> void:
 	loading.process_mode = Node.PROCESS_MODE_ALWAYS
 	get_tree().root.add_child(loading)
 	loading.transition_to(scene_path)
+
+# ── Variant Dialogues ──
+
+func _play_variant3_dialogue() -> void:
+	await get_tree().create_timer(1.5).timeout
+	if not is_inside_tree() or get_tree().paused:
+		return
+	var reactions = load("res://dialogues/player_reactions.dialogue")
+	DialogueManager.show_dialogue_balloon(reactions, "enter_variant_3")
+	await DialogueManager.dialogue_ended
 
 # ── Saving Icon ──
 
