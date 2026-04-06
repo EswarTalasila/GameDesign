@@ -112,6 +112,7 @@ Pixel-style escape room with looping structure to change environment of room. Co
 ## Controls
 - Move with WASD
 - Click on inventory items to use throughout the escape room for puzzles
+- Click E to open puzzles
 - Click Esc to open menu, exit puzzles
 
 ## Gameplay Features
