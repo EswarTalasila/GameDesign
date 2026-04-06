@@ -75,6 +75,8 @@ var suitcase_solved: bool = false
 var collected_map_pieces: Array[int] = []  # total ever collected (1-4)
 var board_pieces: Array[int] = []  # pieces placed on the board
 var map_assembled: bool = false
+var clock_on_map: bool = false
+var wire_cut_order: Array = []  # determined by map path colors clockwise
 
 # Conductor
 var conductor_watching: bool = false
@@ -288,6 +290,8 @@ func reset() -> void:
 	collected_map_pieces.clear()
 	board_pieces.clear()
 	map_assembled = false
+	clock_on_map = false
+	wire_cut_order.clear()
 	collected_lore.clear()
 	_init_section_variants()
 
