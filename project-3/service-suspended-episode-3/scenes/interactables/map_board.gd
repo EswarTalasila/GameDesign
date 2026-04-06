@@ -65,7 +65,7 @@ func _update_board_tiles() -> void:
 		var target_atlas: Vector2i
 		if GameState.map_assembled:
 			target_atlas = info["final"]
-		elif GameState.has_map_piece(piece_id):
+		elif piece_id in GameState.board_pieces:
 			target_atlas = info["loaded"]
 		else:
 			target_atlas = info["empty"]
