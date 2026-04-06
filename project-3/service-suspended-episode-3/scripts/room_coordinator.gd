@@ -394,7 +394,10 @@ func _on_variant_selected(variant: int) -> void:
 
 # ── Tile Scanner ──
 
+var _spawned_entries: Array[int] = []  # indices of already-spawned entries
+
 func _scan_interactables() -> void:
+	_spawned_entries.clear()
 	_scan_node_recursive(self)
 
 func _scan_node_recursive(node: Node) -> void:
@@ -410,10 +413,13 @@ func _scan_layer(layer: TileMapLayer) -> void:
 		return
 	var tile_size = Vector2(ts.tile_size)
 
-	for entry in _interactable_table:
+	for entry_idx in range(_interactable_table.size()):
+		var entry = _interactable_table[entry_idx]
 		var skip_flag = entry.get("skip_if", "")
 		if skip_flag != "" and GameState.get(skip_flag):
 			_erase_matching_tiles(layer, entry)
+			continue
+		if entry_idx in _spawned_entries:
 			continue
 
 		var atlas_min: Vector2i = entry["atlas_min"]
@@ -451,6 +457,7 @@ func _scan_layer(layer: TileMapLayer) -> void:
 			if key in instance:
 				instance.set(key, props[key])
 		add_child(instance)
+		_spawned_entries.append(entry_idx)
 
 		if not entry.get("no_erase", false):
 			for cell in matched_cells:
