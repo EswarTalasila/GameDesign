@@ -145,15 +145,23 @@ func _start_simon_round() -> void:
 	# Play the sequence
 	_play_sequence()
 
+const GLOW_COLORS = {
+	"red": Color(2.0, 0.6, 0.6),
+	"blue": Color(0.6, 0.6, 2.0),
+	"green": Color(0.6, 2.0, 0.6),
+	"black": Color(1.8, 1.8, 1.8),
+}
+
 func _play_sequence() -> void:
 	_playing_sequence = true
 	await get_tree().create_timer(0.3).timeout
 	for i in range(_simon_sequence.size()):
 		var color = _simon_sequence[i]
 		var sprite = _btn_sprites[color]
-		sprite.texture = _btn_on_textures[color]
+		# Glow effect — brighten with color tint
+		sprite.modulate = GLOW_COLORS.get(color, Color.WHITE)
 		await get_tree().create_timer(0.4).timeout
-		sprite.texture = _btn_off_textures[color]
+		sprite.modulate = Color.WHITE
 		await get_tree().create_timer(0.2).timeout
 	_playing_sequence = false
 

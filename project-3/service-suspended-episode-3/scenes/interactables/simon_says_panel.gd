@@ -46,15 +46,15 @@ func _flash_lights_on_entry() -> void:
 			return
 		var tint = COLOR_TINTS.get(color_name, Vector3.ZERO)
 		if color_name == "black":
-			# Turn lights off briefly
-			mat.set_shader_parameter("light_tint", Vector3(0, 0, 0))
-			mat.set_shader_parameter("light_tint_strength", -0.8)
+			# Turn lights off — increase darkness
+			mat.set_shader_parameter("darkness_color", Color(0, 0, 0, 0.98))
 		else:
 			mat.set_shader_parameter("light_tint", tint)
 			mat.set_shader_parameter("light_tint_strength", 0.6)
 		await get_tree().create_timer(0.6).timeout
 		mat.set_shader_parameter("light_tint", Vector3.ZERO)
 		mat.set_shader_parameter("light_tint_strength", 0.0)
+		mat.set_shader_parameter("darkness_color", Color(0, 0, 0, 0.85))
 		await get_tree().create_timer(0.3).timeout
 
 func _on_body_entered(body: Node2D) -> void:
