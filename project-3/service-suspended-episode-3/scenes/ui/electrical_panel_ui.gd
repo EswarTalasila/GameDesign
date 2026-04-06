@@ -21,8 +21,8 @@ var _cut_textures = {
 }
 
 var _is_open: bool = false
-# Required cut order — wire node names in sequence. Empty = any order.
-var _wire_order: Array[String] = ["WireRed", "WireBlue", "WireGreen", "WireBlack"]
+# Wire cut order — set from map path colors if revealed, otherwise default
+var _wire_order: Array[String] = []
 var _next_cut_index: int = 0
 var _cut_wires: Dictionary = {}  # wire_name -> true
 
@@ -31,6 +31,11 @@ func _ready() -> void:
 	_panel_sprite.texture = _closed_tex
 	if _wire_container:
 		_wire_container.visible = false
+	# Get wire order from map path reveal, or default if not yet revealed
+	if GameState.wire_cut_order.size() > 0:
+		_wire_order.assign(GameState.wire_cut_order)
+	else:
+		_wire_order.assign(["WireRed", "WireBlue", "WireGreen", "WireBlack"])
 
 func _input(event: InputEvent) -> void:
 	if event.is_action_pressed("ui_cancel"):
@@ -70,6 +75,11 @@ func _open_panel() -> void:
 	_panel_sprite.texture = _open_tex
 	if _wire_container:
 		_wire_container.visible = true
+	# Pulse wire cutter icon now that wires are visible
+	if GameState.has_wire_cutter:
+		var coordinator = get_tree().root.find_child("Node2D", true, false)
+		if coordinator and coordinator.has_method("pulse_inventory_item"):
+			coordinator.pulse_inventory_item("wire_cutter")
 
 func _try_cut_at(mouse_pos: Vector2) -> void:
 	# Convert mouse to local space of the wire container

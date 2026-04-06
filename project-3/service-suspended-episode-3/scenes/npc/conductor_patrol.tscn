@@ -1,0 +1,7 @@
+[gd_scene format=3 uid="uid://4k2tbk61oax0"]
+
+[ext_resource type="Script" uid="uid://g1kae8ng3syw" path="res://scenes/npc/conductor_patrol.gd" id="1_script"]
+
+[node name="ConductorPatrol" type="Node2D" unique_id=115913417]
+script = ExtResource("1_script")
+patrol_end = Vector2(200, 0)

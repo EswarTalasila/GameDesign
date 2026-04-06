@@ -20,6 +20,10 @@ signal clock_collected
 signal clock_hands_collected
 signal clock_hands_added
 signal clock_mode_changed(active: bool)
+signal conductor_watching_changed(watching: bool)
+signal lore_collected(lore_entry: Dictionary)
+signal map_piece_collected(piece_id: int)
+signal map_assembled_signal
 
 var current_cart_index: int = 0
 var dungeon_type: String = "standard"
@@ -66,6 +70,25 @@ var clock_mode: bool = false
 var current_variant: int = 1
 var has_selected_variant: bool = false
 var suitcase_solved: bool = false
+
+# Map pieces
+var collected_map_pieces: Array[int] = []  # total ever collected (1-4)
+var board_pieces: Array[int] = []  # pieces placed on the board
+var map_assembled: bool = false
+var clock_on_map: bool = false
+var wire_cut_order: Array = []
+var path_assignments: Array = []  # [{path: int, color: String}, ...]
+
+# Simon says puzzle
+var simon_solved: bool = false
+var simon_key_sequence: Array = []
+
+# Conductor
+var conductor_watching: bool = false
+
+# Lore
+var lore_open: bool = false
+var collected_lore: Array[Dictionary] = []
 
 # Audio mute (persists across resets — player preference)
 var muted: bool = false
@@ -172,6 +195,33 @@ func set_clock_mode(active: bool) -> void:
 	clock_mode = active
 	clock_mode_changed.emit(active)
 
+func collect_map_piece(piece_id: int) -> void:
+	if piece_id in collected_map_pieces:
+		return
+	collected_map_pieces.append(piece_id)
+	map_piece_collected.emit(piece_id)
+
+func has_map_piece(piece_id: int) -> bool:
+	return piece_id in collected_map_pieces
+
+func set_conductor_watching(watching: bool) -> void:
+	conductor_watching = watching
+	conductor_watching_changed.emit(watching)
+
+func collect_lore(id: String, title: String, body: String, icon: Texture2D = null) -> void:
+	for entry in collected_lore:
+		if entry["id"] == id:
+			return
+	var entry = {"id": id, "title": title, "body": body, "icon": icon}
+	collected_lore.append(entry)
+	lore_collected.emit(entry)
+
+func has_lore(id: String) -> bool:
+	for entry in collected_lore:
+		if entry["id"] == id:
+			return true
+	return false
+
 func set_checkpoint(pos: Vector2, section: String = "") -> void:
 	checkpoint_position = pos
 	checkpoint_section = section
@@ -240,6 +290,17 @@ func reset() -> void:
 	current_variant = 1
 	has_selected_variant = false
 	suitcase_solved = false
+	conductor_watching = false
+	lore_open = false
+	collected_map_pieces.clear()
+	board_pieces.clear()
+	map_assembled = false
+	clock_on_map = false
+	wire_cut_order.clear()
+	path_assignments.clear()
+	simon_solved = false
+	simon_key_sequence.clear()
+	collected_lore.clear()
 	_init_section_variants()
 
 func toggle_mute() -> void:

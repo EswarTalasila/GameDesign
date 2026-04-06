@@ -2,7 +2,11 @@ extends Node2D
 
 var _pause_menu_scene = preload("res://scenes/ui/pause_menu.tscn")
 var _game_ui_scene = preload("res://scenes/ui/game_ui.tscn")
+var _loading_screen_scene = preload("res://scenes/ui/loading_screen.tscn")
+var _death_screen_scene = preload("res://scenes/ui/death_screen.tscn")
+var _saving_icon_scene = preload("res://scenes/ui/saving_icon.tscn")
 var _pause_menu: CanvasLayer = null
+var _death_screen: CanvasLayer = null
 var _paused: bool = false
 var _game_ui: Node = null
 
@@ -13,20 +17,21 @@ var _wire_cutter_cursor_scene = preload("res://scenes/items/cursors/wire_cutter_
 var _clock_icon_scene = preload("res://scenes/items/icons/clock_icon.tscn")
 var _clock_hands_icon_scene = preload("res://scenes/items/icons/clock_hands_icon.tscn")
 var _clock_hands_cursor_scene = preload("res://scenes/items/cursors/clock_hands_cursor.tscn")
+var _map_icon_scene = preload("res://scenes/items/icons/map_icon.tscn")
 
 # Marker tile → interactable scene table.
 var _interactable_table: Array = [
 	{
-		"atlas_min": Vector2i(42, 4),
-		"atlas_max": Vector2i(44, 7),
-		"source": -1,
+		"atlas_min": Vector2i(43, 6),
+		"atlas_max": Vector2i(43, 6),
+		"source": 0,
 		"scene": preload("res://scenes/interactables/electrical_panel.tscn"),
 		"no_erase": true,
 	},
 	{
 		"atlas_min": Vector2i(33, 3),
 		"atlas_max": Vector2i(38, 8),
-		"source": -1,
+		"source": 0,
 		"scene": preload("res://scenes/interactables/locked_door.tscn"),
 		"no_erase": true,
 	},
@@ -46,12 +51,58 @@ var _interactable_table: Array = [
 		"no_erase": true,
 	},
 	{
+		"atlas_min": Vector2i(43, 27),
+		"atlas_max": Vector2i(46, 29),
+		"source": 1,
+		"scene": preload("res://scenes/interactables/map_board.tscn"),
+		"no_erase": true,
+	},
+	{
+		"atlas_min": Vector2i(43, 10),
+		"atlas_max": Vector2i(43, 10),
+		"source": 0,
+		"scene": preload("res://scenes/interactables/simon_says_panel.tscn"),
+		"no_erase": true,
+	},
+	{
 		"atlas_min": Vector2i(0, 0),
 		"atlas_max": Vector2i(0, 0),
 		"source": 0,
 		"scene": preload("res://scenes/pickups/wire_cutter_pickup.tscn"),
 		"no_erase": false,
 		"skip_if": "has_wire_cutter",
+	},
+	{
+		"atlas_min": Vector2i(0, 0),
+		"atlas_max": Vector2i(0, 0),
+		"source": 1,
+		"scene": preload("res://scenes/pickups/map_piece_pickup.tscn"),
+		"no_erase": false,
+		"props": {"piece_id": 1},
+	},
+	{
+		"atlas_min": Vector2i(0, 0),
+		"atlas_max": Vector2i(0, 0),
+		"source": 2,
+		"scene": preload("res://scenes/pickups/map_piece_pickup.tscn"),
+		"no_erase": false,
+		"props": {"piece_id": 2},
+	},
+	{
+		"atlas_min": Vector2i(0, 0),
+		"atlas_max": Vector2i(0, 0),
+		"source": 3,
+		"scene": preload("res://scenes/pickups/map_piece_pickup.tscn"),
+		"no_erase": false,
+		"props": {"piece_id": 3},
+	},
+	{
+		"atlas_min": Vector2i(0, 0),
+		"atlas_max": Vector2i(0, 0),
+		"source": 4,
+		"scene": preload("res://scenes/pickups/map_piece_pickup.tscn"),
+		"no_erase": false,
+		"props": {"piece_id": 4},
 	},
 ]
 
@@ -68,10 +119,13 @@ func _ready() -> void:
 
 	_scan_interactables()
 	_setup_hud()
+	_show_saving_icon()
 	GameState.wire_cutter_collected.connect(_on_wire_cutter_collected)
 	GameState.clock_collected.connect(_on_clock_collected)
 	GameState.clock_hands_collected.connect(_on_clock_hands_collected)
 	GameState.clock_hands_added.connect(_on_clock_hands_inserted)
+	GameState.map_piece_collected.connect(_on_map_piece_collected)
+	GameState.player_died.connect(_on_player_died)
 
 # ── HUD Setup ──
 
@@ -89,6 +143,13 @@ func _setup_hud() -> void:
 			set_item_active("clock")
 	if GameState.has_clock_hands and not GameState.clock_hands_inserted:
 		add_item("clock_hands", _clock_hands_icon_scene, _clock_hands_cursor_scene, _on_clock_hands_clicked)
+	var _pieces_in_hand = 0
+	for p in GameState.collected_map_pieces:
+		if p not in GameState.board_pieces:
+			_pieces_in_hand += 1
+	if _pieces_in_hand > 0 and not GameState.map_assembled:
+		add_item("map", _map_icon_scene, null, func(): pass)
+		_update_map_count()
 
 # ── Inventory API ──
 
@@ -188,6 +249,12 @@ func _on_clock_collected() -> void:
 	add_item("clock", _clock_icon_scene, null, _on_clock_clicked)
 
 func _on_clock_clicked() -> void:
+	if get_tree().paused:
+		# If board UI is open and map assembled, place clock on map
+		var board_ui = get_tree().root.find_child("MapBoardUI", true, false)
+		if board_ui and GameState.map_assembled and GameState.clock_hands_inserted and not GameState.clock_on_map:
+			board_ui.place_clock_from_inventory()
+		return
 	_open_clock_ui()
 
 func _on_clock_hands_collected() -> void:
@@ -199,10 +266,67 @@ func _on_clock_hands_clicked() -> void:
 	else:
 		_activate_tool("clock_hands")
 
+func _on_map_piece_collected(_piece_id: int) -> void:
+	# Add map icon (add_item ignores if already exists)
+	add_item("map", _map_icon_scene, null, func(): pass)
+	_update_map_count()
+
+func _update_map_count() -> void:
+	for item in _inventory:
+		if item["id"] == "map" and item["instance"]:
+			var number_sprite = item["instance"].get_node_or_null("Number")
+			if number_sprite:
+				var in_hand = 0
+				for p in GameState.collected_map_pieces:
+					if p not in GameState.board_pieces:
+						in_hand += 1
+				number_sprite.texture = load("res://assets/ui/numbers/%d.png" % clampi(in_hand, 0, 9))
+
 func _on_clock_hands_inserted() -> void:
 	_deactivate_tool()
-	set_item_active("clock")  # swap clock icon to "with hands" version
+	set_item_active("clock")
 	remove_item("clock_hands")
+	_update_map_count()
+
+func pulse_inventory_item(id: String) -> void:
+	for item in _inventory:
+		if item["id"] == id and item["instance"]:
+			var node = item["instance"]
+			# Find the actual Sprite2D to pulse
+			var target = node
+			if not node is Sprite2D:
+				for child in node.get_children():
+					if child is Sprite2D:
+						target = child
+						break
+			var base_scale = target.scale
+			# Stop any existing pulse
+			if target.has_meta("pulse_tween"):
+				var old: Tween = target.get_meta("pulse_tween")
+				if old and old.is_valid():
+					old.kill()
+				target.scale = base_scale
+			var tween = create_tween().set_loops(0)  # infinite
+			tween.set_pause_mode(Tween.TWEEN_PAUSE_PROCESS)
+			tween.tween_property(target, "scale", base_scale * 1.1, 0.4).set_ease(Tween.EASE_IN_OUT).set_trans(Tween.TRANS_SINE)
+			tween.tween_property(target, "scale", base_scale, 0.4).set_ease(Tween.EASE_IN_OUT).set_trans(Tween.TRANS_SINE)
+			target.set_meta("pulse_tween", tween)
+
+func stop_pulse(id: String) -> void:
+	for item in _inventory:
+		if item["id"] == id and item["instance"]:
+			var node = item["instance"]
+			var target = node
+			if not node is Sprite2D:
+				for child in node.get_children():
+					if child is Sprite2D:
+						target = child
+						break
+			if target.has_meta("pulse_tween"):
+				var tween: Tween = target.get_meta("pulse_tween")
+				if tween and tween.is_valid():
+					tween.kill()
+				target.remove_meta("pulse_tween")
 
 # ── Input ──
 
@@ -248,21 +372,32 @@ func _open_clock_ui() -> void:
 	_clock_ui.hands_inserted.connect(_on_clock_hands_inserted)
 	_clock_ui.variant_selected.connect(_on_variant_selected)
 	get_tree().root.add_child(_clock_ui)
+	# Pulse clock hands if player has them to insert
+	if GameState.has_clock_hands and not GameState.clock_hands_inserted:
+		pulse_inventory_item("clock_hands")
 
 func _close_clock_ui() -> void:
 	get_tree().paused = false
+	stop_pulse("clock_hands")
 	if _clock_ui:
 		_clock_ui.queue_free()
 		_clock_ui = null
 
 func _on_variant_selected(variant: int) -> void:
 	_close_clock_ui()
-	# For now, reload the same room. Later this will load the variant scene.
-	get_tree().reload_current_scene()
+	_show_saving_icon()
+	var scene_path = "res://escape_room_%d.tscn" % variant
+	var loading = _loading_screen_scene.instantiate()
+	loading.process_mode = Node.PROCESS_MODE_ALWAYS
+	get_tree().root.add_child(loading)
+	loading.transition_to(scene_path)
 
 # ── Tile Scanner ──
 
+var _spawned_entries: Array[int] = []  # indices of already-spawned entries
+
 func _scan_interactables() -> void:
+	_spawned_entries.clear()
 	_scan_node_recursive(self)
 
 func _scan_node_recursive(node: Node) -> void:
@@ -278,10 +413,13 @@ func _scan_layer(layer: TileMapLayer) -> void:
 		return
 	var tile_size = Vector2(ts.tile_size)
 
-	for entry in _interactable_table:
+	for entry_idx in range(_interactable_table.size()):
+		var entry = _interactable_table[entry_idx]
 		var skip_flag = entry.get("skip_if", "")
 		if skip_flag != "" and GameState.get(skip_flag):
 			_erase_matching_tiles(layer, entry)
+			continue
+		if entry_idx in _spawned_entries:
 			continue
 
 		var atlas_min: Vector2i = entry["atlas_min"]
@@ -313,7 +451,13 @@ func _scan_layer(layer: TileMapLayer) -> void:
 
 		var instance = entry["scene"].instantiate()
 		instance.position = center_px
+		# Apply props (e.g. piece_id) to the spawned instance
+		var props = entry.get("props", {})
+		for key in props:
+			if key in instance:
+				instance.set(key, props[key])
 		add_child(instance)
+		_spawned_entries.append(entry_idx)
 
 		if not entry.get("no_erase", false):
 			for cell in matched_cells:
@@ -354,7 +498,48 @@ func _resume() -> void:
 func _restart() -> void:
 	_paused = false
 	get_tree().paused = false
-	get_tree().reload_current_scene()
+	var scene_path = "res://escape_room_%d.tscn" % GameState.current_variant
+	var loading = _loading_screen_scene.instantiate()
+	loading.process_mode = Node.PROCESS_MODE_ALWAYS
+	get_tree().root.add_child(loading)
+	loading.transition_to(scene_path)
 
 func _quit() -> void:
 	get_tree().quit()
+
+# ── Death Screen ──
+
+func _on_player_died() -> void:
+	get_tree().paused = true
+	_death_screen = _death_screen_scene.instantiate()
+	_death_screen.process_mode = Node.PROCESS_MODE_ALWAYS
+	_death_screen.reload_requested.connect(_on_death_reload)
+	_death_screen.respawn_requested.connect(_on_death_respawn)
+	get_tree().root.add_child(_death_screen)
+
+func _on_death_reload() -> void:
+	get_tree().paused = false
+	if _death_screen:
+		_death_screen.queue_free()
+		_death_screen = null
+	GameState.reset_health()
+	var scene_path = "res://escape_room_%d.tscn" % GameState.current_variant
+	var loading = _loading_screen_scene.instantiate()
+	loading.process_mode = Node.PROCESS_MODE_ALWAYS
+	get_tree().root.add_child(loading)
+	loading.transition_to(scene_path)
+
+func _on_death_respawn() -> void:
+	get_tree().paused = false
+	if _death_screen:
+		_death_screen.queue_free()
+		_death_screen = null
+	GameState.reset_health()
+	# Respawn at checkpoint or reload
+	get_tree().reload_current_scene()
+
+# ── Saving Icon ──
+
+func _show_saving_icon() -> void:
+	var icon = _saving_icon_scene.instantiate()
+	get_tree().root.add_child(icon)

@@ -17,6 +17,10 @@ var _invincible: bool = false
 var _dead: bool = false
 var _vision_material: ShaderMaterial
 
+# Conductor watching penalty
+var _conductor_grace: float = 0.0
+var _conductor_cd: float = 0.0
+
 const _dir_vectors = {
 	"east": Vector2(1, 0), "west": Vector2(-1, 0),
 	"north": Vector2(0, -1), "south": Vector2(0, 1),
@@ -29,6 +33,70 @@ func _ready() -> void:
 	_hitbox.monitoring = false
 	_hitbox.monitorable = false
 	_setup_vision_overlay()
+	GameState.conductor_watching_changed.connect(_on_conductor_watching_changed)
+
+func _on_conductor_watching_changed(watching: bool) -> void:
+	if watching:
+		_conductor_grace = 1.0
+		_conductor_cd = 0.0
+		_tween_light_tint(Vector3(0.8, 0.1, 0.1), 0.6, 0.5)
+		_tween_screen_tinge(true)
+	else:
+		_conductor_grace = 0.0
+		_conductor_cd = 0.0
+		_tween_light_tint(Vector3(0.0, 0.0, 0.0), 0.0, 0.5)
+		_tween_screen_tinge(false)
+
+func _tween_light_tint(color: Vector3, strength: float, duration: float) -> void:
+	if not _vision_material:
+		return
+	var tween = create_tween().set_parallel(true)
+	var cur_r = _vision_material.get_shader_parameter("light_tint")
+	var cur_s = _vision_material.get_shader_parameter("light_tint_strength")
+	# Tween tint color
+	tween.tween_method(func(v: Vector3): _vision_material.set_shader_parameter("light_tint", v),
+		cur_r if cur_r else Vector3.ZERO, color, duration)
+	# Tween tint strength
+	tween.tween_method(func(v: float): _vision_material.set_shader_parameter("light_tint_strength", v),
+		cur_s if cur_s else 0.0, strength, duration)
+
+var _red_tinge: ColorRect = null
+var _watch_label: Label = null
+
+func _tween_screen_tinge(on: bool) -> void:
+	if _red_tinge == null:
+		var tinge_layer = CanvasLayer.new()
+		tinge_layer.layer = 4
+		add_child(tinge_layer)
+		_red_tinge = ColorRect.new()
+		_red_tinge.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+		_red_tinge.color = Color(0.6, 0.0, 0.0, 0.0)
+		_red_tinge.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		tinge_layer.add_child(_red_tinge)
+
+		# Warning label
+		var dot_gothic = load("res://assets/fonts/DotGothic16-Regular.ttf")
+		_watch_label = Label.new()
+		_watch_label.text = "The conductor is watching — do not move!"
+		_watch_label.modulate = Color(1, 1, 1, 0)
+		_watch_label.add_theme_color_override("font_color", Color.WHITE)
+		_watch_label.add_theme_font_override("font", dot_gothic)
+		_watch_label.add_theme_font_size_override("font_size", 28)
+		_watch_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		_watch_label.set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_WIDE)
+		_watch_label.offset_top = -60
+		var label_layer = CanvasLayer.new()
+		label_layer.layer = 9  # above tinge (4), above vision (5), below HUD (10)
+		add_child(label_layer)
+		label_layer.add_child(_watch_label)
+
+	var tween = create_tween().set_parallel(true)
+	if on:
+		tween.tween_property(_red_tinge, "color:a", 0.25, 0.5)
+		tween.tween_property(_watch_label, "modulate:a", 1.0, 0.5)
+	else:
+		tween.tween_property(_red_tinge, "color:a", 0.0, 0.5)
+		tween.tween_property(_watch_label, "modulate:a", 0.0, 0.5)
 
 func _setup_vision_overlay() -> void:
 	var layer = CanvasLayer.new()
@@ -70,11 +138,30 @@ func _get_direction_name(dir: Vector2) -> String:
 		return "north_east"
 	return "south"
 
-func _physics_process(_delta: float) -> void:
+func _physics_process(delta: float) -> void:
+	# Freeze movement when reading lore
+	if GameState.lore_open:
+		velocity = Vector2.ZERO
+		move_and_slide()
+		return
+
 	if _attacking or _hit_stunned:
 		velocity = Vector2.ZERO
 		move_and_slide()
 		return
+
+	# Conductor watching — damage if player moves while being watched
+	if GameState.conductor_watching:
+		if _conductor_grace > 0.0:
+			_conductor_grace -= delta
+		else:
+			if _conductor_cd > 0.0:
+				_conductor_cd -= delta
+			var moving = Input.get_vector("move_left", "move_right", "move_up", "move_down") != Vector2.ZERO
+			if moving and _conductor_cd <= 0.0:
+				_play_sfx(_hit_sound)
+				GameState.damage_player(ceili(GameState.max_health / 4.0))
+				_conductor_cd = 1.5
 
 	direction = Input.get_vector("move_left", "move_right", "move_up", "move_down")
 
