@@ -91,3 +91,42 @@ Pause / Menu
 ## Image Citations
 None
 
+
+# Game 3: Escape Room
+
+## Setup
+
+**Source File:**
+1. Install Godot Engine (version 3.5 or later recommended).
+2. Open Godot and click “Import”.
+3. Select the project folder from src/ labelled EscapeRoom (project3).
+4. Open the project.
+5. Click Play Scene or press F5 to start the game.
+
+## Team Members
+Eswar Talasila, Zachary Boston, Mokshagna Kadiyala, Nishil Rally
+
+## Story Format
+Pixel-style escape room with looping structure to change environment of room. Collecting items in the room helps you to escape.
+
+## Controls
+- Move with WASD
+- Open Inventory to view collected items
+- Pause / Menu
+
+## Gameplay Features
+1. Collecting items: Use keys to navigate throughout the room, collecting map pieces, clock hands, etc to help you escape.
+2. Limited visibility: The room is dark, only allowing a certain amount of visibility from the current position. Moving through the room is key to finding items.
+3. Conductor messages: Stop what you're doing when the conductor arrives to avoid losing items!
+4. Loops: Explore the escape room, using the clock to loop through various environments of the same room and collecting items.
+5. Health and Resources: Manage your health and collect and combine items together to escape the room.
+
+## Tips for Players
+1. Explore every corner of the escape room.
+2. Stop moving when the "Conductor Arriving" announcement comes on. Continuing to move will result in losing some retrieved items.
+3. Using the clock will help you to move through the loops, finding new items to help you escape.
+4. Interacting with the environment will help you find new items and learn more about the looping system.
+
+## Image Citations
+None
+
