@@ -91,6 +91,19 @@ func _close_ui() -> void:
 	if _player_in_range and not GameState.simon_solved:
 		_prompt.visible = true
 
+var _map_pickup_scene = preload("res://scenes/pickups/map_piece_pickup.tscn")
+
 func _on_solved() -> void:
 	GameState.simon_solved = true
 	_close_ui()
+	# Drop map piece 2 in center of room
+	if not GameState.has_map_piece(2):
+		var pickup = _map_pickup_scene.instantiate()
+		pickup.piece_id = 2
+		# Find player position and drop near center
+		var player = get_tree().root.find_child("Player", true, false)
+		if player:
+			pickup.position = player.global_position + Vector2(0, -20)
+		else:
+			pickup.position = global_position
+		get_parent().add_child(pickup)
