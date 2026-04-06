@@ -13,9 +13,35 @@ var _locked: bool = false  # prevent input during success/wrong display
 
 @onready var _screen: AnimatedSprite2D = $Screen
 
+var _message_label: Label = null
+var _message_tween: Tween = null
+
 func _ready() -> void:
 	layer = 8
 	_screen.play("no_input")
+	_setup_message_label()
+
+func _setup_message_label() -> void:
+	var dot_gothic = load("res://assets/fonts/DotGothic16-Regular.ttf")
+	_message_label = Label.new()
+	_message_label.add_theme_font_override("font", dot_gothic)
+	_message_label.add_theme_font_size_override("font_size", 28)
+	_message_label.add_theme_color_override("font_color", Color(0.85, 0.8, 0.65))
+	_message_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_message_label.set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_WIDE)
+	_message_label.offset_top = -80
+	_message_label.modulate = Color(1, 1, 1, 0)
+	_message_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	add_child(_message_label)
+
+func _show_message(text: String) -> void:
+	if _message_tween and _message_tween.is_valid():
+		_message_tween.kill()
+	_message_label.text = text
+	_message_label.modulate.a = 1.0
+	_message_tween = create_tween()
+	_message_tween.tween_interval(1.5)
+	_message_tween.tween_property(_message_label, "modulate:a", 0.0, 0.5)
 
 func _input(event: InputEvent) -> void:
 	if _locked:
@@ -39,12 +65,17 @@ func _input(event: InputEvent) -> void:
 				_update_display()
 			return
 
-		# Accept printable characters
+		# Only accept letters
 		var unicode = event.unicode
-		if unicode > 31 and unicode < 127 and _input_buffer.length() < _max_chars:
+		if unicode > 31 and unicode < 127:
 			get_viewport().set_input_as_handled()
-			_input_buffer += char(unicode)
-			_update_display()
+			var c = char(unicode)
+			if c.to_lower() >= "a" and c.to_lower() <= "z":
+				if _input_buffer.length() < _max_chars:
+					_input_buffer += c
+					_update_display()
+			else:
+				_show_message("Letters only.")
 
 func _update_display() -> void:
 	var count = _input_buffer.length()
