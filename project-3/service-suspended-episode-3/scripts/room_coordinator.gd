@@ -112,6 +112,7 @@ func _ready() -> void:
 
 	_scan_interactables()
 	_setup_hud()
+	_show_saving_icon()
 	GameState.wire_cutter_collected.connect(_on_wire_cutter_collected)
 	GameState.clock_collected.connect(_on_clock_collected)
 	GameState.clock_hands_collected.connect(_on_clock_hands_collected)
