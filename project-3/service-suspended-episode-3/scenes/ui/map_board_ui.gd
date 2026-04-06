@@ -30,7 +30,7 @@ func _ready() -> void:
 	for i in range(1, 5):
 		_piece_textures.append(load("res://assets/ui/map/piece_%d.png" % i))
 	for i in range(1, 5):
-		_clock_variant_textures.append(load("res://assets/ui/clock/closeup_variant_%d.png" % i))
+		_clock_variant_textures.append(load("res://assets/ui/clock/map_clock_%d.png" % i))
 
 	if GameState.get("clock_on_map"):
 		_show_completed_with_clock()
@@ -98,12 +98,13 @@ func _input(event: InputEvent) -> void:
 		return  # Just viewing
 
 	if GameState.map_assembled and not _clock_placed:
-		# Check inventory click — clock icon
 		if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
+			# Let inventory clicks through
 			var coordinator = get_tree().root.find_child("Node2D", true, false)
 			if coordinator and coordinator.has_method("_handle_inventory_click"):
-				coordinator._handle_inventory_click(event.position)
-			# Check if clock was just activated and clicking on the map
+				if coordinator._handle_inventory_click(event.position):
+					return
+			# Click on map with clock (must have hands inserted)
 			if GameState.clock_hands_inserted:
 				var center = _board_sprite.position
 				var half = Vector2(64, 64) * _board_sprite.scale
