@@ -76,7 +76,8 @@ var collected_map_pieces: Array[int] = []  # total ever collected (1-4)
 var board_pieces: Array[int] = []  # pieces placed on the board
 var map_assembled: bool = false
 var clock_on_map: bool = false
-var wire_cut_order: Array = []  # determined by map path colors clockwise
+var wire_cut_order: Array = []
+var path_assignments: Array = []  # [{path: int, color: String}, ...]
 
 # Conductor
 var conductor_watching: bool = false
@@ -292,6 +293,7 @@ func reset() -> void:
 	map_assembled = false
 	clock_on_map = false
 	wire_cut_order.clear()
+	path_assignments.clear()
 	collected_lore.clear()
 	_init_section_variants()
 

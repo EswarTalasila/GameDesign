@@ -99,19 +99,9 @@ func _input(event: InputEvent) -> void:
 
 	if GameState.map_assembled and not _clock_placed:
 		if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
-			# Let inventory clicks through
 			var coordinator = get_tree().root.find_child("Node2D", true, false)
 			if coordinator and coordinator.has_method("_handle_inventory_click"):
-				if coordinator._handle_inventory_click(event.position):
-					return
-			# Click on map with clock (must have hands inserted)
-			if GameState.clock_hands_inserted:
-				var center = _board_sprite.position
-				var half = Vector2(64, 64) * _board_sprite.scale
-				if Rect2(center - half, half * 2).has_point(event.position):
-					_place_clock_on_map()
-					_start_path_reveal()
-					get_viewport().set_input_as_handled()
+				coordinator._handle_inventory_click(event.position)
 		return
 
 	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT:
@@ -122,6 +112,10 @@ func _input(event: InputEvent) -> void:
 
 	if event is InputEventMouseMotion and _dragging:
 		_dragging.position = event.position + _drag_offset
+
+func place_clock_from_inventory() -> void:
+	_place_clock_on_map()
+	_start_path_reveal()
 
 func _place_clock_on_map() -> void:
 	_clock_placed = true
@@ -143,20 +137,28 @@ func _start_path_reveal() -> void:
 		coordinator.stop_pulse("clock")
 
 func _setup_random_paths() -> void:
-	# Pick 4 random paths from 7, assign 1 color each
-	var available_paths = [1, 2, 3, 4, 5, 6, 7]
-	available_paths.shuffle()
-	var chosen_paths = available_paths.slice(0, 4)
-	var colors = COLORS.duplicate()
-	colors.shuffle()
-
-	# Sort by clockwise angle for wire cut order
-	# For now store the assignment
 	var assignments: Array = []
-	for i in range(4):
-		assignments.append({"path": chosen_paths[i], "color": colors[i]})
 
-	# Create path sprites (hidden, revealed by shader/alpha)
+	if GameState.get("path_assignments") and GameState.path_assignments.size() > 0:
+		# Reuse existing assignments
+		assignments = GameState.path_assignments
+	else:
+		# Generate new random assignments
+		var available_paths = [1, 2, 3, 4, 5, 6, 7]
+		available_paths.shuffle()
+		var chosen_paths = available_paths.slice(0, 4)
+		var colors = COLORS.duplicate()
+		colors.shuffle()
+		for i in range(4):
+			assignments.append({"path": chosen_paths[i], "color": colors[i]})
+		GameState.path_assignments = assignments
+		# Store wire order
+		var wire_order: Array = []
+		for a in assignments:
+			wire_order.append("Wire" + a["color"])
+		GameState.wire_cut_order = wire_order
+
+	# Create path sprites
 	for a in assignments:
 		var tex = load("res://assets/ui/map/path_%d_%s.png" % [a["path"], a["color"]])
 		var sprite = Sprite2D.new()
@@ -164,17 +166,10 @@ func _setup_random_paths() -> void:
 		sprite.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
 		sprite.scale = PIECE_SCALE
 		sprite.position = _board_sprite.position
-		sprite.modulate = Color(1, 1, 1, 0)  # start invisible
+		sprite.modulate = Color(1, 1, 1, 0)
 		sprite.z_index = 5
 		add_child(sprite)
 		_path_sprites.append(sprite)
-
-	# Store wire order in GameState based on clockwise reading
-	# TODO: calculate clockwise order from path positions
-	var wire_order: Array[String] = []
-	for a in assignments:
-		wire_order.append("Wire" + a["color"])
-	GameState.set("wire_cut_order", wire_order)
 
 func _update_path_reveal() -> void:
 	# Expand reveal — fade in paths radially from center

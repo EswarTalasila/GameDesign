@@ -242,8 +242,11 @@ func _on_clock_collected() -> void:
 	add_item("clock", _clock_icon_scene, null, _on_clock_clicked)
 
 func _on_clock_clicked() -> void:
-	# Don't open clock variant UI if another interactable UI is open (paused)
 	if get_tree().paused:
+		# If board UI is open and map assembled, place clock on map
+		var board_ui = get_tree().root.find_child("MapBoardUI", true, false)
+		if board_ui and GameState.map_assembled and GameState.clock_hands_inserted and not GameState.clock_on_map:
+			board_ui.place_clock_from_inventory()
 		return
 	_open_clock_ui()
 
