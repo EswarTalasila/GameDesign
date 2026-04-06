@@ -84,12 +84,36 @@ func _play_intercom_then_patrol() -> void:
 	await get_tree().create_timer(post_intercom_delay).timeout
 	_start_patrol_loop()
 
+const COLOR_MAP = {
+	"red": Vector3(0.8, 0.1, 0.1),
+	"blue": Vector3(0.1, 0.1, 0.8),
+	"green": Vector3(0.1, 0.8, 0.1),
+	"black": Vector3(0.4, 0.4, 0.4),
+}
+
 func _start_patrol_loop() -> void:
 	while true:
+		# Flash simon key sequence between patrols if not solved
+		if not GameState.simon_solved and GameState.simon_key_sequence.size() > 0:
+			await get_tree().create_timer(3.0).timeout
+			await _flash_key_sequence()
 		await get_tree().create_timer(patrol_interval).timeout
 		if not is_inside_tree():
 			return
 		await _do_patrol()
+
+func _flash_key_sequence() -> void:
+	var player = get_tree().root.find_child("Player", true, false)
+	if player == null or not player.has_method("_tween_light_tint"):
+		return
+	for color_name in GameState.simon_key_sequence:
+		if not is_inside_tree():
+			return
+		var tint = COLOR_MAP.get(color_name, Vector3.ZERO)
+		player._tween_light_tint(tint, 0.5, 0.2)
+		await get_tree().create_timer(0.5).timeout
+		player._tween_light_tint(Vector3.ZERO, 0.0, 0.2)
+		await get_tree().create_timer(0.3).timeout
 
 func _do_patrol() -> void:
 	_conductor.position = patrol_start
