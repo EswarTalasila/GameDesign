@@ -69,7 +69,5 @@ animation = &"death"
 autoplay = "death"
 
 [node name="ReloadButton" type="TextureButton" parent="." unique_id=1228282763]
-visible = false
 
 [node name="RespawnButton" type="TextureButton" parent="." unique_id=1423519984]
-visible = false
