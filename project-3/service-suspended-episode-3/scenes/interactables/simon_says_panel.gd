@@ -33,7 +33,7 @@ func _ready() -> void:
 func _start_light_loop() -> void:
 	await get_tree().create_timer(5.0).timeout
 	while is_inside_tree() and not GameState.simon_solved:
-		if GameState.conductor_watching:
+		if GameState.conductor_watching or _ui_open:
 			await get_tree().create_timer(1.0).timeout
 			continue
 		await _flash_key_sequence()
@@ -49,15 +49,15 @@ func _flash_key_sequence() -> void:
 	for color_name in GameState.simon_key_sequence:
 		if not is_inside_tree():
 			return
-		var tint = COLOR_TINTS.get(color_name, Vector3.ZERO)
 		if color_name == "black":
-			# Black = light off, no glow
-			mat.set_shader_parameter("light_tint", Vector3.ZERO)
-			mat.set_shader_parameter("light_tint_strength", 0.0)
+			# Black = turn off the door light entirely
+			player.lights_disabled = true
 		else:
+			var tint = COLOR_TINTS.get(color_name, Vector3.ZERO)
 			mat.set_shader_parameter("light_tint", tint)
 			mat.set_shader_parameter("light_tint_strength", 0.6)
 		await get_tree().create_timer(0.6).timeout
+		player.lights_disabled = false
 		mat.set_shader_parameter("light_tint", Vector3.ZERO)
 		mat.set_shader_parameter("light_tint_strength", 0.0)
 		await get_tree().create_timer(0.3).timeout
@@ -101,14 +101,9 @@ var _map_pickup_scene = preload("res://scenes/pickups/map_piece_pickup.tscn")
 func _on_solved() -> void:
 	GameState.simon_solved = true
 	_close_ui()
-	# Drop map piece 2 in center of room
+	# Drop map piece 2 at the RewardSpawn marker position
 	if not GameState.has_map_piece(2):
 		var pickup = _map_pickup_scene.instantiate()
 		pickup.piece_id = 2
-		# Find player position and drop near center
-		var player = get_tree().root.find_child("Player", true, false)
-		if player:
-			pickup.position = player.global_position + Vector2(0, -20)
-		else:
-			pickup.position = global_position
+		pickup.global_position = $RewardSpawn.global_position
 		get_parent().add_child(pickup)

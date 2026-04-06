@@ -16,6 +16,7 @@ var _hit_stunned: bool = false
 var _invincible: bool = false
 var _dead: bool = false
 var _vision_material: ShaderMaterial
+var lights_disabled: bool = false
 
 # Conductor watching penalty
 var _conductor_grace: float = 0.0
@@ -219,7 +220,7 @@ func _update_world_lights() -> void:
 	var pools: Array = []
 	var widths: Array = []
 	var glows: Array = []
-	var count = mini(lights.size(), 8)
+	var count = 0 if lights_disabled else mini(lights.size(), 8)
 
 	for i in range(count):
 		var light = lights[i]
