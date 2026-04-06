@@ -54,11 +54,25 @@ func _play_sequence() -> void:
 	# Wait for player input or timeout
 	await _wait_for_input_or_timeout(8.0)
 
-	# Fade everything out
+	# Fade out first message
 	var out_tween = create_tween()
 	out_tween.tween_property(_label, "modulate:a", 0.0, 1.0)
-	out_tween.tween_interval(0.5)
 	await out_tween.finished
+
+	# Show second message
+	await get_tree().create_timer(0.5).timeout
+	_label.text = "See you in Episode 4."
+	var in_tween = create_tween()
+	in_tween.tween_property(_label, "modulate:a", 1.0, 1.0)
+	await in_tween.finished
+
+	await _wait_for_input_or_timeout(4.0)
+
+	# Fade out and return to title screen
+	var final_tween = create_tween()
+	final_tween.tween_property(_label, "modulate:a", 0.0, 1.0)
+	final_tween.tween_interval(0.5)
+	await final_tween.finished
 
 	get_tree().paused = false
 	get_tree().change_scene_to_file("res://scenes/ui/main_menu.tscn")
