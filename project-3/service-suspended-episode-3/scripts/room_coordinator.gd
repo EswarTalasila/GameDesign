@@ -121,6 +121,14 @@ const MAX_SLOTS = 4
 var _active_tool: String = ""
 
 func _ready() -> void:
+	# Detect variant from scene filename so direct-run works correctly
+	var scene_file = get_tree().current_scene.scene_file_path.get_file()
+	var regex = RegEx.new()
+	regex.compile("escape_room_(\\d+)")
+	var result = regex.search(scene_file)
+	if result:
+		GameState.current_variant = int(result.get_string(1))
+
 	GameState.wire_cutter_mode = false
 	CustomCursor.reset_cursor()
 
