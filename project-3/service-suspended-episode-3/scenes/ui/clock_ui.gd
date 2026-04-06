@@ -96,13 +96,9 @@ func _update_display() -> void:
 	if not _has_hands:
 		_clock_sprite.texture = _ui_no_hands
 		return
-	if GameState.current_variant > 0 and GameState.current_variant <= 4:
-		if not GameState.has_selected_variant:
-			_clock_sprite.texture = _closeup_no_selection
-		else:
-			_clock_sprite.texture = _closeup_variants[GameState.current_variant - 1]
-	else:
-		_clock_sprite.texture = _closeup_no_selection
+	# Always show the current variant — never show "no selection"
+	var idx = clampi(GameState.current_variant - 1, 0, 3)
+	_clock_sprite.texture = _closeup_variants[idx]
 
 func _update_tooltip(variant: int) -> void:
 	if variant == 0:
@@ -186,7 +182,7 @@ func _insert_hands() -> void:
 	_has_hands = true
 	_hovered_variant = 0
 	_insert_cooldown = 0.5
-	_clock_sprite.texture = _closeup_no_selection
+	_update_display()
 	_update_tooltip(0)
 	hands_inserted.emit()
 
