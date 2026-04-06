@@ -130,6 +130,7 @@ func _ready() -> void:
 		GameState.current_variant = int(result.get_string(1))
 
 	GameState.wire_cutter_mode = false
+	GameState.conductor_watching = false
 	CustomCursor.reset_cursor()
 
 	_scan_interactables()
