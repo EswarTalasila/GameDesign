@@ -54,6 +54,8 @@ func _ready() -> void:
 	# Render behind walls
 	z_index = -2
 	_spawn_conductor()
+	# Wait one frame so room coordinator sets current_variant first
+	await get_tree().process_frame
 	if play_intercom and GameState.current_variant == 1 and not GameState.suitcase_solved:
 		_play_intercom_then_patrol()
 	else:
