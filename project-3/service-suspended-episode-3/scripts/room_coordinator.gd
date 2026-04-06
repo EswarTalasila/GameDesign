@@ -131,7 +131,11 @@ func _ready() -> void:
 
 	GameState.wire_cutter_mode = false
 	GameState.conductor_watching = false
+	GameState.lore_open = false
 	CustomCursor.reset_cursor()
+
+	# Clear any stale dialogue state from previous scene/reload
+	DialogueManager.dialogue_ended.emit(null)
 
 	_scan_interactables()
 	_setup_hud()

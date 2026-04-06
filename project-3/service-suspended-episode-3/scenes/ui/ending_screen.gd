@@ -76,6 +76,7 @@ func _play_sequence() -> void:
 
 	get_tree().paused = false
 	get_tree().change_scene_to_file("res://scenes/ui/main_menu.tscn")
+	queue_free()
 
 func _wait_for_input_or_timeout(timeout: float) -> void:
 	var elapsed = 0.0
