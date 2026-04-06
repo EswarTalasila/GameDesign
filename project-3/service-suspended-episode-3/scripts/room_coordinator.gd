@@ -22,8 +22,8 @@ var _map_icon_scene = preload("res://scenes/items/icons/map_icon.tscn")
 # Marker tile → interactable scene table.
 var _interactable_table: Array = [
 	{
-		"atlas_min": Vector2i(42, 4),
-		"atlas_max": Vector2i(44, 7),
+		"atlas_min": Vector2i(43, 6),
+		"atlas_max": Vector2i(43, 6),
 		"source": 0,
 		"scene": preload("res://scenes/interactables/electrical_panel.tscn"),
 		"no_erase": true,
@@ -58,8 +58,8 @@ var _interactable_table: Array = [
 		"no_erase": true,
 	},
 	{
-		"atlas_min": Vector2i(42, 8),
-		"atlas_max": Vector2i(44, 11),
+		"atlas_min": Vector2i(43, 10),
+		"atlas_max": Vector2i(43, 10),
 		"source": 0,
 		"scene": preload("res://scenes/interactables/simon_says_panel.tscn"),
 		"no_erase": true,

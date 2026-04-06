@@ -92,15 +92,20 @@ const COLOR_MAP = {
 }
 
 func _start_patrol_loop() -> void:
+	# Flash simon key on room entry after 5s delay
+	if not GameState.simon_solved and GameState.simon_key_sequence.size() > 0:
+		_flash_key_on_entry()
 	while true:
-		# Flash simon key sequence between patrols if not solved
-		if not GameState.simon_solved and GameState.simon_key_sequence.size() > 0:
-			await get_tree().create_timer(3.0).timeout
-			await _flash_key_sequence()
 		await get_tree().create_timer(patrol_interval).timeout
 		if not is_inside_tree():
 			return
 		await _do_patrol()
+
+func _flash_key_on_entry() -> void:
+	await get_tree().create_timer(5.0).timeout
+	if not is_inside_tree():
+		return
+	await _flash_key_sequence()
 
 func _flash_key_sequence() -> void:
 	var player = get_tree().root.find_child("Player", true, false)
