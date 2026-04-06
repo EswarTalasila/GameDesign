@@ -65,6 +65,13 @@ var _interactable_table: Array = [
 		"no_erase": true,
 	},
 	{
+		"atlas_min": Vector2i(1, 31),
+		"atlas_max": Vector2i(1, 31),
+		"source": 1,
+		"scene": preload("res://scenes/interactables/computer_lock.tscn"),
+		"no_erase": true,
+	},
+	{
 		"atlas_min": Vector2i(0, 0),
 		"atlas_max": Vector2i(0, 0),
 		"source": 0,

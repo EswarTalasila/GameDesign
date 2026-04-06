@@ -54,7 +54,7 @@ func _ready() -> void:
 	# Render behind walls
 	z_index = -2
 	_spawn_conductor()
-	if play_intercom and GameState.current_variant == 1:
+	if play_intercom and GameState.current_variant == 1 and not GameState.suitcase_solved:
 		_play_intercom_then_patrol()
 	else:
 		_start_patrol_loop()

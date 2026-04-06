@@ -1,0 +1,23 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scenes/interactables/computer_lock.gd" id="1_script"]
+[ext_resource type="PackedScene" path="res://scenes/ui/press_e_prompt.tscn" id="2_prompt"]
+
+[sub_resource type="RectangleShape2D" id="interact_shape"]
+size = Vector2(128, 128)
+
+[node name="ComputerLock" type="Area2D"]
+collision_layer = 0
+collision_mask = 1
+script = ExtResource("1_script")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0, 76)
+shape = SubResource("interact_shape")
+
+[node name="PressEPrompt" parent="." instance=ExtResource("2_prompt")]
+position = Vector2(0, -30)
+scale = Vector2(1.5, 1.5)
+
+[node name="RewardSpawn" type="Marker2D" parent="."]
+position = Vector2(0, 96)

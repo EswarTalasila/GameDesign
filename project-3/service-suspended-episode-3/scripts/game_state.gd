@@ -83,6 +83,9 @@ var path_assignments: Array = []  # [{path: int, color: String}, ...]
 var simon_solved: bool = false
 var simon_key_sequence: Array = []
 
+# Computer lock puzzle
+var computer_lock_solved: bool = false
+
 # Conductor
 var conductor_watching: bool = false
 
@@ -300,6 +303,7 @@ func reset() -> void:
 	path_assignments.clear()
 	simon_solved = false
 	simon_key_sequence.clear()
+	computer_lock_solved = false
 	collected_lore.clear()
 	_init_section_variants()
 
