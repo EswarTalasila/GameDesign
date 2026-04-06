@@ -110,9 +110,9 @@ Eswar Talasila, Zachary Boston, Mokshagna Kadiyala, Nishil Rally
 Pixel-style escape room with looping structure to change environment of room. Collecting items in the room helps you to escape.
 
 ## Controls
-Move with WASD
-Open Inventory
-Pause / Menu
+- Move with WASD
+- Open Inventory to view collected items
+- Pause / Menu
 
 ## Gameplay Features
 1. Collecting items: Use keys to navigate throughout the room, collecting map pieces, clock hands, etc to help you escape.
