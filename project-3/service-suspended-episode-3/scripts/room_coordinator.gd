@@ -242,6 +242,9 @@ func _on_clock_collected() -> void:
 	add_item("clock", _clock_icon_scene, null, _on_clock_clicked)
 
 func _on_clock_clicked() -> void:
+	# Don't open clock variant UI if another interactable UI is open (paused)
+	if get_tree().paused:
+		return
 	_open_clock_ui()
 
 func _on_clock_hands_collected() -> void:
