@@ -1,7 +1,7 @@
 extends Area2D
 
 ## Simon says panel. Press E to open. Two phases:
-## Phase 1: Enter the key sequence (shown by door lights between patrols)
+## Phase 1: Enter the key sequence (shown by door lights on room entry)
 ## Phase 2: Standard simon says with random sequences
 
 @onready var _prompt: AnimatedSprite2D = $PressEPrompt
@@ -11,16 +11,46 @@ var _ui_open: bool = false
 var _simon_ui_scene = preload("res://scenes/ui/simon_says_ui.tscn")
 var _simon_ui: CanvasLayer = null
 
+const COLOR_TINTS = {
+	"red": Vector3(0.8, 0.1, 0.1),
+	"blue": Vector3(0.1, 0.1, 0.8),
+	"green": Vector3(0.1, 0.8, 0.1),
+	"black": Vector3(0.4, 0.4, 0.4),
+}
+
 func _ready() -> void:
 	body_entered.connect(_on_body_entered)
 	body_exited.connect(_on_body_exited)
 	if GameState.simon_solved:
 		_prompt.visible = false
-	# Generate key sequence early so door lights can flash it
 	if GameState.simon_key_sequence.size() == 0:
 		var key = ["red", "blue", "green", "black"]
 		key.shuffle()
 		GameState.simon_key_sequence = key
+	# Flash light sequence after 5 second delay
+	if not GameState.simon_solved:
+		_flash_lights_on_entry()
+
+func _flash_lights_on_entry() -> void:
+	await get_tree().create_timer(5.0).timeout
+	if not is_inside_tree():
+		return
+	var player = get_tree().root.find_child("Player", true, false)
+	if player == null:
+		return
+	var mat = player._vision_material
+	if mat == null:
+		return
+	for color_name in GameState.simon_key_sequence:
+		if not is_inside_tree():
+			return
+		var tint = COLOR_TINTS.get(color_name, Vector3.ZERO)
+		mat.set_shader_parameter("light_tint", tint)
+		mat.set_shader_parameter("light_tint_strength", 0.6)
+		await get_tree().create_timer(0.6).timeout
+		mat.set_shader_parameter("light_tint", Vector3.ZERO)
+		mat.set_shader_parameter("light_tint_strength", 0.0)
+		await get_tree().create_timer(0.3).timeout
 
 func _on_body_entered(body: Node2D) -> void:
 	if body.name == "Player" and not GameState.simon_solved:
@@ -57,7 +87,5 @@ func _close_ui() -> void:
 		_prompt.visible = true
 
 func _on_solved() -> void:
-	GameState.set("simon_solved", true)
+	GameState.simon_solved = true
 	_close_ui()
-	# Give reward - map piece or wire cutters
-	# GameState.collect_map_piece(X) or GameState.collect_wire_cutter()
