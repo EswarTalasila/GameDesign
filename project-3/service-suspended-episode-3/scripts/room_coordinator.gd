@@ -277,8 +277,9 @@ func _update_map_count() -> void:
 
 func _on_clock_hands_inserted() -> void:
 	_deactivate_tool()
-	set_item_active("clock")  # swap clock icon to "with hands" version
+	set_item_active("clock")
 	remove_item("clock_hands")
+	_update_map_count()
 
 func pulse_inventory_item(id: String) -> void:
 	for item in _inventory:
