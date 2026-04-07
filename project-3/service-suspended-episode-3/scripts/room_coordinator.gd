@@ -592,12 +592,73 @@ func _on_death_reload() -> void:
 
 # ── Controls Hint ──
 
+var _controls_open: bool = false
+var _controls_body: VBoxContainer = null
+var _controls_chevron: Label = null
+var _controls_layer: CanvasLayer = null
+
 func _setup_controls_hint() -> void:
-	var layer = CanvasLayer.new()
-	layer.layer = 8
-	add_child(layer)
+	_controls_layer = CanvasLayer.new()
+	_controls_layer.layer = 12
+	add_child(_controls_layer)
 
 	var dot_gothic = load("res://assets/fonts/DotGothic16-Regular.ttf")
+
+	var panel = PanelContainer.new()
+	panel.set_anchors_preset(Control.PRESET_TOP_LEFT)
+	panel.position = Vector2(12, 12)
+
+	var style = StyleBoxFlat.new()
+	style.bg_color = Color(0.0, 0.0, 0.0, 0.45)
+	style.border_color = Color(0.5, 0.45, 0.35, 0.4)
+	style.set_border_width_all(1)
+	style.set_corner_radius_all(3)
+	style.content_margin_top = 8
+	style.content_margin_bottom = 8
+	style.content_margin_left = 14
+	style.content_margin_right = 14
+	panel.add_theme_stylebox_override("panel", style)
+	_controls_layer.add_child(panel)
+
+	var vbox = VBoxContainer.new()
+	vbox.add_theme_constant_override("separation", 6)
+	panel.add_child(vbox)
+
+	# Clickable header row
+	var header_row = HBoxContainer.new()
+	header_row.add_theme_constant_override("separation", 6)
+	vbox.add_child(header_row)
+
+	var header = Label.new()
+	header.text = "CONTROLS"
+	header.add_theme_font_override("font", dot_gothic)
+	header.add_theme_font_size_override("font_size", 18)
+	header.add_theme_color_override("font_color", Color(0.75, 0.7, 0.55))
+	header.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	header_row.add_child(header)
+
+	_controls_chevron = Label.new()
+	_controls_chevron.text = "▼"
+	_controls_chevron.add_theme_font_override("font", dot_gothic)
+	_controls_chevron.add_theme_font_size_override("font_size", 18)
+	_controls_chevron.add_theme_color_override("font_color", Color(0.75, 0.7, 0.55))
+	_controls_chevron.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	header_row.add_child(_controls_chevron)
+
+	# Body (hidden by default)
+	_controls_body = VBoxContainer.new()
+	_controls_body.add_theme_constant_override("separation", 6)
+	_controls_body.visible = false
+	vbox.add_child(_controls_body)
+
+	var sep = HSeparator.new()
+	var sep_style = StyleBoxFlat.new()
+	sep_style.bg_color = Color(0.5, 0.45, 0.3, 0.4)
+	sep_style.content_margin_top = 1.0
+	sep_style.content_margin_bottom = 1.0
+	sep.add_theme_stylebox_override("separator", sep_style)
+	_controls_body.add_child(sep)
+
 	var lines = [
 		["[E]", "Interact"],
 		["[Esc]", "Pause / Close"],
@@ -606,55 +667,15 @@ func _setup_controls_hint() -> void:
 		["[Backspace]", "Delete input"],
 		["[Enter]", "Confirm"],
 	]
-
-	var panel = PanelContainer.new()
-	panel.set_anchors_preset(Control.PRESET_TOP_RIGHT)
-	panel.grow_horizontal = Control.GROW_DIRECTION_BEGIN
-	panel.position = Vector2(-12, 12)
-	panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
-
-	var style = StyleBoxFlat.new()
-	style.bg_color = Color(0.0, 0.0, 0.0, 0.45)
-	style.border_color = Color(0.5, 0.45, 0.35, 0.4)
-	style.set_border_width_all(1)
-	style.set_corner_radius_all(3)
-	style.content_margin_top = 12
-	style.content_margin_bottom = 12
-	style.content_margin_left = 18
-	style.content_margin_right = 18
-	panel.add_theme_stylebox_override("panel", style)
-	layer.add_child(panel)
-
-	var vbox = VBoxContainer.new()
-	vbox.add_theme_constant_override("separation", 8)
-	panel.add_child(vbox)
-
-	var header = Label.new()
-	header.text = "CONTROLS"
-	header.add_theme_font_override("font", dot_gothic)
-	header.add_theme_font_size_override("font_size", 18)
-	header.add_theme_color_override("font_color", Color(0.75, 0.7, 0.55))
-	header.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	header.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	vbox.add_child(header)
-
-	var sep = HSeparator.new()
-	var sep_style = StyleBoxFlat.new()
-	sep_style.bg_color = Color(0.5, 0.45, 0.3, 0.4)
-	sep_style.content_margin_top = 1.0
-	sep_style.content_margin_bottom = 1.0
-	sep.add_theme_stylebox_override("separator", sep_style)
-	vbox.add_child(sep)
-
 	for pair in lines:
 		var row = HBoxContainer.new()
 		row.add_theme_constant_override("separation", 8)
 		row.mouse_filter = Control.MOUSE_FILTER_IGNORE
-		vbox.add_child(row)
+		_controls_body.add_child(row)
 		var key_label = Label.new()
 		key_label.text = pair[0]
 		key_label.add_theme_font_override("font", dot_gothic)
-		key_label.add_theme_font_size_override("font_size", 20)
+		key_label.add_theme_font_size_override("font_size", 18)
 		key_label.add_theme_color_override("font_color", Color(0.95, 0.85, 0.55))
 		key_label.custom_minimum_size = Vector2(100, 0)
 		key_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -662,10 +683,19 @@ func _setup_controls_hint() -> void:
 		var action_label = Label.new()
 		action_label.text = pair[1]
 		action_label.add_theme_font_override("font", dot_gothic)
-		action_label.add_theme_font_size_override("font_size", 20)
+		action_label.add_theme_font_size_override("font_size", 18)
 		action_label.add_theme_color_override("font_color", Color(0.7, 0.68, 0.6))
 		action_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		row.add_child(action_label)
+
+	# Make the panel clickable
+	panel.gui_input.connect(_on_controls_panel_clicked)
+
+func _on_controls_panel_clicked(event: InputEvent) -> void:
+	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
+		_controls_open = not _controls_open
+		_controls_body.visible = _controls_open
+		_controls_chevron.text = "▲" if _controls_open else "▼"
 
 # ── Variant Dialogues ──
 
