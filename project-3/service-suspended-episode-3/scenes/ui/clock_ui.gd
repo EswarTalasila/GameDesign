@@ -110,6 +110,10 @@ func _update_tooltip(variant: int) -> void:
 func _process(delta: float) -> void:
 	if _insert_cooldown > 0:
 		_insert_cooldown -= delta
+		if _insert_cooldown <= 0:
+			_hovered_variant = 0
+			_update_display()
+			_update_tooltip(0)
 		return
 	if not _has_hands:
 		return
@@ -181,15 +185,11 @@ func _insert_hands() -> void:
 	GameState.insert_clock_hands()
 	GameState.has_selected_variant = true
 	_has_hands = true
-	_hovered_variant = 0
+	_hovered_variant = GameState.current_variant
 	_insert_cooldown = 0.5
 	_update_display()
 	_update_tooltip(0)
 	hands_inserted.emit()
-	# Close the clock so it reopens clean — no stale hover state
-	await get_tree().create_timer(0.6).timeout
-	if is_inside_tree():
-		clock_closed.emit()
 
 func _select_variant(variant: int) -> void:
 	# Final safeguard — never select locked or current variant
