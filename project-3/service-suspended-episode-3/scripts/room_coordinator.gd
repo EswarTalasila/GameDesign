@@ -121,6 +121,10 @@ const MAX_SLOTS = 4
 var _active_tool: String = ""
 
 func _ready() -> void:
+	# Clear any stale paused state carried over from a prior scene/UI transition.
+	_paused = false
+	get_tree().paused = false
+
 	# Detect variant from scene filename so direct-run works correctly
 	var scene_file = get_tree().current_scene.scene_file_path.get_file()
 	var regex = RegEx.new()

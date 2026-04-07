@@ -115,10 +115,11 @@ const COLOR_MAP = {
 	"green": Vector3(0.1, 0.8, 0.1),
 	"black": Vector3(0.4, 0.4, 0.4),
 }
+const SIMON_VARIANT = 2
 
 func _start_patrol_loop() -> void:
 	# Flash simon key on room entry after 5s delay
-	if not GameState.simon_solved and GameState.simon_key_sequence.size() > 0:
+	if GameState.current_variant == SIMON_VARIANT and not GameState.simon_solved and GameState.simon_key_sequence.size() > 0:
 		_flash_key_on_entry()
 	while true:
 		await get_tree().create_timer(patrol_interval).timeout
@@ -127,23 +128,32 @@ func _start_patrol_loop() -> void:
 		await _do_patrol()
 
 func _flash_key_on_entry() -> void:
+	if GameState.current_variant != SIMON_VARIANT:
+		return
 	await get_tree().create_timer(5.0).timeout
-	if not is_inside_tree():
+	if not is_inside_tree() or GameState.current_variant != SIMON_VARIANT:
 		return
 	await _flash_key_sequence()
 
 func _flash_key_sequence() -> void:
+	if GameState.current_variant != SIMON_VARIANT:
+		return
 	var player = get_tree().root.find_child("Player", true, false)
 	if player == null or not player.has_method("_tween_light_tint"):
 		return
 	for color_name in GameState.simon_key_sequence:
-		if not is_inside_tree():
+		if not is_inside_tree() or GameState.current_variant != SIMON_VARIANT:
+			player._tween_light_tint(Vector3.ZERO, 0.0, 0.0)
 			return
 		var tint = COLOR_MAP.get(color_name, Vector3.ZERO)
 		player._tween_light_tint(tint, 0.5, 0.2)
 		await get_tree().create_timer(0.5).timeout
+		if not is_inside_tree() or GameState.current_variant != SIMON_VARIANT:
+			player._tween_light_tint(Vector3.ZERO, 0.0, 0.0)
+			return
 		player._tween_light_tint(Vector3.ZERO, 0.0, 0.2)
 		await get_tree().create_timer(0.3).timeout
+	player._tween_light_tint(Vector3.ZERO, 0.0, 0.0)
 
 func _do_patrol() -> void:
 	_conductor.position = patrol_start

@@ -10,6 +10,7 @@ var _player_in_range: bool = false
 var _picked_up: bool = false
 var _ui_open: bool = false
 var _clock_ui_scene = preload("res://scenes/ui/clock_ui.tscn")
+var _loading_screen_scene = preload("res://scenes/ui/loading_screen.tscn")
 var _clock_ui: CanvasLayer = null
 
 func _ready() -> void:
@@ -67,6 +68,7 @@ func _show_ui() -> void:
 	_clock_ui = _clock_ui_scene.instantiate()
 	_clock_ui.process_mode = Node.PROCESS_MODE_ALWAYS
 	_clock_ui.clock_closed.connect(_close_ui)
+	_clock_ui.variant_selected.connect(_on_variant_selected)
 	get_tree().root.add_child(_clock_ui)
 
 func _close_ui() -> void:
@@ -78,3 +80,12 @@ func _close_ui() -> void:
 	# Disable this interactable after pickup
 	visible = false
 	set_deferred("monitoring", false)
+
+func _on_variant_selected(variant: int) -> void:
+	_close_ui()
+	GameState.current_variant = variant
+	var scene_path = "res://escape_room_%d.tscn" % variant
+	var loading = _loading_screen_scene.instantiate()
+	loading.process_mode = Node.PROCESS_MODE_ALWAYS
+	get_tree().root.add_child(loading)
+	loading.transition_to(scene_path)

@@ -29,7 +29,7 @@ var _hovered_variant: int = 0  # 0 = none, 1-4 = quadrant
 var _tooltip: Label = null
 var _message_label: Label = null
 var _message_tween: Tween = null
-var _insert_cooldown: float = 0.0
+var _selection_in_progress: bool = false
 
 func _ready() -> void:
 	layer = 8
@@ -107,11 +107,8 @@ func _update_tooltip(variant: int) -> void:
 	_tooltip.text = "Variant %d" % variant
 	_tooltip.visible = true
 
-func _process(delta: float) -> void:
-	if _insert_cooldown > 0:
-		_insert_cooldown -= delta
-		return
-	if not _has_hands:
+func _process(_delta: float) -> void:
+	if not _has_hands or _selection_in_progress:
 		return
 	var mouse = get_viewport().get_mouse_position()
 	var local = (mouse - _clock_sprite.position) / _clock_sprite.scale + Vector2(64, 64)
@@ -147,6 +144,10 @@ func _get_quadrant(from_center: Vector2) -> int:
 		return 4
 
 func _input(event: InputEvent) -> void:
+	if _selection_in_progress:
+		get_viewport().set_input_as_handled()
+		return
+
 	if event.is_action_pressed("ui_cancel"):
 		get_viewport().set_input_as_handled()
 		clock_closed.emit()
@@ -181,12 +182,13 @@ func _insert_hands() -> void:
 	GameState.insert_clock_hands()
 	_has_hands = true
 	_hovered_variant = 0
-	_insert_cooldown = 0.5
 	_update_display()
 	_update_tooltip(0)
 	hands_inserted.emit()
 
 func _select_variant(variant: int) -> void:
+	if variant == GameState.current_variant or _is_variant_locked(variant):
+		return
+	_selection_in_progress = true
 	GameState.has_selected_variant = true
-	GameState.current_variant = variant
 	variant_selected.emit(variant)
