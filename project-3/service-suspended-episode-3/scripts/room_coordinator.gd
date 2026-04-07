@@ -374,6 +374,9 @@ func _unhandled_input(event: InputEvent) -> void:
 			return
 		_handle_inventory_click(mouse)
 
+var _pause_normal_tex = preload("res://assets/ui/buttons/play_pause/pause_normal.png")
+var _pause_pressed_tex = preload("res://assets/ui/buttons/play_pause/pause_pressed.png")
+
 func _check_pause_button(mouse: Vector2) -> bool:
 	var pause_slot = _game_ui.get_node_or_null("UILayer/InventoryPanel/PauseSlot")
 	if pause_slot == null or not pause_slot.texture:
@@ -383,7 +386,11 @@ func _check_pause_button(mouse: Vector2) -> bool:
 	var half = tex_size / 2.0
 	if Rect2(pos - half, tex_size).has_point(mouse):
 		if not _paused:
-			_pause()
+			pause_slot.texture = _pause_pressed_tex
+			get_tree().create_timer(0.1).timeout.connect(func():
+				pause_slot.texture = _pause_normal_tex
+				_pause()
+			)
 		return true
 	return false
 
