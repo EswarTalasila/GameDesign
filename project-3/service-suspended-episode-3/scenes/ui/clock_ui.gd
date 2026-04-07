@@ -1,11 +1,6 @@
 extends CanvasLayer
 
 ## Clock close-up UI with variant selection.
-## When clock has hands:
-##   - Hover over quadrant: shows that variant's closeup sprite + tooltip
-##   - Click quadrant: switch to that room variant
-##   - Locked variants: "The hands of time resist..."
-##   - Current variant: "You are already here."
 
 signal clock_closed
 signal hands_inserted
@@ -14,22 +9,19 @@ signal variant_selected(variant: int)
 @onready var _clock_sprite: Sprite2D = $ClockSprite
 
 var _ui_no_hands = preload("res://assets/ui/clock/ui_no_hands.png")
-var _ui_with_hands = preload("res://assets/ui/clock/ui_with_hands.png")
-var _closeup_no_selection = preload("res://assets/ui/clock/closeup_no_selection.png")
 var _closeup_variants: Array[Texture2D] = []
 
-# Clock face center in the 128x128 sprite — matched from debug overlay
 const CLOCK_CENTER = Vector2(65, 66)
 const CLOCK_RADIUS = 24.0
 const BOUNDS_ROTATION = -25.0
 
 var _has_hands: bool = false
-var _hovered_variant: int = 0  # 0 = none, 1-4 = quadrant
+var _hovered_variant: int = 0
+var _variant_selected: bool = false  # prevent double-clicks
 
 var _tooltip: Label = null
 var _message_label: Label = null
 var _message_tween: Tween = null
-var _input_locked: bool = false
 
 func _ready() -> void:
 	layer = 8
@@ -56,7 +48,6 @@ func _setup_tooltip() -> void:
 	_tooltip.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	_tooltip.visible = false
 	_tooltip.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	# Position below the clock sprite
 	var clock_bottom = _clock_sprite.position.y + 64 * _clock_sprite.scale.y
 	_tooltip.position = Vector2(_clock_sprite.position.x - 150, clock_bottom + 16)
 	_tooltip.custom_minimum_size = Vector2(300, 0)
@@ -96,7 +87,6 @@ func _update_display() -> void:
 	if not _has_hands:
 		_clock_sprite.texture = _ui_no_hands
 		return
-	# Always show the current variant — never show "no selection"
 	var idx = clampi(GameState.current_variant - 1, 0, 3)
 	_clock_sprite.texture = _closeup_variants[idx]
 
@@ -108,9 +98,7 @@ func _update_tooltip(variant: int) -> void:
 	_tooltip.visible = true
 
 func _process(_delta: float) -> void:
-	if _input_locked:
-		return
-	if not _has_hands:
+	if not _has_hands or _variant_selected:
 		return
 	var mouse = get_viewport().get_mouse_position()
 	var local = (mouse - _clock_sprite.position) / _clock_sprite.scale + Vector2(64, 64)
@@ -146,16 +134,16 @@ func _get_quadrant(from_center: Vector2) -> int:
 		return 4
 
 func _input(event: InputEvent) -> void:
+	if _variant_selected:
+		get_viewport().set_input_as_handled()
+		return
+
 	if event.is_action_pressed("ui_cancel"):
 		get_viewport().set_input_as_handled()
 		clock_closed.emit()
 		return
 
 	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
-		if _input_locked:
-			get_viewport().set_input_as_handled()
-			return
-
 		var mouse = event.position
 
 		var coordinator = get_tree().root.find_child("Node2D", true, false)
@@ -184,24 +172,13 @@ func _insert_hands() -> void:
 	GameState.insert_clock_hands()
 	GameState.has_selected_variant = true
 	_has_hands = true
-	_hovered_variant = 0
-	_input_locked = true
 	_update_display()
-	_update_tooltip(0)
 	hands_inserted.emit()
-	# Use a SceneTreeTimer so it works during pause
-	get_tree().create_timer(1.0, true, false, true).timeout.connect(_unlock_input)
-
-func _unlock_input() -> void:
-	_input_locked = false
-	_hovered_variant = 0
-	_update_display()
-	_update_tooltip(0)
 
 func _select_variant(variant: int) -> void:
-	# Final safeguard — never select locked or current variant
 	if variant == GameState.current_variant or _is_variant_locked(variant):
 		return
+	_variant_selected = true  # lock out all further input
 	GameState.has_selected_variant = true
 	GameState.current_variant = variant
 	variant_selected.emit(variant)
