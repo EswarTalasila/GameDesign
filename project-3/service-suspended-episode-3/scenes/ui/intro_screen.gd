@@ -1,7 +1,7 @@
 extends CanvasLayer
 
 ## Opening monologue. Plays once at the start of the game.
-## Black screen with train ambience, two internal monologue cards, then fades out to reveal the room.
+## Black screen with train ambience, two opening text cards, then fades out to reveal the room.
 
 var _bg: ColorRect
 var _speaker_label: Label
@@ -13,8 +13,8 @@ var _dot_gothic = preload("res://assets/fonts/DotGothic16-Regular.ttf")
 var _train_sound = preload("res://assets/sounds/train_sounds.mp3")
 
 const LINES = [
-	"The last thing I remember is the Conductor's face. Not angry. Not even disappointed. Just... tired.",
-	"He locked the door like it was paperwork. Like I was a form being filed in the wrong cabinet.",
+	"You find yourself in an isolated room, cut off from the rest of the train.",
+	"You remember seeing the Conductor laughing as he closed and locked the door.",
 ]
 
 func _ready() -> void:
@@ -30,9 +30,9 @@ func _ready() -> void:
 	_bg.mouse_filter = Control.MOUSE_FILTER_STOP
 	add_child(_bg)
 
-	# "INTERNAL MONOLOGUE" speaker tag — small, muted, centred
+	# Small top label kept empty for spacing consistency.
 	_speaker_label = Label.new()
-	_speaker_label.text = "INTERNAL MONOLOGUE"
+	_speaker_label.text = ""
 	_speaker_label.add_theme_font_override("font", _dot_gothic)
 	_speaker_label.add_theme_font_size_override("font_size", 18)
 	_speaker_label.add_theme_color_override("font_color", Color(0.55, 0.52, 0.42))

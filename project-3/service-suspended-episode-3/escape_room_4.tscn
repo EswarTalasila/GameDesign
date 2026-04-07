@@ -2105,7 +2105,7 @@ position = Vector2(92, 134)
 patrol_interval = 25.0
 
 [node name="FinalLogbookEntry" parent="." unique_id=847291036 instance=ExtResource("11_lore")]
-position = Vector2(420, 380)
+position = Vector2(401, 347)
 lore_title = "Final Logbook Entry (V. Marques)"
 lore_body = "Found folded behind the lining of the overhead compartment. The handwriting is careful, deliberate. Someone who knew they might not get another chance to write.
 

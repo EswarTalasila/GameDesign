@@ -70,6 +70,13 @@ func _spawn_conductor() -> void:
 	# Disable physics on the conductor — we move it with tweens
 	_conductor.get_node("CollisionShape2D").disabled = true
 
+func _wait_until_dialogue_allowed() -> bool:
+	while get_tree().paused or GameState.lore_open:
+		await get_tree().create_timer(0.5).timeout
+		if not is_inside_tree() or GameState.suitcase_solved:
+			return false
+	return is_inside_tree() and not GameState.suitcase_solved
+
 func _play_intercom_then_patrol() -> void:
 	# Wait for the opening intro monologue to finish before playing the PA
 	var intro = get_tree().root.find_child("IntroScreen", true, false)
@@ -77,10 +84,7 @@ func _play_intercom_then_patrol() -> void:
 		await intro.tree_exited
 	else:
 		await get_tree().create_timer(2.0).timeout
-	# Wait until player is not in any UI (game not paused)
-	while get_tree().paused:
-		await get_tree().create_timer(0.5).timeout
-	if not is_inside_tree():
+	if not await _wait_until_dialogue_allowed():
 		return
 	# Play static sound
 	var sfx = AudioStreamPlayer.new()
@@ -96,11 +100,7 @@ func _play_intercom_then_patrol() -> void:
 	# Repeat greeting + time twice more with 10s gaps
 	for _i in range(2):
 		await get_tree().create_timer(10.0).timeout
-		if not is_inside_tree() or GameState.suitcase_solved:
-			return
-		while get_tree().paused:
-			await get_tree().create_timer(0.5).timeout
-		if not is_inside_tree() or GameState.suitcase_solved:
+		if not await _wait_until_dialogue_allowed():
 			return
 		var repeat_sfx = AudioStreamPlayer.new()
 		repeat_sfx.stream = _intercom_static

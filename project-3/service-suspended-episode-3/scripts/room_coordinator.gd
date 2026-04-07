@@ -728,6 +728,7 @@ func _setup_controls_hint() -> void:
 	var lines = [
 		["[E]", "Interact"],
 		["[Esc]", "Pause / Close"],
+		["[Tab]", "Lore journal"],
 		["[Space]", "Attack"],
 		["[WASD]", "Move"],
 		["[Backspace]", "Delete input"],
@@ -773,6 +774,8 @@ func _play_pa(section: String) -> void:
 	var intro = get_tree().root.find_child("IntroScreen", true, false)
 	if intro:
 		await intro.tree_exited
+	while is_inside_tree() and (get_tree().paused or GameState.lore_open):
+		await get_tree().create_timer(0.25).timeout
 	if not is_inside_tree() or _pa_playing:
 		return
 	_pa_playing = true
