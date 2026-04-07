@@ -71,7 +71,12 @@ func _spawn_conductor() -> void:
 	_conductor.get_node("CollisionShape2D").disabled = true
 
 func _play_intercom_then_patrol() -> void:
-	await get_tree().create_timer(2.0).timeout
+	# Wait for the opening intro monologue to finish before playing the PA
+	var intro = get_tree().root.find_child("IntroScreen", true, false)
+	if intro:
+		await intro.tree_exited
+	else:
+		await get_tree().create_timer(2.0).timeout
 	# Wait until player is not in any UI (game not paused)
 	while get_tree().paused:
 		await get_tree().create_timer(0.5).timeout
