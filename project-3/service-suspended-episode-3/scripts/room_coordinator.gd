@@ -319,7 +319,7 @@ func _on_clock_hands_inserted() -> void:
 	remove_item("clock_hands")
 	_update_map_count()
 
-func pulse_inventory_item(id: String) -> void:
+func pulse_inventory_item(id: String, scale_mult: float = 1.1, pulse_time: float = 0.4, bright_mult: float = 1.0) -> void:
 	for item in _inventory:
 		if item["id"] == id and item["instance"]:
 			var node = item["instance"]
@@ -331,16 +331,24 @@ func pulse_inventory_item(id: String) -> void:
 						target = child
 						break
 			var base_scale = target.scale
+			var base_modulate = target.modulate
+			var peak_modulate = Color(base_modulate.r * bright_mult, base_modulate.g * bright_mult, base_modulate.b * bright_mult, base_modulate.a)
 			# Stop any existing pulse
 			if target.has_meta("pulse_tween"):
 				var old: Tween = target.get_meta("pulse_tween")
 				if old and old.is_valid():
 					old.kill()
 				target.scale = base_scale
+				target.modulate = base_modulate
 			var tween = create_tween().set_loops(0)  # infinite
 			tween.set_pause_mode(Tween.TWEEN_PAUSE_PROCESS)
-			tween.tween_property(target, "scale", base_scale * 1.1, 0.4).set_ease(Tween.EASE_IN_OUT).set_trans(Tween.TRANS_SINE)
-			tween.tween_property(target, "scale", base_scale, 0.4).set_ease(Tween.EASE_IN_OUT).set_trans(Tween.TRANS_SINE)
+			tween.tween_property(target, "scale", base_scale * scale_mult, pulse_time).set_ease(Tween.EASE_IN_OUT).set_trans(Tween.TRANS_SINE)
+			if bright_mult > 1.0:
+				tween.parallel().tween_property(target, "modulate", peak_modulate, pulse_time).set_ease(Tween.EASE_IN_OUT).set_trans(Tween.TRANS_SINE)
+			tween.tween_property(target, "scale", base_scale, pulse_time).set_ease(Tween.EASE_IN_OUT).set_trans(Tween.TRANS_SINE)
+			if bright_mult > 1.0:
+				tween.parallel().tween_property(target, "modulate", base_modulate, pulse_time).set_ease(Tween.EASE_IN_OUT).set_trans(Tween.TRANS_SINE)
+			target.set_meta("pulse_base_modulate", base_modulate)
 			target.set_meta("pulse_tween", tween)
 
 func stop_pulse(id: String) -> void:
@@ -357,6 +365,9 @@ func stop_pulse(id: String) -> void:
 				var tween: Tween = target.get_meta("pulse_tween")
 				if tween and tween.is_valid():
 					tween.kill()
+				if target.has_meta("pulse_base_modulate"):
+					target.modulate = target.get_meta("pulse_base_modulate")
+					target.remove_meta("pulse_base_modulate")
 				target.remove_meta("pulse_tween")
 
 # ── Input ──
