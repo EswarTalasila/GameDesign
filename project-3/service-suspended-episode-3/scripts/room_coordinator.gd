@@ -147,6 +147,8 @@ func _ready() -> void:
 	GameState.map_piece_collected.connect(_on_map_piece_collected)
 	GameState.player_died.connect(_on_player_died)
 
+	_setup_controls_hint()
+
 	# Variant 3 first-entry dialogue
 	if GameState.current_variant == 3 and not GameState.get("variant3_dialogue_shown"):
 		GameState.set("variant3_dialogue_shown", true)
@@ -587,6 +589,83 @@ func _on_death_reload() -> void:
 	loading.process_mode = Node.PROCESS_MODE_ALWAYS
 	get_tree().root.add_child(loading)
 	loading.transition_to(scene_path)
+
+# ── Controls Hint ──
+
+func _setup_controls_hint() -> void:
+	var layer = CanvasLayer.new()
+	layer.layer = 8
+	add_child(layer)
+
+	var dot_gothic = load("res://assets/fonts/DotGothic16-Regular.ttf")
+	var lines = [
+		["[E]", "Interact"],
+		["[Esc]", "Pause / Close"],
+		["[Space]", "Attack"],
+		["[WASD]", "Move"],
+		["[Backspace]", "Delete input"],
+		["[Enter]", "Confirm"],
+	]
+
+	var panel = PanelContainer.new()
+	panel.set_anchors_preset(Control.PRESET_TOP_RIGHT)
+	panel.grow_horizontal = Control.GROW_DIRECTION_BEGIN
+	panel.position = Vector2(-12, 12)
+	panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
+
+	var style = StyleBoxFlat.new()
+	style.bg_color = Color(0.0, 0.0, 0.0, 0.45)
+	style.border_color = Color(0.5, 0.45, 0.35, 0.4)
+	style.set_border_width_all(1)
+	style.set_corner_radius_all(3)
+	style.content_margin_top = 12
+	style.content_margin_bottom = 12
+	style.content_margin_left = 18
+	style.content_margin_right = 18
+	panel.add_theme_stylebox_override("panel", style)
+	layer.add_child(panel)
+
+	var vbox = VBoxContainer.new()
+	vbox.add_theme_constant_override("separation", 8)
+	panel.add_child(vbox)
+
+	var header = Label.new()
+	header.text = "CONTROLS"
+	header.add_theme_font_override("font", dot_gothic)
+	header.add_theme_font_size_override("font_size", 18)
+	header.add_theme_color_override("font_color", Color(0.75, 0.7, 0.55))
+	header.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	header.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	vbox.add_child(header)
+
+	var sep = HSeparator.new()
+	var sep_style = StyleBoxFlat.new()
+	sep_style.bg_color = Color(0.5, 0.45, 0.3, 0.4)
+	sep_style.content_margin_top = 1.0
+	sep_style.content_margin_bottom = 1.0
+	sep.add_theme_stylebox_override("separator", sep_style)
+	vbox.add_child(sep)
+
+	for pair in lines:
+		var row = HBoxContainer.new()
+		row.add_theme_constant_override("separation", 8)
+		row.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		vbox.add_child(row)
+		var key_label = Label.new()
+		key_label.text = pair[0]
+		key_label.add_theme_font_override("font", dot_gothic)
+		key_label.add_theme_font_size_override("font_size", 20)
+		key_label.add_theme_color_override("font_color", Color(0.95, 0.85, 0.55))
+		key_label.custom_minimum_size = Vector2(100, 0)
+		key_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		row.add_child(key_label)
+		var action_label = Label.new()
+		action_label.text = pair[1]
+		action_label.add_theme_font_override("font", dot_gothic)
+		action_label.add_theme_font_size_override("font_size", 20)
+		action_label.add_theme_color_override("font_color", Color(0.7, 0.68, 0.6))
+		action_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		row.add_child(action_label)
 
 # ── Variant Dialogues ──
 
