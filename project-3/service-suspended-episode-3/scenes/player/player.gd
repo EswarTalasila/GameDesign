@@ -220,6 +220,7 @@ func _update_world_lights() -> void:
 	var pools: Array = []
 	var widths: Array = []
 	var glows: Array = []
+	var energies: Array = []
 	var count = 0 if lights_disabled else mini(lights.size(), 8)
 
 	for i in range(count):
@@ -233,6 +234,7 @@ func _update_world_lights() -> void:
 		pools.append((light.pool_radius * zoom.y) / vp_size.y)
 		widths.append((light.bulb_width * zoom.y) / vp_size.y)
 		glows.append((light.bulb_glow * zoom.y) / vp_size.y)
+		energies.append(light.light_energy if "light_energy" in light else 1.0)
 
 	while positions.size() < 8:
 		positions.append(Vector2(-10, -10))
@@ -242,6 +244,7 @@ func _update_world_lights() -> void:
 		pools.append(0.0)
 		widths.append(0.0)
 		glows.append(0.0)
+		energies.append(1.0)
 
 	_vision_material.set_shader_parameter("light_count", count)
 	_vision_material.set_shader_parameter("light_positions", positions)
@@ -251,6 +254,7 @@ func _update_world_lights() -> void:
 	_vision_material.set_shader_parameter("light_pools", pools)
 	_vision_material.set_shader_parameter("light_widths", widths)
 	_vision_material.set_shader_parameter("light_glows", glows)
+	_vision_material.set_shader_parameter("light_energies", energies)
 
 func _play_sfx(stream: AudioStream) -> void:
 	var sfx = AudioStreamPlayer.new()

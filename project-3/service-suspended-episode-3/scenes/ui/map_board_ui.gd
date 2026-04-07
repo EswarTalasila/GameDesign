@@ -247,7 +247,7 @@ func _prompt_for_clock_placement() -> void:
 func _show_clock_placement_hint() -> void:
 	var dot_gothic = load("res://assets/fonts/DotGothic16-Regular.ttf")
 	var label = Label.new()
-	label.text = "The clock might fit in the center of the map."
+	label.text = "The center seems like it's missing something."
 	label.add_theme_font_override("font", dot_gothic)
 	label.add_theme_font_size_override("font_size", 28)
 	label.add_theme_color_override("font_color", Color(0.9, 0.86, 0.7))
@@ -264,7 +264,7 @@ func _show_clock_placement_hint() -> void:
 func _show_color_reaction() -> void:
 	var dot_gothic = load("res://assets/fonts/DotGothic16-Regular.ttf")
 	var label = Label.new()
-	label.text = "Colors... these must mean something."
+	label.text = "A clock face only makes sense if you start at twelve."
 	label.add_theme_font_override("font", dot_gothic)
 	label.add_theme_font_size_override("font_size", 28)
 	label.add_theme_color_override("font_color", Color(0.85, 0.8, 0.65))

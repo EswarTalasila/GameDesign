@@ -17,6 +17,7 @@ uniform float light_angles[8];
 uniform float light_pools[8];
 uniform float light_widths[8];
 uniform float light_glows[8];
+uniform float light_energies[8];
 
 // Light tint — applied to lit areas (0,0,0 = no tint, 1,0,0 = red, etc.)
 uniform vec3 light_tint = vec3(0.0, 0.0, 0.0);
@@ -63,7 +64,8 @@ void fragment() {
 		float light_dist = length(light_uv);
 		float glow = smoothstep(light_glows[i] + edge_softness * 2.0, light_glows[i] - edge_softness * 2.0, light_dist);
 
-		lights = max(lights, max(frustum, glow));
+		float energy = light_energies[i];
+		lights = max(lights, max(frustum, glow) * energy);
 	}
 
 	float visibility = max(cone, lights);
