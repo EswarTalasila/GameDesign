@@ -30,6 +30,7 @@ var _tooltip: Label = null
 var _message_label: Label = null
 var _message_tween: Tween = null
 var _insert_cooldown: float = 0.0
+var _just_inserted: bool = false
 
 func _ready() -> void:
 	layer = 8
@@ -176,6 +177,10 @@ func _input(event: InputEvent) -> void:
 				get_viewport().set_input_as_handled()
 				return
 
+		if _just_inserted:
+			get_viewport().set_input_as_handled()
+			return
+
 		if _has_hands and _hovered_variant > 0:
 			if _hovered_variant == GameState.current_variant:
 				_show_message("You are already here.")
@@ -191,6 +196,7 @@ func _insert_hands() -> void:
 	_has_hands = true
 	_hovered_variant = 0
 	_insert_cooldown = 1.0
+	_just_inserted = true
 	_update_display()
 	_update_tooltip(0)
 	hands_inserted.emit()
