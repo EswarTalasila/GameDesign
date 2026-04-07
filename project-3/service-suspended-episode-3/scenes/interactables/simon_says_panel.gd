@@ -80,14 +80,6 @@ func _unhandled_input(event: InputEvent) -> void:
 func _open_ui() -> void:
 	_ui_open = true
 	_prompt.visible = false
-	# Show player dialogue first time
-	if not GameState.get("simon_dialogue_shown"):
-		GameState.set("simon_dialogue_shown", true)
-		var reactions = load("res://dialogues/player_reactions.dialogue")
-		DialogueManager.show_dialogue_balloon(reactions, "simon_panel_open")
-		await DialogueManager.dialogue_ended
-		if not is_inside_tree():
-			return
 	get_tree().paused = true
 	_simon_ui = _simon_ui_scene.instantiate()
 	_simon_ui.process_mode = Node.PROCESS_MODE_ALWAYS

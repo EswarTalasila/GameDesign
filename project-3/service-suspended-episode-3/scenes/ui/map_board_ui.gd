@@ -86,6 +86,7 @@ func _process(delta: float) -> void:
 			_reveal_progress = 1.0
 			_revealing = false
 			GameState.set("clock_on_map", true)
+			_show_color_reaction()
 		_update_path_reveal()
 
 func _input(event: InputEvent) -> void:
@@ -235,3 +236,20 @@ func _check_complete() -> void:
 	var coordinator = get_tree().root.find_child("Node2D", true, false)
 	if coordinator and coordinator.has_method("pulse_inventory_item"):
 		coordinator.pulse_inventory_item("clock")
+
+func _show_color_reaction() -> void:
+	var dot_gothic = load("res://assets/fonts/DotGothic16-Regular.ttf")
+	var label = Label.new()
+	label.text = "Colors... these must mean something."
+	label.add_theme_font_override("font", dot_gothic)
+	label.add_theme_font_size_override("font_size", 28)
+	label.add_theme_color_override("font_color", Color(0.85, 0.8, 0.65))
+	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	label.set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_WIDE)
+	label.offset_top = -80
+	label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	add_child(label)
+	var tween = create_tween()
+	tween.tween_interval(3.0)
+	tween.tween_property(label, "modulate:a", 0.0, 1.0)
+	tween.tween_callback(label.queue_free)
