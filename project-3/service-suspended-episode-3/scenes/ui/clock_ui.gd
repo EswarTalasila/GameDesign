@@ -29,8 +29,7 @@ var _hovered_variant: int = 0  # 0 = none, 1-4 = quadrant
 var _tooltip: Label = null
 var _message_label: Label = null
 var _message_tween: Tween = null
-var _insert_cooldown: float = 0.0
-var _just_inserted: bool = false
+var _input_locked: bool = false
 
 func _ready() -> void:
 	layer = 8
@@ -108,13 +107,8 @@ func _update_tooltip(variant: int) -> void:
 	_tooltip.text = "Variant %d" % variant
 	_tooltip.visible = true
 
-func _process(delta: float) -> void:
-	if _insert_cooldown > 0:
-		_insert_cooldown -= delta
-		if _insert_cooldown <= 0:
-			_hovered_variant = 0
-			_update_display()
-			_update_tooltip(0)
+func _process(_delta: float) -> void:
+	if _input_locked:
 		return
 	if not _has_hands:
 		return
@@ -158,11 +152,11 @@ func _input(event: InputEvent) -> void:
 		return
 
 	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
-		var mouse = event.position
-
-		if _insert_cooldown > 0:
+		if _input_locked:
 			get_viewport().set_input_as_handled()
 			return
+
+		var mouse = event.position
 
 		var coordinator = get_tree().root.find_child("Node2D", true, false)
 		if coordinator and coordinator.has_method("_handle_inventory_click"):
@@ -176,10 +170,6 @@ func _input(event: InputEvent) -> void:
 				_insert_hands()
 				get_viewport().set_input_as_handled()
 				return
-
-		if _just_inserted:
-			get_viewport().set_input_as_handled()
-			return
 
 		if _has_hands and _hovered_variant > 0:
 			if _hovered_variant == GameState.current_variant:
@@ -195,11 +185,18 @@ func _insert_hands() -> void:
 	GameState.has_selected_variant = true
 	_has_hands = true
 	_hovered_variant = 0
-	_insert_cooldown = 1.0
-	_just_inserted = true
+	_input_locked = true
 	_update_display()
 	_update_tooltip(0)
 	hands_inserted.emit()
+	# Use a SceneTreeTimer so it works during pause
+	get_tree().create_timer(1.0, true, false, true).timeout.connect(_unlock_input)
+
+func _unlock_input() -> void:
+	_input_locked = false
+	_hovered_variant = 0
+	_update_display()
+	_update_tooltip(0)
 
 func _select_variant(variant: int) -> void:
 	# Final safeguard — never select locked or current variant
