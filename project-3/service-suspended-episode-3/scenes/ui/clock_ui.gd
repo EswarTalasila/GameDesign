@@ -179,14 +179,22 @@ func _input(event: InputEvent) -> void:
 
 func _insert_hands() -> void:
 	GameState.insert_clock_hands()
+	GameState.has_selected_variant = true
 	_has_hands = true
 	_hovered_variant = 0
 	_insert_cooldown = 0.5
 	_update_display()
 	_update_tooltip(0)
 	hands_inserted.emit()
+	# Close the clock so it reopens clean — no stale hover state
+	await get_tree().create_timer(0.6).timeout
+	if is_inside_tree():
+		clock_closed.emit()
 
 func _select_variant(variant: int) -> void:
+	# Final safeguard — never select locked or current variant
+	if variant == GameState.current_variant or _is_variant_locked(variant):
+		return
 	GameState.has_selected_variant = true
 	GameState.current_variant = variant
 	variant_selected.emit(variant)
