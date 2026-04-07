@@ -172,6 +172,9 @@ func _input(event: InputEvent) -> void:
 				get_viewport().set_input_as_handled()
 				return
 
+		if _insert_cooldown > 0:
+			return
+
 		if _has_hands and _hovered_variant > 0:
 			if _hovered_variant == GameState.current_variant:
 				_show_message("You are already here.")
