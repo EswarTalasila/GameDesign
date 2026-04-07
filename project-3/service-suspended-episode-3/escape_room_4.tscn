@@ -9,6 +9,7 @@
 [ext_resource type="TileSet" uid="uid://ca433fk50500d" path="res://assets/tilesets/dungeon/item_spawn_markers.tres" id="8_markers"]
 [ext_resource type="PackedScene" uid="uid://4k2tbk61oax0" path="res://scenes/npc/conductor_patrol.tscn" id="9_26wit"]
 [ext_resource type="Script" uid="uid://dlednogx20kns" path="res://scripts/room_section.gd" id="9_section"]
+[ext_resource type="PackedScene" path="res://scenes/interactables/lore_item.tscn" id="11_lore"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_31ipf"]
 texture = ExtResource("1_hyjw4")
@@ -2102,3 +2103,36 @@ scale = Vector2(2, 2)
 [node name="ConductorPatrol" parent="." unique_id=1859744232 instance=ExtResource("9_26wit")]
 position = Vector2(92, 134)
 patrol_interval = 25.0
+
+[node name="FinalLogbookEntry" parent="." unique_id=847291036 instance=ExtResource("11_lore")]
+position = Vector2(420, 380)
+lore_title = "Final Logbook Entry (V. Marques)"
+lore_body = "Found folded behind the lining of the overhead compartment. The handwriting is careful, deliberate. Someone who knew they might not get another chance to write.
+
+If you're reading this, you're in the cart. That means he caught you, which means you got close enough to catch. That's something. Not much, but something.
+
+I spent eleven years in this system. I know less now than when I started. Here is what I can tell you with confidence:
+
+The loop is not a machine. It's not infrastructure, not a failed transit project, not anyone's plan. It is something that occurs. Like weather, like gravity. The trains are just the shape it takes right now. Before there were trains there were carriage roads that looped back on themselves. Before that, footpaths. The city built itself around it the way life builds itself around water, drawn in, shaped by it, never thinking to ask why.
+
+The Conductor is not in charge. No one is. He is the passenger who has been here the longest, so long that the loop began moving through him instead of him moving through it. He told me once that he couldn't remember his own name. He said it the way you'd report the weather. He is a function. A role the system needed filled.
+
+The golden tickets are not manufactured. I found one pressed between pages of a ledger from 1802 in a city archive. Same material, same faint shimmer. They are made from the loop's own substance. Its credentials. The system cannot deny what is made from itself.
+
+And then there is the woman in the red coat.
+
+Every account I've gathered across a century of records describes her the same way. She appears when you're lost. She helps. She tells you to hold onto something specific, something small and exact. The advice is real. I've tested it. It works.
+
+But she has been here longer than the Conductor. Longer than anyone. Passengers decay in this place. They lose memories, lose themselves, lose their names the way the Conductor lost his. She hasn't lost anything. She is exactly the same in 1940 as she is today. That is not how people work. That is not how anything works.
+
+I don't think she's malicious. I can't find evidence of harm. But I can't figure out what she gains from helping people, either. If she's been here this long and wanted to leave, she'd have left. She is not trapped. She is present.
+
+I keep returning to the same question: every passenger she helped, she guided all the way to the end. And then the accounts stop. I can never find out what happened. Whether they made it. Just that she was there, at the very last moment, watching.
+
+Hold onto something specific. That part is true. I believe it with everything I have left. The loop dissolves what's generic. Stay particular. Stay you.
+
+But pay attention to who gave you that advice, and why, and what they're still waiting to see.
+
+V. Marques
+Independent Investigator. Eleven years in the system. I can still remember my daughter's name. That's how I know I haven't been here long enough."
+lore_id = "final_logbook_entry"

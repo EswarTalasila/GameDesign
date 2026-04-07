@@ -110,6 +110,7 @@ func _close_ui() -> void:
 		_prompt.visible = true
 
 var _map_pickup_scene = preload("res://scenes/pickups/map_piece_pickup.tscn")
+var _lore_item_scene = preload("res://scenes/interactables/lore_item.tscn")
 
 func _on_solved() -> void:
 	GameState.simon_solved = true
@@ -120,3 +121,10 @@ func _on_solved() -> void:
 		pickup.piece_id = 2
 		pickup.global_position = $RewardSpawn.global_position
 		get_parent().add_child(pickup)
+	if not GameState.has_lore("stamped_tickets"):
+		var lore = _lore_item_scene.instantiate()
+		lore.lore_id = "stamped_tickets"
+		lore.lore_title = "Stamped Tickets (Impossible Dates)"
+		lore.lore_body = "Three tickets, bundled together with a rusted clip. Each is stamped with the same route and passenger number. The dates are what stop you cold.\n\nRoute 4-7-2 | Passenger #0041 | March 14, 2007\nRoute 4-7-2 | Passenger #0041 | March 14, 1925\nRoute 4-7-2 | Passenger #0041 | March 14, 1853\n\nThe handwriting on each ticket is different. The stamp is identical. Same ink, same pressure. Like the machine never aged. Like it was used yesterday on all three.\n\nScrawled on the back of the oldest ticket in pencil: \"Same seat. Every time. I've started leaving this here so the next one knows.\""
+		lore.global_position = $RewardSpawn.global_position + Vector2(32, 0)
+		get_parent().add_child(lore)

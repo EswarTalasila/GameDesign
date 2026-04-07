@@ -5,6 +5,9 @@ var _game_ui_scene = preload("res://scenes/ui/game_ui.tscn")
 var _loading_screen_scene = preload("res://scenes/ui/loading_screen.tscn")
 var _death_screen_scene = preload("res://scenes/ui/death_screen.tscn")
 var _saving_icon_scene = preload("res://scenes/ui/saving_icon.tscn")
+var _intro_screen_scene = preload("res://scenes/ui/intro_screen.tscn")
+var _intercom_static = preload("res://assets/sounds/innercom_static.mp3")
+var _intercom_dialogue = load("res://dialogues/intercom.dialogue")
 var _pause_menu: CanvasLayer = null
 var _death_screen: CanvasLayer = null
 var _paused: bool = false
@@ -149,9 +152,28 @@ func _ready() -> void:
 	GameState.clock_hands_collected.connect(_on_clock_hands_collected)
 	GameState.clock_hands_added.connect(_on_clock_hands_inserted)
 	GameState.map_piece_collected.connect(_on_map_piece_collected)
+	GameState.map_assembled_signal.connect(_on_map_assembled)
+	GameState.lore_collected.connect(_on_lore_collected)
+	GameState.pa_requested.connect(_on_pa_requested)
 	GameState.player_died.connect(_on_player_died)
 
 	_setup_controls_hint()
+
+	# Opening monologue — fires once on the very first load
+	if GameState.current_variant == 1 and not GameState.intro_played:
+		GameState.intro_played = true
+		var intro = _intro_screen_scene.instantiate()
+		get_tree().root.add_child(intro)
+
+	# PA: first room rotation
+	if GameState.current_variant > 1 and not GameState.pa_first_rotation_played:
+		GameState.pa_first_rotation_played = true
+		_play_pa("pa_first_rotation")
+
+	# PA: clock hands inserted (fires on first load after the clock UI closes)
+	if GameState.clock_hands_inserted and not GameState.pa_clock_solved_played:
+		GameState.pa_clock_solved_played = true
+		_play_pa("pa_clock_solved")
 
 	# Variant 3 first-entry dialogue
 	if GameState.current_variant == 3 and not GameState.get("variant3_dialogue_shown"):
@@ -301,6 +323,22 @@ func _on_map_piece_collected(_piece_id: int) -> void:
 	# Add map icon (add_item ignores if already exists)
 	add_item("map", _map_icon_scene, null, func(): pass)
 	_update_map_count()
+	if GameState.collected_map_pieces.size() >= 2 and not GameState.pa_half_map_played:
+		GameState.pa_half_map_played = true
+		_play_pa("pa_half_map")
+
+func _on_map_assembled() -> void:
+	if not GameState.pa_map_complete_played:
+		GameState.pa_map_complete_played = true
+		_play_pa("pa_map_complete")
+
+func _on_lore_collected(_entry: Dictionary) -> void:
+	if GameState.collected_lore.size() == 1 and not GameState.pa_lore_pickup_played:
+		GameState.pa_lore_pickup_played = true
+		_play_pa("pa_lore_pickup")
+
+func _on_pa_requested(section: String) -> void:
+	_play_pa(section)
 
 func _update_map_count() -> void:
 	for item in _inventory:
@@ -372,6 +410,8 @@ func stop_pulse(id: String) -> void:
 
 # ── Input ──
 
+var _lore_overlay_scene = preload("res://scenes/ui/lore_overlay.tscn")
+
 func _unhandled_input(event: InputEvent) -> void:
 	if event.is_action_pressed("ui_cancel"):
 		get_viewport().set_input_as_handled()
@@ -382,6 +422,16 @@ func _unhandled_input(event: InputEvent) -> void:
 			_resume()
 		else:
 			_pause()
+		return
+
+	if event is InputEventKey and event.pressed and event.keycode == KEY_TAB:
+		if not _paused and not GameState.lore_open and GameState.collected_lore.size() > 0:
+			get_viewport().set_input_as_handled()
+			GameState.lore_open = true
+			var overlay = _lore_overlay_scene.instantiate()
+			get_tree().root.add_child(overlay)
+			overlay.open()
+			overlay.closed.connect(func(): GameState.lore_open = false)
 		return
 
 	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT:
@@ -712,6 +762,30 @@ func _on_controls_panel_clicked(event: InputEvent) -> void:
 		_controls_open = not _controls_open
 		_controls_body.visible = _controls_open
 		_controls_chevron.text = "▲" if _controls_open else "▼"
+
+# ── PA Announcements ──
+
+var _pa_playing: bool = false
+
+func _play_pa(section: String) -> void:
+	await get_tree().process_frame
+	# Wait for the opening intro monologue to finish before any announcement plays
+	var intro = get_tree().root.find_child("IntroScreen", true, false)
+	if intro:
+		await intro.tree_exited
+	if not is_inside_tree() or _pa_playing:
+		return
+	_pa_playing = true
+	var sfx = AudioStreamPlayer.new()
+	sfx.stream = _intercom_static
+	sfx.volume_db = -8
+	add_child(sfx)
+	sfx.play()
+	DialogueManager.show_dialogue_balloon(_intercom_dialogue, section)
+	await DialogueManager.dialogue_ended
+	sfx.stop()
+	sfx.queue_free()
+	_pa_playing = false
 
 # ── Variant Dialogues ──
 

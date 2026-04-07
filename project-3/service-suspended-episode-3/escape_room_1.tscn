@@ -9,6 +9,7 @@
 [ext_resource type="TileSet" uid="uid://ca433fk50500d" path="res://assets/tilesets/dungeon/item_spawn_markers.tres" id="8_markers"]
 [ext_resource type="PackedScene" uid="uid://4k2tbk61oax0" path="res://scenes/npc/conductor_patrol.tscn" id="9_26wit"]
 [ext_resource type="Script" path="res://scripts/room_section.gd" id="9_section"]
+[ext_resource type="PackedScene" path="res://scenes/interactables/lore_item.tscn" id="11_lore"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_31ipf"]
 texture = ExtResource("1_hyjw4")
@@ -2016,3 +2017,15 @@ position = Vector2(92, 134)
 patrol_interval = 25.0
 play_intercom = null
 post_intercom_delay = null
+
+[node name="CrumpledSchedule" parent="." unique_id=702831065 instance=ExtResource("11_lore")]
+position = Vector2(290, 280)
+lore_title = "Crumpled Schedule"
+lore_body = "NORTHBOUND SERVICE — REVISED TIMETABLE
+
+06:47 — Junction 7 — Transfer point
+07:55 — Platform 9 — RESTRICTED
+09:10 — Terminal Loop — Automatic return
+
+Handwritten at the bottom: \"The 7:55 never arrives. Don't wait for it.\""
+lore_id = "crumpled_schedule"

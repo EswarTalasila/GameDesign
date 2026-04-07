@@ -10,6 +10,7 @@ var _player_in_range: bool = false
 var _ui_open: bool = false
 var _suitcase_ui_scene = preload("res://scenes/ui/suitcase_ui.tscn")
 var _suitcase_ui: CanvasLayer = null
+var _lore_item_scene = preload("res://scenes/interactables/lore_item.tscn")
 
 # Closed suitcase atlas coords (3,19)→(5,20) = 3 wide × 2 tall
 const CLOSED_ATLAS_MIN = Vector2i(3, 19)
@@ -71,6 +72,13 @@ func _on_solved() -> void:
 	_swap_to_open_tiles()
 	_close_ui()
 	GameState.collect_clock_hands()
+	if not GameState.has_lore("logbook_pages_1_3"):
+		var lore = _lore_item_scene.instantiate()
+		lore.lore_id = "logbook_pages_1_3"
+		lore.lore_title = "Passenger Logbook (Pages 1–3)"
+		lore.lore_body = "Page 1:\nI don't know who built this system. None of us do. The station was already here when the city was founded. I've seen the old survey maps, the ones from before there were proper roads. The tracks are on them. Not planned. Just present. Like rivers. Like things that were always there.\n\nPage 2:\nThey built the station around the tracks because what else do you do? The city grew along the route the way cities always grow along waterways. Nobody questioned it. You don't question a river. You just use it, and you forget to ask where it started.\n\nPage 3:\nThe first conductors weren't hired. They were found. Passengers who had been riding so long they had become part of the operation. The transit authority listed them as employees retroactively. Gave them uniforms and a title. Nobody could remember them ever boarding. Nobody thought to ask."
+		lore.global_position = global_position + Vector2(0, -64)
+		get_parent().add_child(lore)
 
 func _swap_to_open_tiles() -> void:
 	if _tile_layer == null:

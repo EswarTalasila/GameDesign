@@ -1,0 +1,6 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scenes/ui/intro_screen.gd" id="1_script"]
+
+[node name="IntroScreen" type="CanvasLayer"]
+script = ExtResource("1_script")

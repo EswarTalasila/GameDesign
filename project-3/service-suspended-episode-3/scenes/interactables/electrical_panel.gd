@@ -44,6 +44,9 @@ func _on_puzzle_solved() -> void:
 	for door in get_tree().get_nodes_in_group("locked_doors"):
 		door.unlock()
 	_close_puzzle()
+	if not GameState.pa_wire_puzzle_played:
+		GameState.pa_wire_puzzle_played = true
+		GameState.request_pa("pa_wire_puzzle")
 
 func _close_puzzle() -> void:
 	_puzzle_open = false

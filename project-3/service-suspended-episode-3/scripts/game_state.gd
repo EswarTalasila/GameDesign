@@ -51,6 +51,9 @@ var golden_punch_tip_shown: bool = false
 var all_golden_tip_shown: bool = false
 var golden_ticket_dry_streak: int = 0  # consecutive rotations without a golden ticket
 
+# One-shot session flags
+var intro_played: bool = false
+
 # Dialogue replay flags — tracks whether NPC dialogue has been heard
 var lady_section_1_heard: bool = false
 var lady_section_2_heard: bool = false
@@ -93,6 +96,19 @@ var conductor_watching: bool = false
 # Lore
 var lore_open: bool = false
 var collected_lore: Array[Dictionary] = []
+
+# PA announcements — one-shot, never reset on death (session-persistent)
+signal pa_requested(section: String)
+var pa_lore_pickup_played: bool = false
+var pa_first_rotation_played: bool = false
+var pa_clock_solved_played: bool = false
+var pa_half_map_played: bool = false
+var pa_computer_solved_played: bool = false
+var pa_map_complete_played: bool = false
+var pa_wire_puzzle_played: bool = false
+
+func request_pa(section: String) -> void:
+	pa_requested.emit(section)
 
 # Audio mute (persists across resets — player preference)
 var muted: bool = false

@@ -8,3 +8,32 @@ INTERCOM: [shake][color=#ffb347]*bzzt* ... The conductor will now be making his 
 INTERCOM: [shake][color=#ffb347]*bzzt* ... Good morning, Subject 0949.[/color][/shake]
 INTERCOM: [shake][color=#ffb347]*bzzt* ... The time is now 06:47.[/color][/shake]
 => END
+
+~ pa_lore_pickup
+INTERCOM: [shake][color=#ffb347]*bzzt* ... Personal belongings must remain stowed during suspension. This is a courtesy reminder.[/color][/shake]
+=> END
+
+~ pa_first_rotation
+INTERCOM: [shake][color=#ffb347]*bzzt* ... Service adjustment noted. Your new route is being calculated. Please remain in your seat.[/color][/shake]
+=> END
+
+~ pa_clock_solved
+INTERCOM: [shake][color=#ffb347]*bzzt* ... The 7:55 departure has been... [static] ...has been... [static] ...please disregard.[/color][/shake]
+=> END
+
+~ pa_half_map
+INTERCOM: [shake][color=#ffb347]*bzzt* ... Passenger, your curiosity has been noted. Curiosity is not a recognized travel activity. Please remain in your seat.[/color][/shake]
+=> END
+
+~ pa_computer_lock
+INTERCOM: [shake][color=#ffb347]*bzzt* ... Unauthorized access to restricted compartments will result in... will result in [static] ...please remain in your seat.[/color][/shake]
+=> END
+
+~ pa_map_complete
+INTERCOM: [shake][color=#ffb347]*bzzt* ... You are not authorized to view the service map. The service map does not exist. Please remain in your seat.[/color][/shake]
+INTERCOM: [shake][color=#ffb347]*bzzt* ... ...How did you get the service map?[/color][/shake]
+=> END
+
+~ pa_wire_puzzle
+INTERCOM: [shake][color=#ffb347]*bzzt* ... WARNING. Door mechanism tampering detected. Conductor has been notified.[/color][/shake]
+=> END

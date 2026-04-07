@@ -12,6 +12,9 @@ extends Node2D
 var _player_nearby: bool = false
 
 func _ready() -> void:
+	if lore_id != "" and GameState.has_lore(lore_id):
+		queue_free()
+		return
 	$Area2D.body_entered.connect(_on_zone_entered)
 	$Area2D.body_exited.connect(_on_zone_exited)
 	_prompt.visible = false
