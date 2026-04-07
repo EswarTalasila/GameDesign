@@ -367,15 +367,29 @@ func _unhandled_input(event: InputEvent) -> void:
 			_pause()
 		return
 
-	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
+	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT:
 		var mouse = get_viewport().get_mouse_position()
-		if _check_pause_button(mouse):
-			get_viewport().set_input_as_handled()
-			return
-		_handle_inventory_click(mouse)
+		if event.pressed:
+			if _check_pause_button(mouse):
+				get_viewport().set_input_as_handled()
+				return
+			_handle_inventory_click(mouse)
+		else:
+			_release_pause_button()
 
 var _pause_normal_tex = preload("res://assets/ui/buttons/play_pause/pause_normal.png")
 var _pause_pressed_tex = preload("res://assets/ui/buttons/play_pause/pause_pressed.png")
+var _pause_btn_held: bool = false
+
+func _release_pause_button() -> void:
+	if not _pause_btn_held:
+		return
+	_pause_btn_held = false
+	var pause_slot = _game_ui.get_node_or_null("UILayer/InventoryPanel/PauseSlot")
+	if pause_slot:
+		pause_slot.texture = _pause_normal_tex
+	if not _paused:
+		_pause()
 
 func _check_pause_button(mouse: Vector2) -> bool:
 	var pause_slot = _game_ui.get_node_or_null("UILayer/InventoryPanel/PauseSlot")
@@ -387,10 +401,7 @@ func _check_pause_button(mouse: Vector2) -> bool:
 	if Rect2(pos - half, tex_size).has_point(mouse):
 		if not _paused:
 			pause_slot.texture = _pause_pressed_tex
-			get_tree().create_timer(0.1).timeout.connect(func():
-				pause_slot.texture = _pause_normal_tex
-				_pause()
-			)
+			_pause_btn_held = true
 		return true
 	return false
 
