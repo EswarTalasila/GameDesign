@@ -76,12 +76,16 @@ var collected_map_pieces: Array[int] = []  # total ever collected (1-4)
 var board_pieces: Array[int] = []  # pieces placed on the board
 var map_assembled: bool = false
 var clock_on_map: bool = false
+var map_clock_hint_shown: bool = false
 var wire_cut_order: Array = []
 var path_assignments: Array = []  # [{path: int, color: String}, ...]
 
 # Simon says puzzle
 var simon_solved: bool = false
 var simon_key_sequence: Array = []
+
+# Computer lock puzzle
+var computer_lock_solved: bool = false
 
 # Conductor
 var conductor_watching: bool = false
@@ -296,10 +300,12 @@ func reset() -> void:
 	board_pieces.clear()
 	map_assembled = false
 	clock_on_map = false
+	map_clock_hint_shown = false
 	wire_cut_order.clear()
 	path_assignments.clear()
 	simon_solved = false
 	simon_key_sequence.clear()
+	computer_lock_solved = false
 	collected_lore.clear()
 	_init_section_variants()
 

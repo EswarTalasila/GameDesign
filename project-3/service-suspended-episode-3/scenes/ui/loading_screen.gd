@@ -31,6 +31,12 @@ func transition_to(scene_path: String) -> void:
 	ResourceLoader.load_threaded_request(scene_path)
 	_play_transition()
 
+func _input(event: InputEvent) -> void:
+	if _next_scene_path == "":
+		return
+	if event is InputEventKey or event is InputEventMouseButton or event is InputEventMouseMotion:
+		get_viewport().set_input_as_handled()
+
 func _play_transition() -> void:
 	anim.play("loading")
 

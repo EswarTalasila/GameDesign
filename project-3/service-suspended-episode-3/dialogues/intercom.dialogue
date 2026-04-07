@@ -1,4 +1,10 @@
 ~ announcement
-INTERCOM: [shake][color=#ffb347]*bzzt* ... Attention. The time is now 06:47.[/color][/shake]
-INTERCOM: [shake][color=#ffb347]*bzzt* ... The conductor will be making his rounds shortly.[/color][/shake]
+INTERCOM: [shake][color=#ffb347]*bzzt* ... Good morning, Subject 0949.[/color][/shake]
+INTERCOM: [shake][color=#ffb347]*bzzt* ... The time is now 06:47.[/color][/shake]
+INTERCOM: [shake][color=#ffb347]*bzzt* ... The conductor will now be making his rounds.[/color][/shake]
+=> END
+
+~ greeting
+INTERCOM: [shake][color=#ffb347]*bzzt* ... Good morning, Subject 0949.[/color][/shake]
+INTERCOM: [shake][color=#ffb347]*bzzt* ... The time is now 06:47.[/color][/shake]
 => END

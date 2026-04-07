@@ -54,7 +54,9 @@ func _ready() -> void:
 	# Render behind walls
 	z_index = -2
 	_spawn_conductor()
-	if play_intercom and GameState.current_variant == 1:
+	# Wait one frame so room coordinator sets current_variant first
+	await get_tree().process_frame
+	if play_intercom and GameState.current_variant == 1 and not GameState.suitcase_solved:
 		_play_intercom_then_patrol()
 	else:
 		_start_patrol_loop()
@@ -70,17 +72,40 @@ func _spawn_conductor() -> void:
 
 func _play_intercom_then_patrol() -> void:
 	await get_tree().create_timer(2.0).timeout
+	# Wait until player is not in any UI (game not paused)
+	while get_tree().paused:
+		await get_tree().create_timer(0.5).timeout
+	if not is_inside_tree():
+		return
 	# Play static sound
 	var sfx = AudioStreamPlayer.new()
 	sfx.stream = _intercom_static
 	sfx.volume_db = -8
 	add_child(sfx)
 	sfx.play()
-	# Show dialogue balloon (same style as project 2)
+	# First play: full announcement (greeting + time + conductor rounds)
 	DialogueManager.show_dialogue_balloon(_intercom_dialogue, "announcement")
 	await DialogueManager.dialogue_ended
 	sfx.stop()
 	sfx.queue_free()
+	# Repeat greeting + time twice more with 10s gaps
+	for _i in range(2):
+		await get_tree().create_timer(10.0).timeout
+		if not is_inside_tree() or GameState.suitcase_solved:
+			return
+		while get_tree().paused:
+			await get_tree().create_timer(0.5).timeout
+		if not is_inside_tree() or GameState.suitcase_solved:
+			return
+		var repeat_sfx = AudioStreamPlayer.new()
+		repeat_sfx.stream = _intercom_static
+		repeat_sfx.volume_db = -8
+		add_child(repeat_sfx)
+		repeat_sfx.play()
+		DialogueManager.show_dialogue_balloon(_intercom_dialogue, "greeting")
+		await DialogueManager.dialogue_ended
+		repeat_sfx.stop()
+		repeat_sfx.queue_free()
 	await get_tree().create_timer(post_intercom_delay).timeout
 	_start_patrol_loop()
 
@@ -90,10 +115,11 @@ const COLOR_MAP = {
 	"green": Vector3(0.1, 0.8, 0.1),
 	"black": Vector3(0.4, 0.4, 0.4),
 }
+const SIMON_VARIANT = 2
 
 func _start_patrol_loop() -> void:
 	# Flash simon key on room entry after 5s delay
-	if not GameState.simon_solved and GameState.simon_key_sequence.size() > 0:
+	if GameState.current_variant == SIMON_VARIANT and not GameState.simon_solved and GameState.simon_key_sequence.size() > 0:
 		_flash_key_on_entry()
 	while true:
 		await get_tree().create_timer(patrol_interval).timeout
@@ -102,23 +128,32 @@ func _start_patrol_loop() -> void:
 		await _do_patrol()
 
 func _flash_key_on_entry() -> void:
+	if GameState.current_variant != SIMON_VARIANT:
+		return
 	await get_tree().create_timer(5.0).timeout
-	if not is_inside_tree():
+	if not is_inside_tree() or GameState.current_variant != SIMON_VARIANT:
 		return
 	await _flash_key_sequence()
 
 func _flash_key_sequence() -> void:
+	if GameState.current_variant != SIMON_VARIANT:
+		return
 	var player = get_tree().root.find_child("Player", true, false)
 	if player == null or not player.has_method("_tween_light_tint"):
 		return
 	for color_name in GameState.simon_key_sequence:
-		if not is_inside_tree():
+		if not is_inside_tree() or GameState.current_variant != SIMON_VARIANT:
+			player._tween_light_tint(Vector3.ZERO, 0.0, 0.0)
 			return
 		var tint = COLOR_MAP.get(color_name, Vector3.ZERO)
 		player._tween_light_tint(tint, 0.5, 0.2)
 		await get_tree().create_timer(0.5).timeout
+		if not is_inside_tree() or GameState.current_variant != SIMON_VARIANT:
+			player._tween_light_tint(Vector3.ZERO, 0.0, 0.0)
+			return
 		player._tween_light_tint(Vector3.ZERO, 0.0, 0.2)
 		await get_tree().create_timer(0.3).timeout
+	player._tween_light_tint(Vector3.ZERO, 0.0, 0.0)
 
 func _do_patrol() -> void:
 	_conductor.position = patrol_start

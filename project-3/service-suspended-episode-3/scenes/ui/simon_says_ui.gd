@@ -29,6 +29,8 @@ var _max_rounds: int = 4
 
 @onready var _panel_sprite: Sprite2D = $PanelSprite
 
+var _hint_label: Label = null
+
 func _ready() -> void:
 	layer = 8
 	_panel_sprite.texture = _panel_closed_tex
@@ -79,6 +81,36 @@ func _open_panel() -> void:
 	_is_open = true
 	_panel_sprite.texture = _panel_open_tex
 	_create_buttons()
+	_show_hint()
+
+func _show_hint() -> void:
+	var dot_gothic = load("res://assets/fonts/DotGothic16-Regular.ttf")
+	_hint_label = Label.new()
+	_hint_label.add_theme_font_override("font", dot_gothic)
+	_hint_label.add_theme_font_size_override("font_size", 28)
+	_hint_label.add_theme_color_override("font_color", Color(0.85, 0.8, 0.65))
+	_hint_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_hint_label.set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_WIDE)
+	_hint_label.offset_top = -80
+	_hint_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	add_child(_hint_label)
+	if not GameState.get("simon_dialogue_shown"):
+		GameState.set("simon_dialogue_shown", true)
+		_hint_label.text = "This reminds me of a game I played as a kid..."
+		var tween = create_tween()
+		tween.tween_interval(2.5)
+		tween.tween_property(_hint_label, "modulate:a", 0.0, 0.5)
+		tween.tween_callback(func():
+			_hint_label.modulate.a = 1.0
+			_hint_label.text = "Press the buttons in the order of the colors."
+		)
+		tween.tween_interval(3.0)
+		tween.tween_property(_hint_label, "modulate:a", 0.0, 1.0)
+	else:
+		_hint_label.text = "Press the buttons in the order of the colors."
+		var tween = create_tween()
+		tween.tween_interval(3.0)
+		tween.tween_property(_hint_label, "modulate:a", 0.0, 1.0)
 
 func _create_buttons() -> void:
 	for color in COLORS:
@@ -146,10 +178,10 @@ func _start_simon_round() -> void:
 	_play_sequence()
 
 const GLOW_COLORS = {
-	"red": Color(2.0, 0.6, 0.6),
-	"blue": Color(0.6, 0.6, 2.0),
-	"green": Color(0.6, 2.0, 0.6),
-	"black": Color(1.8, 1.8, 1.8),
+	"red": Color(4.0, 0.8, 0.8),
+	"blue": Color(0.8, 0.8, 4.0),
+	"green": Color(0.8, 4.0, 0.8),
+	"black": Color(3.0, 3.0, 3.0),
 }
 
 func _play_sequence() -> void:

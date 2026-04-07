@@ -65,6 +65,13 @@ var _interactable_table: Array = [
 		"no_erase": true,
 	},
 	{
+		"atlas_min": Vector2i(1, 31),
+		"atlas_max": Vector2i(1, 31),
+		"source": 1,
+		"scene": preload("res://scenes/interactables/computer_lock.tscn"),
+		"no_erase": true,
+	},
+	{
 		"atlas_min": Vector2i(0, 0),
 		"atlas_max": Vector2i(0, 0),
 		"source": 0,
@@ -114,8 +121,25 @@ const MAX_SLOTS = 4
 var _active_tool: String = ""
 
 func _ready() -> void:
+	# Clear any stale paused state carried over from a prior scene/UI transition.
+	_paused = false
+	get_tree().paused = false
+
+	# Detect variant from scene filename so direct-run works correctly
+	var scene_file = get_tree().current_scene.scene_file_path.get_file()
+	var regex = RegEx.new()
+	regex.compile("escape_room_(\\d+)")
+	var result = regex.search(scene_file)
+	if result:
+		GameState.current_variant = int(result.get_string(1))
+
 	GameState.wire_cutter_mode = false
+	GameState.conductor_watching = false
+	GameState.lore_open = false
 	CustomCursor.reset_cursor()
+
+	# Clear any stale dialogue state from previous scene/reload
+	DialogueManager.dialogue_ended.emit(null)
 
 	_scan_interactables()
 	_setup_hud()
@@ -126,6 +150,13 @@ func _ready() -> void:
 	GameState.clock_hands_added.connect(_on_clock_hands_inserted)
 	GameState.map_piece_collected.connect(_on_map_piece_collected)
 	GameState.player_died.connect(_on_player_died)
+
+	_setup_controls_hint()
+
+	# Variant 3 first-entry dialogue
+	if GameState.current_variant == 3 and not GameState.get("variant3_dialogue_shown"):
+		GameState.set("variant3_dialogue_shown", true)
+		_play_variant3_dialogue()
 
 # ── HUD Setup ──
 
@@ -288,7 +319,7 @@ func _on_clock_hands_inserted() -> void:
 	remove_item("clock_hands")
 	_update_map_count()
 
-func pulse_inventory_item(id: String) -> void:
+func pulse_inventory_item(id: String, scale_mult: float = 1.1, pulse_time: float = 0.4, bright_mult: float = 1.0) -> void:
 	for item in _inventory:
 		if item["id"] == id and item["instance"]:
 			var node = item["instance"]
@@ -300,16 +331,24 @@ func pulse_inventory_item(id: String) -> void:
 						target = child
 						break
 			var base_scale = target.scale
+			var base_modulate = target.modulate
+			var peak_modulate = Color(base_modulate.r * bright_mult, base_modulate.g * bright_mult, base_modulate.b * bright_mult, base_modulate.a)
 			# Stop any existing pulse
 			if target.has_meta("pulse_tween"):
 				var old: Tween = target.get_meta("pulse_tween")
 				if old and old.is_valid():
 					old.kill()
 				target.scale = base_scale
+				target.modulate = base_modulate
 			var tween = create_tween().set_loops(0)  # infinite
 			tween.set_pause_mode(Tween.TWEEN_PAUSE_PROCESS)
-			tween.tween_property(target, "scale", base_scale * 1.1, 0.4).set_ease(Tween.EASE_IN_OUT).set_trans(Tween.TRANS_SINE)
-			tween.tween_property(target, "scale", base_scale, 0.4).set_ease(Tween.EASE_IN_OUT).set_trans(Tween.TRANS_SINE)
+			tween.tween_property(target, "scale", base_scale * scale_mult, pulse_time).set_ease(Tween.EASE_IN_OUT).set_trans(Tween.TRANS_SINE)
+			if bright_mult > 1.0:
+				tween.parallel().tween_property(target, "modulate", peak_modulate, pulse_time).set_ease(Tween.EASE_IN_OUT).set_trans(Tween.TRANS_SINE)
+			tween.tween_property(target, "scale", base_scale, pulse_time).set_ease(Tween.EASE_IN_OUT).set_trans(Tween.TRANS_SINE)
+			if bright_mult > 1.0:
+				tween.parallel().tween_property(target, "modulate", base_modulate, pulse_time).set_ease(Tween.EASE_IN_OUT).set_trans(Tween.TRANS_SINE)
+			target.set_meta("pulse_base_modulate", base_modulate)
 			target.set_meta("pulse_tween", tween)
 
 func stop_pulse(id: String) -> void:
@@ -326,6 +365,9 @@ func stop_pulse(id: String) -> void:
 				var tween: Tween = target.get_meta("pulse_tween")
 				if tween and tween.is_valid():
 					tween.kill()
+				if target.has_meta("pulse_base_modulate"):
+					target.modulate = target.get_meta("pulse_base_modulate")
+					target.remove_meta("pulse_base_modulate")
 				target.remove_meta("pulse_tween")
 
 # ── Input ──
@@ -342,8 +384,43 @@ func _unhandled_input(event: InputEvent) -> void:
 			_pause()
 		return
 
-	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
-		_handle_inventory_click(get_viewport().get_mouse_position())
+	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT:
+		var mouse = get_viewport().get_mouse_position()
+		if event.pressed:
+			if _check_pause_button(mouse):
+				get_viewport().set_input_as_handled()
+				return
+			_handle_inventory_click(mouse)
+		else:
+			_release_pause_button()
+
+var _pause_normal_tex = preload("res://assets/ui/buttons/play_pause/pause_normal.png")
+var _pause_pressed_tex = preload("res://assets/ui/buttons/play_pause/pause_pressed.png")
+var _pause_btn_held: bool = false
+
+func _release_pause_button() -> void:
+	if not _pause_btn_held:
+		return
+	_pause_btn_held = false
+	var pause_slot = _game_ui.get_node_or_null("UILayer/InventoryPanel/PauseSlot")
+	if pause_slot:
+		pause_slot.texture = _pause_normal_tex
+	if not _paused:
+		_pause()
+
+func _check_pause_button(mouse: Vector2) -> bool:
+	var pause_slot = _game_ui.get_node_or_null("UILayer/InventoryPanel/PauseSlot")
+	if pause_slot == null or not pause_slot.texture:
+		return false
+	var pos = pause_slot.global_position
+	var tex_size = Vector2(pause_slot.texture.get_width(), pause_slot.texture.get_height()) * pause_slot.global_scale
+	var half = tex_size / 2.0
+	if Rect2(pos - half, tex_size).has_point(mouse):
+		if not _paused:
+			pause_slot.texture = _pause_pressed_tex
+			_pause_btn_held = true
+		return true
+	return false
 
 func _handle_inventory_click(mouse: Vector2) -> bool:
 	for i in range(_inventory.size()):
@@ -386,6 +463,7 @@ func _close_clock_ui() -> void:
 func _on_variant_selected(variant: int) -> void:
 	_close_clock_ui()
 	_show_saving_icon()
+	GameState.current_variant = variant
 	var scene_path = "res://escape_room_%d.tscn" % variant
 	var loading = _loading_screen_scene.instantiate()
 	loading.process_mode = Node.PROCESS_MODE_ALWAYS
@@ -514,7 +592,6 @@ func _on_player_died() -> void:
 	_death_screen = _death_screen_scene.instantiate()
 	_death_screen.process_mode = Node.PROCESS_MODE_ALWAYS
 	_death_screen.reload_requested.connect(_on_death_reload)
-	_death_screen.respawn_requested.connect(_on_death_respawn)
 	get_tree().root.add_child(_death_screen)
 
 func _on_death_reload() -> void:
@@ -529,17 +606,132 @@ func _on_death_reload() -> void:
 	get_tree().root.add_child(loading)
 	loading.transition_to(scene_path)
 
-func _on_death_respawn() -> void:
-	get_tree().paused = false
-	if _death_screen:
-		_death_screen.queue_free()
-		_death_screen = null
-	GameState.reset_health()
-	# Respawn at checkpoint or reload
-	get_tree().reload_current_scene()
+# ── Controls Hint ──
+
+var _controls_open: bool = false
+var _controls_body: VBoxContainer = null
+var _controls_chevron: Label = null
+var _controls_layer: CanvasLayer = null
+
+func _setup_controls_hint() -> void:
+	_controls_layer = CanvasLayer.new()
+	_controls_layer.layer = 12
+	add_child(_controls_layer)
+
+	var dot_gothic = load("res://assets/fonts/DotGothic16-Regular.ttf")
+
+	var panel = PanelContainer.new()
+	panel.set_anchors_preset(Control.PRESET_TOP_LEFT)
+	panel.position = Vector2(12, 12)
+
+	var style = StyleBoxFlat.new()
+	style.bg_color = Color(0.0, 0.0, 0.0, 0.45)
+	style.border_color = Color(0.5, 0.45, 0.35, 0.4)
+	style.set_border_width_all(1)
+	style.set_corner_radius_all(3)
+	style.content_margin_top = 8
+	style.content_margin_bottom = 8
+	style.content_margin_left = 14
+	style.content_margin_right = 14
+	panel.add_theme_stylebox_override("panel", style)
+	_controls_layer.add_child(panel)
+
+	var vbox = VBoxContainer.new()
+	vbox.add_theme_constant_override("separation", 6)
+	panel.add_child(vbox)
+
+	# Clickable header row
+	var header_row = HBoxContainer.new()
+	header_row.add_theme_constant_override("separation", 6)
+	vbox.add_child(header_row)
+
+	var header = Label.new()
+	header.text = "CONTROLS"
+	header.add_theme_font_override("font", dot_gothic)
+	header.add_theme_font_size_override("font_size", 18)
+	header.add_theme_color_override("font_color", Color(0.75, 0.7, 0.55))
+	header.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	header_row.add_child(header)
+
+	_controls_chevron = Label.new()
+	_controls_chevron.text = "▼"
+	_controls_chevron.add_theme_font_override("font", dot_gothic)
+	_controls_chevron.add_theme_font_size_override("font_size", 18)
+	_controls_chevron.add_theme_color_override("font_color", Color(0.75, 0.7, 0.55))
+	_controls_chevron.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	header_row.add_child(_controls_chevron)
+
+	# Body (hidden by default)
+	_controls_body = VBoxContainer.new()
+	_controls_body.add_theme_constant_override("separation", 6)
+	_controls_body.visible = false
+	vbox.add_child(_controls_body)
+
+	var sep = HSeparator.new()
+	var sep_style = StyleBoxFlat.new()
+	sep_style.bg_color = Color(0.5, 0.45, 0.3, 0.4)
+	sep_style.content_margin_top = 1.0
+	sep_style.content_margin_bottom = 1.0
+	sep.add_theme_stylebox_override("separator", sep_style)
+	_controls_body.add_child(sep)
+
+	var lines = [
+		["[E]", "Interact"],
+		["[Esc]", "Pause / Close"],
+		["[Space]", "Attack"],
+		["[WASD]", "Move"],
+		["[Backspace]", "Delete input"],
+		["[Enter]", "Confirm"],
+	]
+	for pair in lines:
+		var row = HBoxContainer.new()
+		row.add_theme_constant_override("separation", 8)
+		row.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		_controls_body.add_child(row)
+		var key_label = Label.new()
+		key_label.text = pair[0]
+		key_label.add_theme_font_override("font", dot_gothic)
+		key_label.add_theme_font_size_override("font_size", 18)
+		key_label.add_theme_color_override("font_color", Color(0.95, 0.85, 0.55))
+		key_label.custom_minimum_size = Vector2(100, 0)
+		key_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		row.add_child(key_label)
+		var action_label = Label.new()
+		action_label.text = pair[1]
+		action_label.add_theme_font_override("font", dot_gothic)
+		action_label.add_theme_font_size_override("font_size", 18)
+		action_label.add_theme_color_override("font_color", Color(0.7, 0.68, 0.6))
+		action_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		row.add_child(action_label)
+
+	# Make the panel clickable
+	panel.gui_input.connect(_on_controls_panel_clicked)
+
+func _on_controls_panel_clicked(event: InputEvent) -> void:
+	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
+		_controls_open = not _controls_open
+		_controls_body.visible = _controls_open
+		_controls_chevron.text = "▲" if _controls_open else "▼"
+
+# ── Variant Dialogues ──
+
+func _play_variant3_dialogue() -> void:
+	await get_tree().create_timer(1.5).timeout
+	if not is_inside_tree() or get_tree().paused:
+		return
+	var reactions = load("res://dialogues/player_reactions.dialogue")
+	DialogueManager.show_dialogue_balloon(reactions, "enter_variant_3")
+	await DialogueManager.dialogue_ended
 
 # ── Saving Icon ──
 
 func _show_saving_icon() -> void:
+	var layer = CanvasLayer.new()
+	layer.layer = 11  # above HUD (10)
+	layer.process_mode = Node.PROCESS_MODE_ALWAYS
 	var icon = _saving_icon_scene.instantiate()
-	get_tree().root.add_child(icon)
+	icon.process_mode = Node.PROCESS_MODE_ALWAYS
+	layer.add_child(icon)
+	get_tree().root.add_child(layer)
+	# Clean up the CanvasLayer when the icon frees itself
+	icon.tree_exited.connect(layer.queue_free)

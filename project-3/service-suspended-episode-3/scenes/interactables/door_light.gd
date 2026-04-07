@@ -40,9 +40,40 @@ extends Node2D
 		bulb_glow = v
 		queue_redraw()
 
+## Enable light flickering in variants that support ambient flicker.
+@export var flicker: bool = true
+@export var min_energy: float = 0.65
+@export var max_energy: float = 1.0
+@export var min_interval: float = 0.05
+@export var max_interval: float = 0.3
+
+var light_energy: float = 1.0
+
+var _timer: Timer = null
+
 func _ready() -> void:
 	if not Engine.is_editor_hint():
 		add_to_group("world_lights")
+		if flicker and _variant_allows_flicker():
+			_timer = Timer.new()
+			_timer.one_shot = true
+			add_child(_timer)
+			_timer.timeout.connect(_on_flicker_timeout)
+			_on_flicker_timeout()
+
+func _variant_allows_flicker() -> bool:
+	var current_scene = get_tree().current_scene
+	if current_scene == null:
+		return true
+	var scene_file = current_scene.scene_file_path.get_file()
+	return scene_file != "escape_room_2.tscn"
+
+func _on_flicker_timeout() -> void:
+	light_energy = randf_range(min_energy, max_energy)
+	if _timer == null:
+		return
+	_timer.wait_time = randf_range(min_interval, max_interval)
+	_timer.start()
 
 func _draw() -> void:
 	var dir = light_direction.normalized()
