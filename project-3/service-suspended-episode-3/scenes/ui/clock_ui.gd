@@ -200,5 +200,6 @@ func _select_variant(variant: int) -> void:
 	if variant == GameState.current_variant or _is_variant_locked(variant):
 		return
 	GameState.has_selected_variant = true
-	GameState.current_variant = variant
+	# Don't set current_variant here — let the coordinator set it
+	# when the scene transition actually starts
 	variant_selected.emit(variant)
