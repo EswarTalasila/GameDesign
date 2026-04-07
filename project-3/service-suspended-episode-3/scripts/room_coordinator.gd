@@ -368,7 +368,24 @@ func _unhandled_input(event: InputEvent) -> void:
 		return
 
 	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
-		_handle_inventory_click(get_viewport().get_mouse_position())
+		var mouse = get_viewport().get_mouse_position()
+		if _check_pause_button(mouse):
+			get_viewport().set_input_as_handled()
+			return
+		_handle_inventory_click(mouse)
+
+func _check_pause_button(mouse: Vector2) -> bool:
+	var pause_slot = _game_ui.get_node_or_null("UILayer/InventoryPanel/PauseSlot")
+	if pause_slot == null or not pause_slot.texture:
+		return false
+	var pos = pause_slot.global_position
+	var tex_size = Vector2(pause_slot.texture.get_width(), pause_slot.texture.get_height()) * pause_slot.global_scale
+	var half = tex_size / 2.0
+	if Rect2(pos - half, tex_size).has_point(mouse):
+		if not _paused:
+			_pause()
+		return true
+	return false
 
 func _handle_inventory_click(mouse: Vector2) -> bool:
 	for i in range(_inventory.size()):
