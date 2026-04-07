@@ -159,6 +159,10 @@ func _input(event: InputEvent) -> void:
 	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
 		var mouse = event.position
 
+		if _insert_cooldown > 0:
+			get_viewport().set_input_as_handled()
+			return
+
 		var coordinator = get_tree().root.find_child("Node2D", true, false)
 		if coordinator and coordinator.has_method("_handle_inventory_click"):
 			if coordinator._handle_inventory_click(mouse):
@@ -171,9 +175,6 @@ func _input(event: InputEvent) -> void:
 				_insert_hands()
 				get_viewport().set_input_as_handled()
 				return
-
-		if _insert_cooldown > 0:
-			return
 
 		if _has_hands and _hovered_variant > 0:
 			if _hovered_variant == GameState.current_variant:
@@ -188,8 +189,8 @@ func _insert_hands() -> void:
 	GameState.insert_clock_hands()
 	GameState.has_selected_variant = true
 	_has_hands = true
-	_hovered_variant = GameState.current_variant
-	_insert_cooldown = 0.5
+	_hovered_variant = 0
+	_insert_cooldown = 1.0
 	_update_display()
 	_update_tooltip(0)
 	hands_inserted.emit()
