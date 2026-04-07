@@ -448,6 +448,7 @@ func _close_clock_ui() -> void:
 func _on_variant_selected(variant: int) -> void:
 	_close_clock_ui()
 	_show_saving_icon()
+	GameState.current_variant = variant
 	var scene_path = "res://escape_room_%d.tscn" % variant
 	var loading = _loading_screen_scene.instantiate()
 	loading.process_mode = Node.PROCESS_MODE_ALWAYS
