@@ -15,7 +15,19 @@ Eswar Talasila, Zachary Boston, Mokshagna Kadiyala, Nishil Rally
 | **Mokshagna Kadiyala** | Play testing, asset design and creation, train tileset foundation |
 | **Nishil Rally** | Play testing, sound sourcing and design, narrative and dialogue script writing |
 
-## Setup
+## How To Play
+
+### Option 1: Run A Prebuilt Build (No Godot Required)
+
+Standalone builds are in the `builds/` folder:
+
+- `builds/windows/` — Windows (.exe)
+- `builds/macos/` — macOS (.app inside .zip)
+- `builds/linux/` — Linux (x86_64)
+
+Download or unzip the build for your OS and run it directly. macOS users may need to right-click the app and select Open to bypass Gatekeeper.
+
+### Option 2: Run From The Godot Editor
 
 1. Install Godot 4.6 from https://godotengine.org/
 2. Open the `service-suspended-episode-2/` folder as a Godot project
