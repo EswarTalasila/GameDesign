@@ -59,7 +59,7 @@ If your system uses a different executable name, replace `godot` with the correc
 - [service-suspended-episode-4](/CSC-486/project-4/service-suspended-episode-4): main Godot project
 - [Assets](/CSC-486/project-4/UI/Assets): supporting art and source assets
 - [story](/CSC-486/project-4/story): story and writing-related materials
-- [project4_demo](tree/main/project-4/project4_demo): older demo/prototype materials
+- [project4_demo](https://github.com/ectalasi_ncstate/CSC-486/tree/main/project-4/project4_demo): older demo/prototype materials
 
 ## Controls
 
