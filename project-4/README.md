@@ -57,7 +57,7 @@ If your system uses a different executable name, replace `godot` with the correc
 
 - [builds](https://github.com/ectalasi_ncstate/CSC-486/tree/main/project-4/builds): exported runnable builds for supported platforms
 - [service-suspended-episode-4](https://github.com/ectalasi_ncstate/CSC-486/tree/main/project-4/service-suspended-episode-4): main Godot project
-- [Assets](https://github.com/ectalasi_ncstate/CSC-486/tree/main/project-4/UI/Assets): supporting art and source assets
+- [Assets](https://github.com/ectalasi_ncstate/CSC-486/tree/main/project-4/Assets): supporting art and source assets
 - [story](https://github.com/ectalasi_ncstate/CSC-486/tree/main/project-4/story): story and writing-related materials
 - [project4_demo](https://github.com/ectalasi_ncstate/CSC-486/tree/main/project-4/project4_demo): older demo/prototype materials
 
