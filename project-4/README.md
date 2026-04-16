@@ -4,7 +4,7 @@ This folder contains the fourth game in the `Service Suspended` series: the reso
 
 The playable Godot project is:
 
-- [service-suspended-episode-4](/project-4/service-suspended-episode-4)
+- [service-suspended-episode-4](/service-suspended-episode-4)
 
 Prebuilt exports can be placed here:
 
