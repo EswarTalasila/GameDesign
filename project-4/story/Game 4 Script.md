@@ -70,7 +70,7 @@ The turnstile clicks open without a pass. The player walks through. They wake in
 
 ### *What Episode 4 Reveals*
 
-Episode 3's ending was the loop's final trick. The player thought they had escaped the holding cell. They had only moved one layer in. Every "escape" in the loop is just another cart, another compartment, another door. The loop doesn't have walls you can walk past. It has layers you have to earn through.
+Episode 3's ending was the loop's final trick. The player thought they had escaped the holding cell. They had only moved one layer in. Every "escape" in the loop is just another cart, another compartment, another door. The loop doesn't have walls you can walk past. It has layers you have to move through.
 
 The six identical statues are the point. The cloaked figure is every passenger who has ever been here. The player. The Lady in Red. The Conductor. The Investigator whose logbooks filled Episode 3\. The forgotten ones. They are all the same figure in the end, hands cupped, waiting for whatever the next person will offer. The order the player pieces together is the order of who comes before whom, a history of the loop told through its passengers.
 
