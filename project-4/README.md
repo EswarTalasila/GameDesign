@@ -1,6 +1,6 @@
 # Project 4
 
-This folder contains the fourth game in the `Service Suspended` series: the resource management episode.
+This folder contains the fourth game in the `Service Suspended` series: the resource management episode as the final episode in the four game project.
 
 The playable Godot project is:
 
