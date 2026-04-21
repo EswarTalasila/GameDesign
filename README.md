@@ -131,3 +131,42 @@ Pixel-style escape room with looping structure to change environment of room. Co
 ## Image Citations
 None
 
+
+# Game 4: Resource Management
+
+## Setup
+
+**Source File:**
+1. Install Godot Engine (version 3.5 or later recommended).
+2. Open Godot and click “Import”.
+3. Select the project folder from src/ labelled ResourceManagement (project4).
+4. Open the project.
+5. Click Play Scene or press F5 to start the game.
+
+## Team Members
+Eswar Talasila, Zachary Boston, Mokshagna Kadiyala, Nishil Rally
+
+## Story Format
+Pixel-style resource management game with same looping structure that were in previou games to change environment and collect tickets. Collect clues and items, solve puzzles, battle enemies, and find the correct order to offer items to the six statues to exit the loop and make the final decision. Manage time resource to stop conductor.
+
+## Controls
+- Move with WASD
+- Click on inventory items to use throughout for the puzzles
+- Click Space to fight enemies
+- Click E to open puzzles
+- Click Esc to open menu, exit puzzles
+
+## Gameplay Features
+1. Collecting items: Use items to solve puzzles and get clues to figure out the correct order for offerings.
+2. Resource management: Time is limited, find special items to burn in the bonfire to add time to the clock and push back the conductor before you lose!
+3. Conductor environments: Environments are changing, use clock to move between variants
+5. Health and Inventory: Use the health you have to run away or fight enemies, and inventory for storing items in the game.
+
+## Tips for Players
+1. Explore all variants of the environment.
+2. Fight enemies, collect clues, and figure out the ordering of the offerings to get the final ticket.
+3. Using the clock will help you to move through the loops, finding new items to help you win.
+4. Find special items, and throw them in the bonfire to disrupt the conductor and add more time to the clock.
+
+## Image Citations
+None
