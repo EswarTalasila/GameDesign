@@ -1,0 +1,40 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://scenes/jungle/shared/jungle_section.gd" id="1_script"]
+[ext_resource type="TileSet" path="res://assets/tilesets/combined_terrain.tres" id="2_tileset"]
+
+[node name="Variant_6" type="Node2D"]
+script = ExtResource("1_script")
+
+[node name="Floor" type="TileMapLayer" parent="."]
+tile_set = ExtResource("2_tileset")
+
+[node name="Floor2" type="TileMapLayer" parent="."]
+tile_set = ExtResource("2_tileset")
+
+[node name="BottomWalls" type="TileMapLayer" parent="."]
+tile_set = ExtResource("2_tileset")
+
+[node name="TopWalls" type="TileMapLayer" parent="."]
+tile_set = ExtResource("2_tileset")
+
+[node name="SideWalls" type="TileMapLayer" parent="."]
+tile_set = ExtResource("2_tileset")
+
+[node name="Furniture" type="TileMapLayer" parent="."]
+tile_set = ExtResource("2_tileset")
+
+[node name="Furniture2" type="TileMapLayer" parent="."]
+tile_set = ExtResource("2_tileset")
+
+[node name="Overhead" type="TileMapLayer" parent="."]
+tile_set = ExtResource("2_tileset")
+
+[node name="EnemyMarkers" type="TileMapLayer" parent="."]
+tile_set = ExtResource("2_tileset")
+
+[node name="Items" type="TileMapLayer" parent="."]
+tile_set = ExtResource("2_tileset")
+
+[node name="PlayerSpawn" type="Marker2D" parent="."]
+position = Vector2(100, 100)

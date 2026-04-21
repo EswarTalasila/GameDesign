@@ -1,0 +1,58 @@
+~ start
+do GameState.lady2_asked_conductor = false
+do GameState.lady2_asked_escape = false
+do GameState.lady2_asked_before = false
+Lady In Red: How many have you punched?
+You: Enough. I think I'm close.
+Lady In Red: You're doing better than most.
+
+~ choices
+- Who is he? The one you wouldn't name? [if not GameState.lady2_asked_conductor]
+	Lady In Red: The conductor.
+	Lady In Red: He runs this place. Manages it. Files people into permanent loops when they've been down here long enough.
+	You: Files them?
+	INTERCOM: [shake][color=#ffb347]Passenger deviation noted.[/color][/shake]
+	Lady In Red: Assigns them a route. A permanent one. After that you don't try to leave anymore. You just commute. Down here. The same path. Indefinitely.
+	Lady In Red: He hasn't filed me because I'm not worth the paperwork. Too degraded. Too far gone to be useful to the system.
+	do GameState.lady2_asked_conductor = true
+	=> choices
+- Did you ever try to escape? [if not GameState.lady2_asked_escape]
+	Lady In Red: Yes. Early on. I found what I thought was a way out.
+	Lady In Red: It wasn't. It just went deeper.
+	You: What stopped you from trying again?
+	Lady In Red: At some point I stopped being able to remember why leaving mattered.
+	Lady In Red: That's how you know the loops are working. When staying starts to feel the same as going.
+	do GameState.lady2_asked_escape = true
+	=> choices
+- What were you like? Before. [if not GameState.lady2_asked_before]
+	Lady In Red: I read a lot. I remember that. I had a newspaper habit. Crosswords specifically.
+	Lady In Red: I don't remember if I was happy. I remember the crosswords. That's what's left.
+	Lady In Red: Don't lose too much before you get out. The things you can't remember, you don't miss them until you're back and they're just gone.
+	Lady In Red: At least I think that's how it works. I've never made it back to check.
+	do GameState.lady2_asked_before = true
+	=> choices
+- (That's everything I wanted to know.) [if GameState.lady2_asked_conductor and GameState.lady2_asked_escape and GameState.lady2_asked_before]
+	=> end_choices
+
+~ end_choices
+INTERCOM: [shake][color=#ffb347]Continued irregular movement. Route reassignment pending.[/color][/shake]
+Lady In Red: But it looks like you're actually going to make it.
+You: Come with me.
+Lady In Red: I don't know if there's anything left to go back to. Even if I got out.
+You: You could find out.
+Lady In Red: Find the last door. I'll think about it.
+Lady In Red: He's going to come himself for you. Once you get close enough he won't use the intercom anymore.
+You: What do I do when he does?
+Lady In Red: Don't resist. Not yet. Let him think he has you.
+Lady In Red: And whatever you do — hold onto something specific. A memory. Something small and exact. The more specific the better.
+You: Why?
+Lady In Red: Because he can't file someone who's still specific. The system needs you to be generic. A passenger. Not a person.
+Lady In Red: Go.
+=> END
+
+~ return
+Lady In Red: Hold onto something specific. A memory. Something small and exact. He can't file someone who's still specific.
+- Can you tell me again?
+	=> start
+- (Leave)
+	=> END

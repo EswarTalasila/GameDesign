@@ -1,0 +1,60 @@
+[gd_scene load_steps=9 format=4]
+
+[ext_resource type="Texture2D" path="res://assets/tilesets/dungeon/dungeon_tileset_decorations.png" id="1_texture"]
+
+[sub_resource type="AtlasTexture" id="atlas_0"]
+atlas = ExtResource("1_texture")
+region = Rect2(80, 112, 16, 32)
+
+[sub_resource type="AtlasTexture" id="atlas_1"]
+atlas = ExtResource("1_texture")
+region = Rect2(96, 112, 16, 32)
+
+[sub_resource type="AtlasTexture" id="atlas_2"]
+atlas = ExtResource("1_texture")
+region = Rect2(112, 112, 16, 32)
+
+[sub_resource type="AtlasTexture" id="atlas_3"]
+atlas = ExtResource("1_texture")
+region = Rect2(128, 112, 16, 32)
+
+[sub_resource type="AtlasTexture" id="atlas_4"]
+atlas = ExtResource("1_texture")
+region = Rect2(144, 112, 16, 32)
+
+[sub_resource type="AtlasTexture" id="atlas_5"]
+atlas = ExtResource("1_texture")
+region = Rect2(160, 112, 16, 32)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_1"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("atlas_0")
+}, {
+"duration": 1.0,
+"texture": SubResource("atlas_1")
+}, {
+"duration": 1.0,
+"texture": SubResource("atlas_2")
+}, {
+"duration": 1.0,
+"texture": SubResource("atlas_3")
+}, {
+"duration": 1.0,
+"texture": SubResource("atlas_4")
+}, {
+"duration": 1.0,
+"texture": SubResource("atlas_5")
+}],
+"loop": true,
+"name": &"flicker",
+"speed": 6.0
+}]
+
+[node name="TorchWall" type="Node2D"]
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+sprite_frames = SubResource("SpriteFrames_1")
+animation = &"flicker"
+autoplay = &"flicker"

@@ -1,0 +1,11 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://scenes/ui/health_bar.gd" id="1_script"]
+[ext_resource type="SpriteFrames" path="res://assets/sprites/ui/health_bar/health_bar_frames.tres" id="2_frames"]
+
+[node name="HealthBar" type="AnimatedSprite2D"]
+texture_filter = 1
+centered = false
+sprite_frames = ExtResource("2_frames")
+animation = &"full"
+script = ExtResource("1_script")

@@ -8,6 +8,7 @@ Thumbs.db
 *~
 .vscode/
 .idea/
+.godot/
 
 # Twine backup files
 *.bak
@@ -15,4 +16,7 @@ Thumbs.db
 # Build outputs (if you compile to HTML)
 dist/
 build/
+builds/
 
+# Archives
+*.zip

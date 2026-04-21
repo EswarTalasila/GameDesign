@@ -1,0 +1,36 @@
+[gd_scene format=3 uid="uid://dbfylbpq23411"]
+
+[ext_resource type="Texture2D" uid="uid://cs03g2128b0kc" path="res://assets/ui/inventory/inventory.png" id="2_inv"]
+[ext_resource type="Texture2D" uid="uid://m5ux1wa7ccod" path="res://assets/ui/buttons/play_pause/pause_normal.png" id="6_pause"]
+
+[node name="InventoryPanel" type="Node2D" unique_id=1726369265]
+scale = Vector2(3, 3)
+
+[node name="BG" type="Sprite2D" parent="." unique_id=899191673]
+texture_filter = 1
+position = Vector2(42, 0)
+scale = Vector2(4.4843745, 4.4843745)
+texture = ExtResource("2_inv")
+centered = false
+
+[node name="Slot1" type="Node2D" parent="."]
+position = Vector2(137.33333, 133.33331)
+visible = false
+
+[node name="Slot2" type="Node2D" parent="."]
+position = Vector2(236.33334, 128.66667)
+visible = false
+
+[node name="Slot3" type="Node2D" parent="."]
+position = Vector2(137.66666, 225.00002)
+visible = false
+
+[node name="Slot4" type="Node2D" parent="."]
+position = Vector2(235.33331, 224.00002)
+visible = false
+
+[node name="PauseSlot" type="Sprite2D" parent="." unique_id=762424516]
+texture_filter = 1
+position = Vector2(310.33334, 34)
+scale = Vector2(3.0442715, 3.0442715)
+texture = ExtResource("6_pause")

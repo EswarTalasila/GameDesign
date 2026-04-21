@@ -1,0 +1,28 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://scenes/train/shared/train_section.gd" id="1_script"]
+[ext_resource type="TileSet" path="res://assets/tilesets/train/train_terrain.tres" id="2_tileset"]
+
+[node name="TrainSection_1" type="Node2D"]
+script = ExtResource("1_script")
+
+[node name="Floor" type="TileMapLayer" parent="."]
+tile_set = ExtResource("2_tileset")
+
+[node name="BottomWalls" type="TileMapLayer" parent="."]
+tile_set = ExtResource("2_tileset")
+
+[node name="TopWalls" type="TileMapLayer" parent="."]
+tile_set = ExtResource("2_tileset")
+
+[node name="SideWalls" type="TileMapLayer" parent="."]
+tile_set = ExtResource("2_tileset")
+
+[node name="Furniture" type="TileMapLayer" parent="."]
+tile_set = ExtResource("2_tileset")
+
+[node name="Furniture2" type="TileMapLayer" parent="."]
+tile_set = ExtResource("2_tileset")
+
+[node name="Overhead" type="TileMapLayer" parent="."]
+tile_set = ExtResource("2_tileset")
