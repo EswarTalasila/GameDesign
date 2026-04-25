@@ -19,7 +19,7 @@ sprite_frames = ExtResource("2_dovo2")
 animation = &"idle_south"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1063585635]
-position = Vector2(0, 5)
+position = Vector2(0, -1)
 shape = SubResource("CapsuleShape2D_8afob")
 
 [node name="AttackHitBox" type="Area2D" parent="." unique_id=1139064785]
@@ -27,7 +27,7 @@ collision_layer = 0
 collision_mask = 2
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="AttackHitBox" unique_id=994726829]
-position = Vector2(0, 12)
+position = Vector2(0, 10)
 shape = SubResource("attack_shape")
 
 [node name="Camera2D" type="Camera2D" parent="." unique_id=1331789071]

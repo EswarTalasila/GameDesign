@@ -1,0 +1,44 @@
+[gd_scene format=3 uid="uid://ch3b8wsehps15"]
+
+[ext_resource type="Script" uid="uid://bmxxw862l2sbb" path="res://scenes/ui/trial_timer_ui.gd" id="1_script"]
+[ext_resource type="Texture2D" uid="uid://cw8thuua4f43v" path="res://assets/sprites/ui/timer/timer_ui.png" id="2_timer"]
+[ext_resource type="Texture2D" uid="uid://q2v761pycqyp" path="res://assets/sprites/ui/timer/digit_0.png" id="3_digit"]
+
+[node name="TrialTimerUI" type="CanvasLayer" unique_id=1567136601]
+layer = 11
+script = ExtResource("1_script")
+
+[node name="TimerAnchor" type="Node2D" parent="." unique_id=1649223812]
+position = Vector2(960, 28)
+scale = Vector2(4, 4)
+
+[node name="Base" type="Sprite2D" parent="TimerAnchor" unique_id=68266378]
+texture_filter = 1
+texture = ExtResource("2_timer")
+
+[node name="Digits" type="Node2D" parent="TimerAnchor" unique_id=488975151]
+
+[node name="MinuteTens" type="Sprite2D" parent="TimerAnchor/Digits" unique_id=1963242014]
+texture_filter = 1
+position = Vector2(-15, 0)
+texture = ExtResource("3_digit")
+
+[node name="MinuteOnes" type="Sprite2D" parent="TimerAnchor/Digits" unique_id=1325682432]
+texture_filter = 1
+position = Vector2(-6, 0)
+texture = ExtResource("3_digit")
+
+[node name="SecondTens" type="Sprite2D" parent="TimerAnchor/Digits" unique_id=1818948107]
+texture_filter = 1
+position = Vector2(7, 0)
+texture = ExtResource("3_digit")
+
+[node name="SecondOnes" type="Sprite2D" parent="TimerAnchor/Digits" unique_id=367390328]
+texture_filter = 1
+position = Vector2(16, 0)
+texture = ExtResource("3_digit")
+
+[node name="Popup" type="Sprite2D" parent="TimerAnchor" unique_id=1237900993]
+visible = false
+texture_filter = 1
+position = Vector2(0, 20)

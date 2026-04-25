@@ -1,36 +1,76 @@
 [gd_scene format=3 uid="uid://dbfylbpq23411"]
 
-[ext_resource type="Texture2D" uid="uid://cs03g2128b0kc" path="res://assets/ui/inventory/inventory.png" id="2_inv"]
-[ext_resource type="Texture2D" uid="uid://m5ux1wa7ccod" path="res://assets/ui/buttons/play_pause/pause_normal.png" id="6_pause"]
+[ext_resource type="Script" path="res://scenes/ui/inventory_hud.gd" id="1_script"]
+[ext_resource type="Texture2D" uid="uid://cs03g2128b0kc" path="res://assets/ui/inventory/inventory.png" id="2_inventory"]
+[ext_resource type="Texture2D" uid="uid://m5ux1wa7ccod" path="res://assets/ui/buttons/play_pause/pause_normal.png" id="3_pause"]
+[ext_resource type="PackedScene" uid="uid://ii0tko6y6sp1" path="res://scenes/ui/counter_digits.tscn" id="4_number"]
+[ext_resource type="Script" uid="uid://b62sy0w03ya5o" path="res://scenes/ui/inventory_slot.gd" id="5_slot"]
 
-[node name="InventoryPanel" type="Node2D" unique_id=1726369265]
+[node name="InventoryHUD" type="Node2D" unique_id=3855492]
 scale = Vector2(3, 3)
+script = ExtResource("1_script")
 
-[node name="BG" type="Sprite2D" parent="." unique_id=899191673]
+[node name="BG" type="Sprite2D" parent="." unique_id=1823709757]
 texture_filter = 1
 position = Vector2(42, 0)
 scale = Vector2(4.4843745, 4.4843745)
-texture = ExtResource("2_inv")
+texture = ExtResource("2_inventory")
 centered = false
 
-[node name="Slot1" type="Node2D" parent="."]
-position = Vector2(137.33333, 133.33331)
-visible = false
+[node name="Slot1" type="Node2D" parent="." unique_id=221498514]
+position = Vector2(136.17, 130.05)
+script = ExtResource("5_slot")
+slot_size = Vector2(61.92, 61.92)
 
-[node name="Slot2" type="Node2D" parent="."]
-position = Vector2(236.33334, 128.66667)
-visible = false
+[node name="IconRoot" type="Node2D" parent="Slot1" unique_id=308841207]
 
-[node name="Slot3" type="Node2D" parent="."]
-position = Vector2(137.66666, 225.00002)
+[node name="Count" parent="Slot1" unique_id=189286627 instance=ExtResource("4_number")]
 visible = false
+z_index = 100
+position = Vector2(11, 10)
+scale = Vector2(0.75, 0.75)
 
-[node name="Slot4" type="Node2D" parent="."]
-position = Vector2(235.33331, 224.00002)
+[node name="Slot2" type="Node2D" parent="." unique_id=1696988075]
+position = Vector2(234.83, 130.05)
+script = ExtResource("5_slot")
+slot_size = Vector2(61.92, 61.92)
+
+[node name="IconRoot" type="Node2D" parent="Slot2" unique_id=98529224]
+
+[node name="Count" parent="Slot2" unique_id=1047236591 instance=ExtResource("4_number")]
 visible = false
+z_index = 100
+position = Vector2(11, 10)
+scale = Vector2(0.75, 0.75)
 
-[node name="PauseSlot" type="Sprite2D" parent="." unique_id=762424516]
+[node name="Slot3" type="Node2D" parent="." unique_id=185117310]
+position = Vector2(136.17, 224.22)
+script = ExtResource("5_slot")
+slot_size = Vector2(61.92, 61.92)
+
+[node name="IconRoot" type="Node2D" parent="Slot3" unique_id=680247872]
+
+[node name="Count" parent="Slot3" unique_id=600177780 instance=ExtResource("4_number")]
+visible = false
+z_index = 100
+position = Vector2(11, 10)
+scale = Vector2(0.75, 0.75)
+
+[node name="Slot4" type="Node2D" parent="." unique_id=1052393259]
+position = Vector2(234.83, 224.22)
+script = ExtResource("5_slot")
+slot_size = Vector2(61.92, 61.92)
+
+[node name="IconRoot" type="Node2D" parent="Slot4" unique_id=844825348]
+
+[node name="Count" parent="Slot4" unique_id=1154550083 instance=ExtResource("4_number")]
+visible = false
+z_index = 100
+position = Vector2(11, 10)
+scale = Vector2(0.75, 0.75)
+
+[node name="PauseSlot" type="Sprite2D" parent="." unique_id=323807687]
 texture_filter = 1
 position = Vector2(310.33334, 34)
 scale = Vector2(3.0442715, 3.0442715)
-texture = ExtResource("6_pause")
+texture = ExtResource("3_pause")

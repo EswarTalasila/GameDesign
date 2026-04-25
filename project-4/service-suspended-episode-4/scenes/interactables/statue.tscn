@@ -174,10 +174,10 @@ animations = [{
 }]
 
 [sub_resource type="RectangleShape2D" id="body_shape"]
-size = Vector2(31, 25)
+size = Vector2(30.396433, 25.046482)
 
 [sub_resource type="RectangleShape2D" id="zone_shape"]
-size = Vector2(61, 64)
+size = Vector2(61, 76)
 
 [node name="Statue" type="Node2D" unique_id=1252459095]
 script = ExtResource("1_script")
@@ -197,27 +197,26 @@ animation = &"glow"
 z_index = 1
 position = Vector2(0, -54)
 fire_color = "purple"
-fire_group = 7
 fire_variation = 3
 
 [node name="AnimatedSprite2D" parent="Fire" index="0" unique_id=1504965717]
 position = Vector2(0, -10)
 sprite_frames = SubResource("SpriteFrames_8a4uf")
-frame_progress = 0.01149522
+frame_progress = 0.7511931
 
 [node name="StaticBody2D" type="StaticBody2D" parent="." unique_id=1054987120]
 position = Vector2(0, -64)
 collision_mask = 0
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D" unique_id=1976394331]
-position = Vector2(-0.5, 51.5)
+position = Vector2(-0.5, 52.5)
 shape = SubResource("body_shape")
 
 [node name="InteractZone" type="Area2D" parent="." unique_id=339163202]
 position = Vector2(0, -64)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="InteractZone" unique_id=743604370]
-position = Vector2(0.5, 32)
+position = Vector2(0.5, 38)
 shape = SubResource("zone_shape")
 
 [node name="PressEPrompt" parent="InteractZone" unique_id=2115328481 instance=ExtResource("11_prompt")]

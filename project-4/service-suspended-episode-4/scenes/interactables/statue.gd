@@ -7,7 +7,7 @@ extends Node2D
 ## Per-instance customization:
 ##   - direction: which way the statue faces (updates texture live)
 ##   - fire_behind: whether flame renders behind or in front of statue
-##   - statue_id: 1-6 for ritual ordering
+##   - statue_id: 1-8 for physical statue slot assignment
 ##   - Fire child: right-click instance → Editable Children → move Fire node
 ##
 ## Structure:
@@ -17,8 +17,10 @@ extends Node2D
 ##   └── Fire (instance)    — fire.tscn, z_index set by fire_behind
 
 const SPRITE_PATH = "res://assets/sprites/statue/statue_%s.png"
+const BROKEN_SPRITE_PATH = "res://assets/sprites/statue/statue_broken_%s.png"
 const GEM_PATH = "res://assets/sprites/statue/statue_gem_%d.png"
 const GEM_FRAME_COUNT = 8
+const STATUE_UI_SCENE = preload("res://scenes/ui/statue_ui.tscn")
 
 @export_enum("front", "front_right", "right", "back_right",
 	"back", "back_left", "left", "front_left")
@@ -50,13 +52,18 @@ var direction: String = "front":
 		_update_fire_visibility()
 
 ## When true, pressing interact in range toggles the fire on/off.
-@export var toggle_fire_on_interact: bool = true
+@export var toggle_fire_on_interact: bool = false
 
-## Statue index (1-6) for golden ticket ritual ordering.
-@export_range(1, 6) var statue_id: int = 1
+## When true, pressing interact in range opens the statue UI overlay.
+@export var show_ui_on_interact: bool = true
+
+## Physical statue slot index (1-8). Two random slots are broken each run.
+@export_range(1, 8) var statue_id: int = 1
 
 ## Whether this statue's ticket has been burned correctly.
 var ticket_burned: bool = false
+var completed: bool = false
+var _is_broken: bool = false
 
 ## Emitted when the player interacts with this statue (presses E in range).
 signal interacted(statue: Node2D)
@@ -80,8 +87,15 @@ func _ready() -> void:
 			_zone.body_exited.connect(_on_zone_exited)
 	if _prompt:
 		_prompt.visible = false
+	if not Engine.is_editor_hint():
+		GameState.ensure_statue_ritual_seeded()
+	_is_broken = not Engine.is_editor_hint() and GameState.is_statue_broken(statue_id)
 	_update_texture()
 	_setup_gem_animation()
+	if _is_broken:
+		_apply_broken_state()
+	else:
+		_apply_assigned_fire_color()
 	if auto_layer_fire:
 		_auto_fire_layer()
 	else:
@@ -92,7 +106,7 @@ func _ready() -> void:
 	_update_fire_visibility()
 
 func _on_zone_entered(body: Node2D) -> void:
-	if body is CharacterBody2D:
+	if body is CharacterBody2D and _can_interact():
 		_player_nearby = true
 		if _prompt:
 			_prompt.visible = true
@@ -102,13 +116,16 @@ func _on_zone_exited(body: Node2D) -> void:
 		_player_nearby = false
 		if _prompt:
 			_prompt.visible = false
+		_close_statue_ui_if_open()
 
 func _input(event: InputEvent) -> void:
 	if Engine.is_editor_hint():
 		return
-	if event.is_action_pressed("interact") and _player_nearby:
+	if event.is_action_pressed("interact") and _player_nearby and _can_interact():
 		if toggle_fire_on_interact:
 			toggle_fire()
+		if show_ui_on_interact:
+			_toggle_statue_ui()
 		interacted.emit(self)
 
 func _update_texture() -> void:
@@ -116,18 +133,31 @@ func _update_texture() -> void:
 		_sprite = get_node_or_null("Sprite2D")
 	if not _sprite:
 		return
-	var path = SPRITE_PATH % direction
+	var path := (BROKEN_SPRITE_PATH if _is_broken else SPRITE_PATH) % direction
 	if ResourceLoader.exists(path):
 		_sprite.texture = load(path)
 		_sprite.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+
+func _apply_broken_state() -> void:
+	fire_lit = false
+	show_ui_on_interact = false
+	toggle_fire_on_interact = false
+	_player_nearby = false
+	if _prompt:
+		_prompt.visible = false
+	if _zone:
+		_zone.monitoring = false
+	if _gem_sprite:
+		_gem_sprite.visible = false
 
 func _update_fire_layer() -> void:
 	if not _fire:
 		_fire = get_node_or_null("Fire")
 	if not _fire:
 		return
-	# Behind = negative z_index, in front = positive
-	_fire.z_index = -1 if fire_behind else 1
+	# "Behind" should mean behind the statue art only, not behind the whole room.
+	_fire.show_behind_parent = fire_behind
+	_fire.z_index = 0 if fire_behind else 1
 
 func _auto_fire_layer() -> void:
 	## Front-facing directions: statue is "closer" so fire goes behind.
@@ -152,6 +182,16 @@ func _setup_gem_animation() -> void:
 	_gem_sprite.sprite_frames = frames
 	_gem_sprite.animation = "glow"
 
+func _apply_assigned_fire_color() -> void:
+	if not _fire:
+		_fire = get_node_or_null("Fire")
+	if not _fire:
+		return
+	if _is_broken:
+		return
+	if _fire.has_method("set"):
+		_fire.set("fire_color", GameState.get_statue_fire_color(statue_id))
+
 func _update_fire_visibility() -> void:
 	if not _fire:
 		_fire = get_node_or_null("Fire")
@@ -174,6 +214,31 @@ func extinguish_fire() -> void:
 func toggle_fire() -> void:
 	fire_lit = not fire_lit
 
+func _toggle_statue_ui() -> void:
+	var ui := _get_or_create_statue_ui()
+	if ui and ui.has_method("toggle_for_statue"):
+		ui.toggle_for_statue(self)
+
+func _can_interact() -> bool:
+	return not _is_broken and not completed
+
+func _close_statue_ui_if_open() -> void:
+	var ui = get_tree().get_first_node_in_group("statue_ui_overlay")
+	if ui and ui.has_method("close_if_target"):
+		ui.close_if_target(self)
+
+func _get_or_create_statue_ui() -> Node:
+	var ui = get_tree().get_first_node_in_group("statue_ui_overlay")
+	if ui:
+		return ui
+	ui = STATUE_UI_SCENE.instantiate()
+	var scene_root := get_tree().current_scene
+	if scene_root:
+		scene_root.add_child(ui)
+	else:
+		get_tree().root.add_child(ui)
+	return ui
+
 ## Called when player burns a golden ticket at this statue.
 func burn_ticket() -> void:
 	ticket_burned = true
@@ -184,3 +249,23 @@ func burn_ticket() -> void:
 ## Check if the correct ticket was burned in the right order.
 func is_correct_offering(expected_index: int) -> bool:
 	return ticket_burned and statue_id == expected_index
+
+func resolve_special_ticket_offering() -> bool:
+	if _is_broken:
+		return false
+	if completed:
+		return true
+	var accepted := GameState.resolve_statue_offering(statue_id)
+	if accepted:
+		completed = true
+		burn_ticket()
+		extinguish_fire()
+		show_ui_on_interact = false
+		toggle_fire_on_interact = false
+		if _prompt:
+			_prompt.visible = false
+		_player_nearby = false
+	else:
+		# TODO: apply the time penalty and recovery path for refused offerings.
+		light_fire()
+	return accepted

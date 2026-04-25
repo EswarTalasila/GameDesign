@@ -24,6 +24,19 @@ signal conductor_watching_changed(watching: bool)
 signal lore_collected(lore_entry: Dictionary)
 signal map_piece_collected(piece_id: int)
 signal map_assembled_signal
+signal inventory_changed
+signal inventory_selection_changed(item_id: String)
+signal ritual_focus_changed(active: bool, item_id: String)
+signal trial_started
+signal trial_time_changed(remaining_seconds: float)
+signal trial_time_adjusted(delta_seconds: float)
+
+const ITEM_SPECIAL_TICKET := "special_ticket"
+const ITEM_VOODOO_DOLL := "voodoo_doll"
+const INVENTORY_SLOT_COUNT := 4
+const STATUE_SLOT_COUNT := 8
+const BROKEN_STATUE_COUNT := 2
+const STATUE_COLOR_ORDER: Array[String] = ["yellow", "blue", "red", "green", "purple", "white"]
 
 var current_cart_index: int = 0
 var dungeon_type: String = "standard"
@@ -40,6 +53,18 @@ var max_health: int = 3
 var player_health: int = 3
 var special_tickets_collected: int = 0
 var special_tickets_required: int = 6  # per floor
+var special_tickets_held: int = 0
+var inventory_slots: Array[String] = ["", "", "", ""]
+var inventory_counts: Dictionary = {}
+var selected_inventory_item: String = ""
+var ritual_focus_item: String = ""
+var special_ticket_supply_seeded: bool = false
+var voodoo_doll_supply_seeded: bool = false
+var statue_colors_by_id: Dictionary = {}
+var broken_statue_ids: Array[int] = []
+var statue_offering_order: Array[int] = []
+var statue_order_progress: int = 0
+var statue_ritual_seeded: bool = false
 var combat_tutorial_shown: bool = false
 var hit_tip_shown: bool = false
 var ticket_tip_shown: bool = false
@@ -53,6 +78,10 @@ var golden_ticket_dry_streak: int = 0  # consecutive rotations without a golden 
 
 # One-shot session flags
 var intro_played: bool = false
+var campfire_intro_played: bool = false
+var trial_start: bool = false
+var trial_time_remaining: float = 0.0
+var trial_time_limit: float = 120.0
 
 # Dialogue replay flags — tracks whether NPC dialogue has been heard
 var lady_section_1_heard: bool = false
@@ -160,6 +189,179 @@ func pickup_ticket() -> void:
 		return
 	tickets_held += 1
 	ticket_picked_up.emit(tickets_held)
+
+func pickup_inventory_item(item_id: String, amount: int = 1) -> bool:
+	return add_inventory_item(item_id, amount)
+
+func add_inventory_item(item_id: String, amount: int = 1) -> bool:
+	if amount <= 0:
+		return false
+	var slot_index := _find_inventory_slot(item_id)
+	if slot_index == -1:
+		slot_index = _find_first_empty_inventory_slot()
+		if slot_index == -1:
+			return false
+		inventory_slots[slot_index] = item_id
+	inventory_counts[item_id] = get_inventory_count(item_id) + amount
+	if item_id == ITEM_SPECIAL_TICKET:
+		special_tickets_held = get_inventory_count(item_id)
+	inventory_changed.emit()
+	return true
+
+func consume_inventory_item(item_id: String, amount: int = 1) -> bool:
+	var current := get_inventory_count(item_id)
+	if amount <= 0 or current < amount:
+		return false
+	var remaining := current - amount
+	if remaining > 0:
+		inventory_counts[item_id] = remaining
+	else:
+		inventory_counts.erase(item_id)
+		for i in range(inventory_slots.size()):
+			if inventory_slots[i] == item_id:
+				inventory_slots[i] = ""
+	if item_id == ITEM_SPECIAL_TICKET:
+		special_tickets_held = remaining
+	inventory_changed.emit()
+	if selected_inventory_item == item_id and remaining <= 0:
+		clear_selected_inventory_item()
+	return true
+
+func has_inventory_item(item_id: String, amount: int = 1) -> bool:
+	return get_inventory_count(item_id) >= amount
+
+func get_inventory_count(item_id: String) -> int:
+	return int(inventory_counts.get(item_id, 0))
+
+func get_inventory_slot_item(index: int) -> String:
+	if index < 0 or index >= inventory_slots.size():
+		return ""
+	return inventory_slots[index]
+
+func ensure_starting_special_tickets(count: int = 6) -> void:
+	if special_ticket_supply_seeded:
+		return
+	if add_inventory_item(ITEM_SPECIAL_TICKET, count):
+		special_ticket_supply_seeded = true
+
+func ensure_starting_voodoo_dolls(count: int = 1) -> void:
+	if voodoo_doll_supply_seeded:
+		return
+	if add_inventory_item(ITEM_VOODOO_DOLL, count):
+		voodoo_doll_supply_seeded = true
+
+func start_trial(duration_seconds: float = -1.0) -> void:
+	if trial_start:
+		return
+	trial_start = true
+	trial_time_remaining = trial_time_limit if duration_seconds < 0.0 else duration_seconds
+	trial_started.emit()
+	trial_time_changed.emit(trial_time_remaining)
+
+func tick_trial_time(delta: float) -> void:
+	if not trial_start or trial_time_remaining <= 0.0:
+		return
+	trial_time_remaining = max(0.0, trial_time_remaining - delta)
+	trial_time_changed.emit(trial_time_remaining)
+
+func adjust_trial_time(delta_seconds: float) -> void:
+	if not trial_start:
+		return
+	trial_time_remaining = max(0.0, trial_time_remaining + delta_seconds)
+	trial_time_adjusted.emit(delta_seconds)
+	trial_time_changed.emit(trial_time_remaining)
+
+func set_selected_inventory_item(item_id: String) -> void:
+	if item_id.is_empty():
+		clear_selected_inventory_item()
+		return
+	if not has_inventory_item(item_id):
+		return
+	selected_inventory_item = item_id
+	_apply_inventory_cursor()
+	inventory_selection_changed.emit(selected_inventory_item)
+
+func clear_selected_inventory_item() -> void:
+	if selected_inventory_item.is_empty():
+		_apply_inventory_cursor()
+		return
+	selected_inventory_item = ""
+	_apply_inventory_cursor()
+	inventory_selection_changed.emit("")
+
+func toggle_selected_inventory_item(item_id: String) -> void:
+	if selected_inventory_item == item_id:
+		clear_selected_inventory_item()
+	else:
+		set_selected_inventory_item(item_id)
+
+func set_ritual_focus_item(item_id: String) -> void:
+	ritual_focus_item = item_id
+	ritual_focus_changed.emit(not item_id.is_empty(), item_id)
+
+func clear_ritual_focus_item() -> void:
+	if ritual_focus_item.is_empty():
+		return
+	ritual_focus_item = ""
+	ritual_focus_changed.emit(false, "")
+
+func ensure_statue_ritual_seeded() -> void:
+	if statue_ritual_seeded:
+		return
+	var statue_ids: Array[int] = []
+	for statue_id in range(1, STATUE_SLOT_COUNT + 1):
+		statue_ids.append(statue_id)
+	statue_ids.shuffle()
+	broken_statue_ids.clear()
+	for i in range(min(BROKEN_STATUE_COUNT, statue_ids.size())):
+		broken_statue_ids.append(statue_ids[i])
+	broken_statue_ids.sort()
+	var shuffled_colors := STATUE_COLOR_ORDER.duplicate()
+	shuffled_colors.shuffle()
+	statue_colors_by_id.clear()
+	var active_statue_ids: Array[int] = []
+	for statue_id in statue_ids:
+		if not broken_statue_ids.has(statue_id):
+			active_statue_ids.append(statue_id)
+	for i in range(min(active_statue_ids.size(), shuffled_colors.size())):
+		statue_colors_by_id[active_statue_ids[i]] = shuffled_colors[i]
+	statue_offering_order.clear()
+	for color in STATUE_COLOR_ORDER:
+		for statue_id in active_statue_ids:
+			if statue_colors_by_id.get(statue_id, "") == color:
+				statue_offering_order.append(statue_id)
+				break
+	statue_order_progress = 0
+	statue_ritual_seeded = true
+
+func is_statue_broken(statue_id: int) -> bool:
+	ensure_statue_ritual_seeded()
+	return broken_statue_ids.has(statue_id)
+
+func get_broken_statue_ids() -> Array[int]:
+	ensure_statue_ritual_seeded()
+	return broken_statue_ids.duplicate()
+
+func get_statue_fire_color(statue_id: int) -> String:
+	ensure_statue_ritual_seeded()
+	if is_statue_broken(statue_id):
+		return ""
+	return String(statue_colors_by_id.get(statue_id, STATUE_COLOR_ORDER[0]))
+
+func get_expected_statue_id() -> int:
+	ensure_statue_ritual_seeded()
+	if statue_order_progress >= statue_offering_order.size():
+		return -1
+	return statue_offering_order[statue_order_progress]
+
+func resolve_statue_offering(statue_id: int) -> bool:
+	ensure_statue_ritual_seeded()
+	if is_statue_broken(statue_id):
+		return false
+	var accepted := statue_id == get_expected_statue_id()
+	if accepted:
+		statue_order_progress += 1
+	return accepted
 
 func collect_ticket() -> void:
 	tickets_collected += 1
@@ -284,6 +486,7 @@ func reset() -> void:
 	dungeon_seed = 0
 	current_floor = 1
 	special_tickets_collected = 0
+	special_tickets_held = 0
 	checkpoint_position = Vector2.ZERO
 	checkpoint_section = ""
 	combat_tutorial_shown = false
@@ -323,8 +526,45 @@ func reset() -> void:
 	simon_key_sequence.clear()
 	computer_lock_solved = false
 	collected_lore.clear()
+	inventory_slots = ["", "", "", ""]
+	inventory_counts.clear()
+	selected_inventory_item = ""
+	ritual_focus_item = ""
+	special_ticket_supply_seeded = false
+	voodoo_doll_supply_seeded = false
+	campfire_intro_played = false
+	trial_start = false
+	trial_time_remaining = 0.0
+	statue_colors_by_id.clear()
+	broken_statue_ids.clear()
+	statue_offering_order.clear()
+	statue_order_progress = 0
+	statue_ritual_seeded = false
+	_apply_inventory_cursor()
 	_init_section_variants()
 
 func toggle_mute() -> void:
 	muted = not muted
 	AudioServer.set_bus_mute(0, muted)
+
+func _find_inventory_slot(item_id: String) -> int:
+	for i in range(inventory_slots.size()):
+		if inventory_slots[i] == item_id:
+			return i
+	return -1
+
+func _find_first_empty_inventory_slot() -> int:
+	for i in range(inventory_slots.size()):
+		if inventory_slots[i].is_empty():
+			return i
+	return -1
+
+func _apply_inventory_cursor() -> void:
+	if not has_node("/root/CustomCursor"):
+		return
+	if selected_inventory_item == ITEM_SPECIAL_TICKET:
+		CustomCursor.set_cursor_scene(preload("res://scenes/items/cursors/special_ticket_cursor.tscn"))
+	elif selected_inventory_item == ITEM_VOODOO_DOLL:
+		CustomCursor.set_cursor_scene(preload("res://scenes/items/cursors/voodoo_doll_cursor.tscn"))
+	else:
+		CustomCursor.reset_cursor()

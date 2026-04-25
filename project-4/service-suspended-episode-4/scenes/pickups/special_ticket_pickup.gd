@@ -34,10 +34,13 @@ func _play_sfx(stream: AudioStream) -> void:
 	sfx.play()
 	sfx.finished.connect(sfx.queue_free)
 
-func _on_body_entered(_body: Node2D) -> void:
+func _on_body_entered(body: Node2D) -> void:
+	if body == null or not body.has_method("pickup"):
+		return
+	if not body.pickup(GameState.ITEM_SPECIAL_TICKET, 1):
+		return
 	set_deferred("monitoring", false)
 	_play_sfx(_pickup_sound)
-	GameState.collect_special_ticket()
 
 	var tween = create_tween()
 	tween.tween_property(sprite, "scale", Vector2(1.5, 1.5), 0.15)

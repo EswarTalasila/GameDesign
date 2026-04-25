@@ -1,0 +1,13 @@
+[gd_scene format=3 uid="uid://o32cxwi47bbk"]
+
+[ext_resource type="Script" uid="uid://ce5nubq78txd3" path="res://scenes/items/icons/special_ticket_inventory_icon.gd" id="1_script"]
+[ext_resource type="Texture2D" uid="uid://ntfkdl8mhmh" path="res://assets/items/icons/special_ticket/inventory_icon.png" id="2_icon"]
+
+[node name="SpecialTicketInventoryIcon" type="Node2D" unique_id=1823052781]
+scale = Vector2(0.72, 0.72)
+script = ExtResource("1_script")
+
+[node name="Base" type="Sprite2D" parent="." unique_id=225862281]
+texture_filter = 1
+scale = Vector2(0.75, 0.75)
+texture = ExtResource("2_icon")

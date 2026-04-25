@@ -1,0 +1,9 @@
+[gd_scene format=3 uid="uid://8vr7chb1difp"]
+
+[ext_resource type="Texture2D" uid="uid://b0fcm3o3uq0gn" path="res://assets/ui/cursors/special_cursor.png" id="1_ticket"]
+
+[node name="SpecialTicketCursor" type="Sprite2D" unique_id=57172102]
+texture_filter = 1
+position = Vector2(32, 32)
+texture = ExtResource("1_ticket")
+metadata/click_texture = ExtResource("1_ticket")

@@ -1,0 +1,86 @@
+[gd_scene format=3 uid="uid://dh3plcjilx6wk"]
+
+[ext_resource type="Script" uid="uid://d1mhenk2xjvyo" path="res://scenes/ui/boon_choice_ui_controller.gd" id="1_v5qfi"]
+[ext_resource type="FontFile" uid="uid://l121oiwf8wys" path="res://assets/fonts/DotGothic16-Regular.ttf" id="2_font"]
+[ext_resource type="Script" uid="uid://ecsxoh3mbop0" path="res://scenes/ui/wave_text.gd" id="2_v5qfi"]
+[ext_resource type="PackedScene" uid="uid://3rl8oi2pw7mg" path="res://scenes/ui/boon_choice_button.tscn" id="3_button"]
+
+[node name="BoonChoiceUI" type="CanvasLayer" unique_id=128615553]
+layer = 40
+script = ExtResource("1_v5qfi")
+button_gap = 50
+
+[node name="Dimmer" type="ColorRect" parent="." unique_id=1053713479]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0.05, 0.04, 0.08, 1)
+
+[node name="Panel" type="Control" parent="." unique_id=192191219]
+layout_mode = 3
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -370.0
+offset_top = -120.0
+offset_right = 370.0
+offset_bottom = 120.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Title" type="Control" parent="Panel" unique_id=1140790132]
+process_mode = 3
+anchors_preset = 0
+anchor_right = 1.0
+offset_bottom = 64.0
+grow_horizontal = 2
+mouse_filter = 2
+script = ExtResource("2_v5qfi")
+font = ExtResource("2_font")
+wave_amplitude = 2.5
+wave_speed = 6.2
+wave_step = 0.38
+
+[node name="Choices" type="HBoxContainer" parent="Panel" unique_id=1539697932]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = 78.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 50
+alignment = 1
+
+[node name="TimeChoice" parent="Panel/Choices" unique_id=1253401693 instance=ExtResource("3_button")]
+custom_minimum_size = Vector2(248, 108)
+layout_mode = 2
+size_flags_horizontal = 4
+pressed_text_offset = Vector2(0, 0)
+
+[node name="Label" parent="Panel/Choices/TimeChoice/TextRoot" parent_id_path=PackedInt32Array(1253401693, 235156112) index="0" unique_id=494992781]
+offset_top = -3.0
+offset_bottom = -3.0
+theme_override_font_sizes/font_size = 30
+text = "+Time"
+
+[node name="TicketChoice" parent="Panel/Choices" unique_id=1457091435 instance=ExtResource("3_button")]
+custom_minimum_size = Vector2(248, 108)
+layout_mode = 2
+size_flags_horizontal = 4
+pressed_text_offset = Vector2(0, 0)
+
+[node name="Label" parent="Panel/Choices/TicketChoice/TextRoot" parent_id_path=PackedInt32Array(1457091435, 235156112) index="0" unique_id=494992781]
+offset_left = 0.7128906
+offset_top = -2.7037964
+offset_right = 0.7128906
+offset_bottom = -2.7037964
+theme_override_font_sizes/font_size = 30
+text = "+1 Ticket"
+
+[editable path="Panel/Choices/TimeChoice"]
+[editable path="Panel/Choices/TicketChoice"]

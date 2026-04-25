@@ -1,0 +1,16 @@
+[remap]
+
+importer="dialogue_manager"
+importer_version=15
+type="Resource"
+uid="uid://fs875est34jc"
+path="res://.godot/imported/statue_offering.dialogue-b5b80c60b780518d86ffda16a7b4309d.tres"
+
+[deps]
+
+source_file="res://dialogues/statue_offering.dialogue"
+dest_files=["res://.godot/imported/statue_offering.dialogue-b5b80c60b780518d86ffda16a7b4309d.tres"]
+
+[params]
+
+defaults=true

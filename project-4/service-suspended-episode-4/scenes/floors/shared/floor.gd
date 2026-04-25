@@ -19,7 +19,7 @@ var _ticket_textures: Array[Texture2D] = []
 # --- Numbered HUD icons ---
 var _key_numbered: Array[Texture2D] = []
 var _ticket_numbered: Array[Texture2D] = []
-var _special_numbered: Array[Texture2D] = []
+var _special_icon = preload("res://assets/items/icons/special_ticket/inventory_icon.png")
 
 # --- Hole punch textures ---
 var _punch_icon_open = preload("res://assets/ui/hole_punch/punch_0.png")
@@ -125,7 +125,6 @@ func _ready() -> void:
 	for i in range(10):
 		_key_numbered.append(load("res://assets/ui/key_icons/key_Numbered_%02d.png" % i))
 		_ticket_numbered.append(load("res://assets/ui/tickets/ticket_Numbered_%d.png" % i))
-		_special_numbered.append(load("res://assets/ui/special_tickets/special_Numbered_%d.png" % i))
 
 	_update_hud_icons()
 
@@ -610,7 +609,7 @@ func _set_burn_radius(value: float) -> void:
 func _update_hud_icons() -> void:
 	key_slot.texture = _key_numbered[clampi(GameState.keys_collected, 0, 9)]
 	ticket_slot.texture = _ticket_numbered[clampi(GameState.tickets_held, 0, 9)]
-	special_slot.texture = _special_numbered[clampi(GameState.special_tickets_collected, 0, 9)]
+	special_slot.texture = _special_icon
 
 func _on_ticket_picked_up(_held: int) -> void:
 	_update_hud_icons()

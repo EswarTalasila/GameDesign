@@ -1,0 +1,58 @@
+[gd_scene format=3 uid="uid://3rl8oi2pw7mg"]
+
+[ext_resource type="Script" uid="uid://1dwajkp4b3q5" path="res://scenes/ui/boon_choice_button.gd" id="1_script"]
+[ext_resource type="Texture2D" uid="uid://djcmotqh4nag1" path="res://assets/sprites/ui/blank_button/normal.png" id="2_normal"]
+[ext_resource type="Texture2D" uid="uid://bmuekoiu2lq2m" path="res://assets/sprites/ui/blank_button/hover.png" id="3_hover"]
+[ext_resource type="Texture2D" uid="uid://cvbcf878jogf4" path="res://assets/sprites/ui/blank_button/pressed.png" id="4_pressed"]
+[ext_resource type="FontFile" uid="uid://l121oiwf8wys" path="res://assets/fonts/DotGothic16-Regular.ttf" id="5_font"]
+
+[node name="BoonChoiceButton" type="TextureButton" unique_id=1427877583]
+texture_filter = 1
+custom_minimum_size = Vector2(248, 108)
+offset_right = 248.0
+offset_bottom = 108.0
+size_flags_horizontal = 0
+size_flags_vertical = 4
+texture_normal = ExtResource("2_normal")
+texture_pressed = ExtResource("4_pressed")
+texture_hover = ExtResource("3_hover")
+ignore_texture_size = true
+stretch_mode = 5
+script = ExtResource("1_script")
+
+[node name="StatePreview" type="TextureRect" parent="." unique_id=1729617921]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = ExtResource("2_normal")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="TextRoot" type="Control" parent="." unique_id=235156112]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -2.0
+offset_bottom = -2.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="Label" type="Label" parent="TextRoot" unique_id=494992781]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_fonts/font = ExtResource("5_font")
+theme_override_font_sizes/font_size = 28
+text = "Boon"
+horizontal_alignment = 1
+vertical_alignment = 1

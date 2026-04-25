@@ -1,0 +1,21 @@
+[gd_scene load_steps=4 format=3]
+
+[ext_resource type="PackedScene" path="res://scenes/ui/inventory_hud.tscn" id="1_inv"]
+[ext_resource type="PackedScene" path="res://scenes/ui/health_bar.tscn" id="2_health"]
+[ext_resource type="PackedScene" path="res://scenes/ui/trial_timer_ui.tscn" id="3_timer"]
+
+[node name="GameUI" type="Node"]
+
+[node name="UILayer" type="CanvasLayer" parent="."]
+layer = 10
+
+[node name="InventoryPanel" parent="UILayer" instance=ExtResource("1_inv")]
+position = Vector2(1432, 217)
+scale = Vector2(1.48, 1.48)
+
+[node name="HealthBar" parent="UILayer" instance=ExtResource("2_health")]
+position = Vector2(1622, 179)
+scale = Vector2(2.59, 2.59)
+centered = false
+
+[node name="TrialTimerUI" parent="." instance=ExtResource("3_timer")]

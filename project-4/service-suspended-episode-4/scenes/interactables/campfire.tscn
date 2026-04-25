@@ -1,0 +1,51 @@
+[gd_scene format=3 uid="uid://c6itm6bwtsw2v"]
+
+[ext_resource type="Script" uid="uid://da8672mrefats" path="res://scenes/interactables/campfire.gd" id="1_script"]
+[ext_resource type="Texture2D" uid="uid://c6sk00suxlh06" path="res://assets/sprites/campfire/campfire_off.png" id="2_off"]
+[ext_resource type="Texture2D" uid="uid://cks6u1ttsc8lv" path="res://assets/sprites/campfire/campfire_on.png" id="3_on"]
+[ext_resource type="PackedScene" uid="uid://bq4keu3laopew" path="res://scenes/interactables/fire.tscn" id="4_fire"]
+[ext_resource type="PackedScene" path="res://scenes/ui/press_e_prompt.tscn" id="5_prompt"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_ra666"]
+radius = 38.160442
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_interact"]
+radius = 42.0
+
+[node name="Campfire" type="Node2D" unique_id=1858981982]
+y_sort_enabled = true
+scale = Vector2(0.5, 0.5)
+script = ExtResource("1_script")
+
+[node name="OffSprite" type="Sprite2D" parent="." unique_id=1656802714]
+texture_filter = 1
+position = Vector2(0, -8)
+texture = ExtResource("2_off")
+
+[node name="OnSprite" type="Sprite2D" parent="." unique_id=878536772]
+texture_filter = 1
+position = Vector2(0, -8)
+texture = ExtResource("3_on")
+
+[node name="Fire" parent="." unique_id=1944185443 instance=ExtResource("4_fire")]
+position = Vector2(-1.6351013, 6.7394867)
+scale = Vector2(2, 2)
+fire_variation = 5
+
+[node name="StaticBody2D" type="StaticBody2D" parent="." unique_id=1498361416]
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D" unique_id=2145571154]
+position = Vector2(0, -1.6146126)
+shape = SubResource("CircleShape2D_ra666")
+
+[node name="InteractZone" type="Area2D" parent="." unique_id=868665596]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="InteractZone" unique_id=607392859]
+scale = Vector2(2, 2)
+shape = SubResource("CircleShape2D_interact")
+
+[node name="PressEPrompt" parent="InteractZone" unique_id=1570699974 instance=ExtResource("5_prompt")]
+visible = true
+position = Vector2(0, -85.14232)
+scale = Vector2(2, 2)

@@ -71,6 +71,9 @@ func _bootstrap_standalone() -> void:
 	_standalone = true
 	# Reset cursor to default (project-3 scene-based cursor)
 	CustomCursor.reset_cursor()
+	GameState.ensure_starting_special_tickets(6)
+	GameState.ensure_starting_voodoo_dolls(1)
+	GameState.ensure_statue_ritual_seeded()
 	# Spawn player at PlayerSpawn marker (or origin)
 	var player_scene = preload("res://scenes/player/player.tscn")
 	var player = player_scene.instantiate()
@@ -87,14 +90,24 @@ func _bootstrap_standalone() -> void:
 		cam.make_current()
 		player.add_child(cam)
 	# Game UI (inventory panel + health bar, project-3 style)
-	var game_ui = preload("res://scenes/ui/game_ui.tscn").instantiate()
+	var game_ui = preload("res://scenes/ui/jungle_game_ui.tscn").instantiate()
 	add_child(game_ui)
+	var inventory_panel: Node = game_ui.get_node_or_null("UILayer/InventoryPanel")
+	if inventory_panel and inventory_panel.has_signal("pause_requested"):
+		inventory_panel.pause_requested.connect(_on_hud_pause_requested)
 
 func _unhandled_input(event: InputEvent) -> void:
 	if not _standalone:
 		return
 	if event.is_action_pressed("ui_cancel"):
+		if _has_blocking_ui_overlay():
+			get_viewport().set_input_as_handled()
+			return
 		_toggle_pause()
+
+func _process(delta: float) -> void:
+	if _standalone and not _paused:
+		GameState.tick_trial_time(delta)
 
 func _toggle_pause() -> void:
 	if _paused:
@@ -102,8 +115,24 @@ func _toggle_pause() -> void:
 	else:
 		_pause()
 
+func _on_hud_pause_requested() -> void:
+	if _has_blocking_ui_overlay():
+		return
+	if not _paused:
+		_pause()
+
+func _has_blocking_ui_overlay() -> bool:
+	for group in ["statue_ui_overlay", "campfire_ui_overlay", "boon_ui_overlay"]:
+		for node in get_tree().get_nodes_in_group(group):
+			if node.has_method("is_blocking_pause") and node.is_blocking_pause():
+				return true
+			if node is CanvasItem and node.visible:
+				return true
+	return false
+
 func _pause() -> void:
 	_paused = true
+	_set_hud_pause_state(true)
 	get_tree().paused = true
 	var pause_scene = preload("res://scenes/ui/pause_menu.tscn")
 	_pause_menu = pause_scene.instantiate()
@@ -119,6 +148,7 @@ func _pause() -> void:
 func _resume() -> void:
 	_paused = false
 	get_tree().paused = false
+	_set_hud_pause_state(false)
 	if _pause_menu:
 		_pause_menu.queue_free()
 		_pause_menu = null
@@ -126,10 +156,16 @@ func _resume() -> void:
 func _on_restart() -> void:
 	_paused = false
 	get_tree().paused = false
+	_set_hud_pause_state(false)
 	get_tree().reload_current_scene()
 
 func _on_quit() -> void:
 	get_tree().quit()
+
+func _set_hud_pause_state(paused: bool) -> void:
+	var inventory_panel: Node = get_node_or_null("GameUI/UILayer/InventoryPanel")
+	if inventory_panel and inventory_panel.has_method("set_paused"):
+		inventory_panel.set_paused(paused)
 
 # ── Layer discovery ──
 

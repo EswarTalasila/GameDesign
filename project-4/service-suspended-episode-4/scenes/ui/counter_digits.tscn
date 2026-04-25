@@ -1,0 +1,150 @@
+[gd_scene format=3 uid="uid://ii0tko6y6sp1"]
+
+[ext_resource type="Script" uid="uid://bo1472orm4nvu" path="res://scenes/ui/counter_digits.gd" id="1_script"]
+[ext_resource type="Texture2D" uid="uid://brqtdrdg4rlu8" path="res://assets/sprites/ui/numbers/0.png" id="2_0"]
+[ext_resource type="Texture2D" uid="uid://xjqgc4pb1oqv" path="res://assets/sprites/ui/numbers/1.png" id="3_1"]
+[ext_resource type="Texture2D" uid="uid://6er2asqss5sm" path="res://assets/sprites/ui/numbers/2.png" id="4_2"]
+[ext_resource type="Texture2D" uid="uid://d1r4jp88ddyao" path="res://assets/sprites/ui/numbers/3.png" id="5_3"]
+[ext_resource type="Texture2D" uid="uid://qrdoqvdg8nj5" path="res://assets/sprites/ui/numbers/4.png" id="6_4"]
+[ext_resource type="Texture2D" uid="uid://dvfd1m7sdd22o" path="res://assets/sprites/ui/numbers/5.png" id="7_5"]
+[ext_resource type="Texture2D" uid="uid://dud0ef8u5a174" path="res://assets/sprites/ui/numbers/6.png" id="8_6"]
+[ext_resource type="Texture2D" uid="uid://dgt3hawn58y3a" path="res://assets/sprites/ui/numbers/7.png" id="9_7"]
+[ext_resource type="Texture2D" uid="uid://c41bd7ti2txfd" path="res://assets/sprites/ui/numbers/8.png" id="10_8"]
+[ext_resource type="Texture2D" uid="uid://cak0rxyocsa66" path="res://assets/sprites/ui/numbers/9.png" id="11_9"]
+
+[node name="CounterDigits" type="Node2D" unique_id=2013540740]
+script = ExtResource("1_script")
+
+[node name="Digits" type="Node2D" parent="." unique_id=467594430]
+scale = Vector2(2, 2)
+
+[node name="Digit0" type="Sprite2D" parent="Digits" unique_id=1913046847]
+texture_filter = 1
+texture = ExtResource("2_0")
+centered = false
+
+[node name="Digit1" type="Sprite2D" parent="Digits" unique_id=779814866]
+visible = false
+texture_filter = 1
+texture = ExtResource("3_1")
+centered = false
+
+[node name="Digit2" type="Sprite2D" parent="Digits" unique_id=1626121682]
+visible = false
+texture_filter = 1
+texture = ExtResource("4_2")
+centered = false
+
+[node name="Digit3" type="Sprite2D" parent="Digits" unique_id=236680096]
+visible = false
+texture_filter = 1
+texture = ExtResource("5_3")
+centered = false
+
+[node name="Digit4" type="Sprite2D" parent="Digits" unique_id=2099540284]
+visible = false
+texture_filter = 1
+texture = ExtResource("6_4")
+centered = false
+
+[node name="Digit5" type="Sprite2D" parent="Digits" unique_id=1780137573]
+visible = false
+texture_filter = 1
+texture = ExtResource("7_5")
+centered = false
+
+[node name="Digit6" type="Sprite2D" parent="Digits" unique_id=992293574]
+visible = false
+texture_filter = 1
+texture = ExtResource("8_6")
+centered = false
+
+[node name="Digit7" type="Sprite2D" parent="Digits" unique_id=2130450511]
+visible = false
+texture_filter = 1
+texture = ExtResource("9_7")
+centered = false
+
+[node name="Digit8" type="Sprite2D" parent="Digits" unique_id=929622038]
+visible = false
+texture_filter = 1
+texture = ExtResource("10_8")
+centered = false
+
+[node name="Digit9" type="Sprite2D" parent="Digits" unique_id=863012208]
+visible = false
+texture_filter = 1
+texture = ExtResource("11_9")
+centered = false
+
+[node name="PreviewRow" type="Node2D" parent="." unique_id=1102063182]
+position = Vector2(0, 40)
+
+[node name="Digit0" type="Sprite2D" parent="PreviewRow" unique_id=1166720798]
+texture_filter = 1
+scale = Vector2(2, 2)
+texture = ExtResource("2_0")
+centered = false
+
+[node name="Digit1" type="Sprite2D" parent="PreviewRow" unique_id=1436476511]
+texture_filter = 1
+position = Vector2(40, 0)
+scale = Vector2(2, 2)
+texture = ExtResource("3_1")
+centered = false
+
+[node name="Digit2" type="Sprite2D" parent="PreviewRow" unique_id=1635775271]
+texture_filter = 1
+position = Vector2(80, 0)
+scale = Vector2(2, 2)
+texture = ExtResource("4_2")
+centered = false
+
+[node name="Digit3" type="Sprite2D" parent="PreviewRow" unique_id=1255833597]
+texture_filter = 1
+position = Vector2(120, 0)
+scale = Vector2(2, 2)
+texture = ExtResource("5_3")
+centered = false
+
+[node name="Digit4" type="Sprite2D" parent="PreviewRow" unique_id=226880165]
+texture_filter = 1
+position = Vector2(160, 0)
+scale = Vector2(2, 2)
+texture = ExtResource("6_4")
+centered = false
+
+[node name="Digit5" type="Sprite2D" parent="PreviewRow" unique_id=2131746441]
+texture_filter = 1
+position = Vector2(200, 0)
+scale = Vector2(2, 2)
+texture = ExtResource("7_5")
+centered = false
+
+[node name="Digit6" type="Sprite2D" parent="PreviewRow" unique_id=1929225497]
+texture_filter = 1
+position = Vector2(240, 0)
+scale = Vector2(2, 2)
+texture = ExtResource("8_6")
+centered = false
+
+[node name="Digit7" type="Sprite2D" parent="PreviewRow" unique_id=75060222]
+texture_filter = 1
+position = Vector2(280, -2)
+scale = Vector2(2, 2)
+texture = ExtResource("9_7")
+centered = false
+
+[node name="Digit8" type="Sprite2D" parent="PreviewRow" unique_id=1617591758]
+texture_filter = 1
+position = Vector2(320, 0)
+scale = Vector2(2, 2)
+texture = ExtResource("10_8")
+centered = false
+
+[node name="Digit9" type="Sprite2D" parent="PreviewRow" unique_id=1620505284]
+texture_filter = 1
+position = Vector2(360, 0)
+scale = Vector2(2, 2)
+texture = ExtResource("11_9")
+centered = false

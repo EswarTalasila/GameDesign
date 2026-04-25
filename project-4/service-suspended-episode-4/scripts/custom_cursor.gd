@@ -7,6 +7,7 @@ extends Node
 ##   click_texture: Texture2D — shown while mouse button held
 
 var _default_scene: PackedScene = preload("res://scenes/items/cursors/default_cursor.tscn")
+var debug_show_system_cursor: bool = true
 var _layer: CanvasLayer
 var _sprite: Sprite2D = null
 var _normal_texture: Texture2D = null
@@ -15,7 +16,7 @@ var _offset: Vector2 = Vector2.ZERO
 
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
-	Input.mouse_mode = Input.MOUSE_MODE_HIDDEN
+	_apply_mouse_mode()
 	_layer = CanvasLayer.new()
 	_layer.layer = 128
 	add_child(_layer)
@@ -36,6 +37,10 @@ func set_cursor_scene(scene: PackedScene) -> void:
 ## Reset to the default cursor.
 func reset_cursor() -> void:
 	_load_scene(_default_scene)
+
+func set_debug_show_system_cursor(enabled: bool) -> void:
+	debug_show_system_cursor = enabled
+	_apply_mouse_mode()
 
 func _load_scene(scene: PackedScene) -> void:
 	# Remove old
@@ -65,3 +70,6 @@ func _load_scene(scene: PackedScene) -> void:
 		_click_texture = _normal_texture
 
 	_layer.add_child(_sprite)
+
+func _apply_mouse_mode() -> void:
+	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE if debug_show_system_cursor else Input.MOUSE_MODE_HIDDEN

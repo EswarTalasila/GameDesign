@@ -1,0 +1,9 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Texture2D" path="res://assets/items/icons/special_ticket/statue_icon.png" id="1_statue"]
+
+[node name="SpecialTicketStatueIcon" type="Sprite2D"]
+texture_filter = 1
+scale = Vector2(0.45, 0.45)
+texture = ExtResource("1_statue")
+metadata/default_texture = ExtResource("1_statue")

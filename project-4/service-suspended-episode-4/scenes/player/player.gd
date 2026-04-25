@@ -197,7 +197,12 @@ func _update_hitbox_position() -> void:
 		"north_east": Vector2(9, -9), "north_west": Vector2(-9, -9),
 		"south_east": Vector2(9, 9), "south_west": Vector2(-9, 9),
 	}
-	$AttackHitBox/CollisionShape2D.position = offsets.get(last_direction, Vector2(0, 12))
+	# The sprite renders 12 px above the player root, so keep the attack collider
+	# aligned with the visible hands/body instead of the old centered art position.
+	$AttackHitBox/CollisionShape2D.position = offsets.get(last_direction, Vector2(0, 12)) + Vector2(0, -12)
+
+func pickup(item_id: String, amount: int = 1) -> bool:
+	return GameState.pickup_inventory_item(item_id, amount)
 
 func _update_vision() -> void:
 	if not _vision_material:

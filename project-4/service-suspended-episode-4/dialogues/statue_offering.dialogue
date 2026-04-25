@@ -1,0 +1,7 @@
+~ accepted
+You: Your sacrifice has been accepted.
+=> END
+
+~ refused
+You: Your sacrifice has been refused.
+=> END
