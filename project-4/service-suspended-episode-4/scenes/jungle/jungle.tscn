@@ -1,19 +1,19 @@
-[gd_scene load_steps=4 format=3]
+[gd_scene format=3 uid="uid://dm4o36xdbakp3"]
 
-[ext_resource type="Script" path="res://scenes/jungle/variant_coordinator.gd" id="1_coordinator"]
-[ext_resource type="PackedScene" path="res://scenes/player/player.tscn" id="2_player"]
+[ext_resource type="Script" uid="uid://b4lkijp52xfd2" path="res://scenes/jungle/variant_coordinator.gd" id="1_coordinator"]
+[ext_resource type="PackedScene" uid="uid://c347cqvjvcbip" path="res://scenes/player/player.tscn" id="2_player"]
 [ext_resource type="PackedScene" path="res://scenes/ui/jungle_game_ui.tscn" id="3_gameui"]
 
-[node name="Jungle" type="Node2D"]
+[node name="Jungle" type="Node2D" unique_id=388721763]
 script = ExtResource("1_coordinator")
 
-[node name="GameWorld" type="Node2D" parent="."]
+[node name="GameWorld" type="Node2D" parent="." unique_id=158671938]
 y_sort_enabled = true
 
-[node name="VariantContainer" type="Node2D" parent="GameWorld"]
+[node name="VariantContainer" type="Node2D" parent="GameWorld" unique_id=1704201149]
 y_sort_enabled = true
 
-[node name="Player" parent="GameWorld" instance=ExtResource("2_player")]
+[node name="Player" parent="GameWorld" unique_id=868159507 instance=ExtResource("2_player")]
 position = Vector2(100, 100)
 
 [node name="GameUI" parent="." instance=ExtResource("3_gameui")]

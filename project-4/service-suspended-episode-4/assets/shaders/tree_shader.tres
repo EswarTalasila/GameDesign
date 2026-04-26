@@ -1,0 +1,103 @@
+[gd_resource type="VisualShader" format=3 uid="uid://cyoabbf766dcc"]
+
+[sub_resource type="VisualShaderNodeInput" id="time_in"]
+input_name = "time"
+
+[sub_resource type="VisualShaderNodeFloatOp" id="mul_time"]
+operator = 2
+
+[sub_resource type="VisualShaderNodeInput" id="vertex_in"]
+input_name = "vertex"
+
+[sub_resource type="VisualShaderNodeVectorCompose" id="compose"]
+op_type = 0
+
+[sub_resource type="VisualShaderNodeFloatFunc" id="VisualShaderNodeFloatFunc_tnxpc"]
+function = 0
+
+[sub_resource type="VisualShaderNodeFloatOp" id="VisualShaderNodeFloatOp_vu5l0"]
+operator = 2
+
+[sub_resource type="VisualShaderNodeFloatOp" id="VisualShaderNodeFloatOp_atast"]
+
+[sub_resource type="VisualShaderNodeFloatParameter" id="VisualShaderNodeFloatParameter_vlswh"]
+parameter_name = "Storm_Strength"
+default_value_enabled = true
+default_value = 2.5
+
+[sub_resource type="VisualShaderNodeFloatOp" id="VisualShaderNodeFloatOp_52hug"]
+
+[sub_resource type="VisualShaderNodeBooleanParameter" id="VisualShaderNodeBooleanParameter_7s74q"]
+parameter_name = "Weather_Flag"
+default_value_enabled = true
+default_value = true
+
+[sub_resource type="VisualShaderNodeVectorDecompose" id="decompose"]
+default_input_values = [0, Vector2(0, 0)]
+op_type = 0
+
+[sub_resource type="VisualShaderNodeFloatOp" id="VisualShaderNodeFloatOp_5aii8"]
+operator = 2
+
+[sub_resource type="VisualShaderNodeIntFunc" id="VisualShaderNodeIntFunc_tnxpc"]
+function = 3
+
+[sub_resource type="VisualShaderNodeFloatOp" id="VisualShaderNodeFloatOp_jfy3r"]
+default_input_values = [0, 0.0, 1, 1.0]
+operator = 2
+
+[sub_resource type="VisualShaderNodeFloatOp" id="VisualShaderNodeFloatOp_vlswh"]
+operator = 2
+
+[sub_resource type="VisualShaderNodeFloatOp" id="VisualShaderNodeFloatOp_10pgx"]
+
+[sub_resource type="VisualShaderNodeRandomRange" id="VisualShaderNodeRandomRange_52hug"]
+default_input_values = [0, Vector3(1, 1, 1), 1, 0.0, 2, 10.0]
+
+[sub_resource type="VisualShaderNodeRemap" id="remap_y"]
+output_port_for_preview = 0
+default_input_values = [1, -70.0, 2, 10.0, 3, 1.0, 4, 0.0, 0, 0.0]
+
+[resource]
+mode = 1
+flags/light_only = false
+preview_params/Weather_Flag = "true"
+preview_params/Storm_Strength = "12.5"
+nodes/vertex/0/position = Vector2(2100, -100)
+nodes/vertex/2/node = SubResource("vertex_in")
+nodes/vertex/2/position = Vector2(-810, -110)
+nodes/vertex/3/node = SubResource("decompose")
+nodes/vertex/3/position = Vector2(-440, -270)
+nodes/vertex/4/node = SubResource("remap_y")
+nodes/vertex/4/position = Vector2(-20, 90)
+nodes/vertex/10/node = SubResource("time_in")
+nodes/vertex/10/position = Vector2(-740, 160)
+nodes/vertex/12/node = SubResource("mul_time")
+nodes/vertex/12/position = Vector2(-490, 390)
+nodes/vertex/21/node = SubResource("compose")
+nodes/vertex/21/position = Vector2(1590, -130)
+nodes/vertex/22/node = SubResource("VisualShaderNodeFloatFunc_tnxpc")
+nodes/vertex/22/position = Vector2(-100, 590)
+nodes/vertex/23/node = SubResource("VisualShaderNodeFloatOp_vu5l0")
+nodes/vertex/23/position = Vector2(340, 190)
+nodes/vertex/24/node = SubResource("VisualShaderNodeFloatOp_atast")
+nodes/vertex/24/position = Vector2(1090, -240)
+nodes/vertex/26/node = SubResource("VisualShaderNodeFloatParameter_vlswh")
+nodes/vertex/26/position = Vector2(-1780, 650)
+nodes/vertex/28/node = SubResource("VisualShaderNodeFloatOp_52hug")
+nodes/vertex/28/position = Vector2(-1010, 270)
+nodes/vertex/29/node = SubResource("VisualShaderNodeBooleanParameter_7s74q")
+nodes/vertex/29/position = Vector2(-1780, 880)
+nodes/vertex/30/node = SubResource("VisualShaderNodeFloatOp_5aii8")
+nodes/vertex/30/position = Vector2(-1330, 200)
+nodes/vertex/32/node = SubResource("VisualShaderNodeIntFunc_tnxpc")
+nodes/vertex/32/position = Vector2(-80, 870)
+nodes/vertex/33/node = SubResource("VisualShaderNodeFloatOp_jfy3r")
+nodes/vertex/33/position = Vector2(680, 190)
+nodes/vertex/34/node = SubResource("VisualShaderNodeFloatOp_vlswh")
+nodes/vertex/34/position = Vector2(-1280, 690)
+nodes/vertex/35/node = SubResource("VisualShaderNodeFloatOp_10pgx")
+nodes/vertex/35/position = Vector2(260, 690)
+nodes/vertex/36/node = SubResource("VisualShaderNodeRandomRange_52hug")
+nodes/vertex/36/position = Vector2(-1870, 320)
+nodes/vertex/connections = PackedInt32Array(2, 0, 3, 0, 10, 0, 12, 0, 21, 0, 0, 0, 12, 0, 22, 0, 4, 0, 23, 0, 3, 0, 24, 0, 3, 1, 21, 1, 24, 0, 21, 0, 22, 0, 23, 1, 30, 0, 28, 0, 23, 0, 33, 0, 33, 0, 24, 1, 29, 0, 32, 0, 29, 0, 34, 1, 26, 0, 34, 0, 35, 0, 33, 1, 34, 0, 35, 0, 32, 0, 35, 1, 29, 0, 30, 1, 3, 1, 4, 0, 36, 0, 30, 0, 36, 0, 28, 1, 28, 0, 12, 1)

@@ -33,6 +33,7 @@ signal trial_time_adjusted(delta_seconds: float)
 
 const ITEM_SPECIAL_TICKET := "special_ticket"
 const ITEM_VOODOO_DOLL := "voodoo_doll"
+const ITEM_CLOCK := "clock"
 const INVENTORY_SLOT_COUNT := 4
 const STATUE_SLOT_COUNT := 8
 const BROKEN_STATUE_COUNT := 2
@@ -250,6 +251,13 @@ func ensure_starting_voodoo_dolls(count: int = 1) -> void:
 	if add_inventory_item(ITEM_VOODOO_DOLL, count):
 		voodoo_doll_supply_seeded = true
 
+func ensure_starting_clock() -> void:
+	has_clock = true
+	has_clock_hands = true
+	clock_hands_inserted = true
+	if not has_inventory_item(ITEM_CLOCK):
+		add_inventory_item(ITEM_CLOCK)
+
 func start_trial(duration_seconds: float = -1.0) -> void:
 	if trial_start:
 		return
@@ -401,8 +409,12 @@ func set_wire_cutter_mode(active: bool) -> void:
 	wire_cutter_mode_changed.emit(active)
 
 func collect_clock() -> void:
+	var first_pickup := not has_clock
 	has_clock = true
-	clock_collected.emit()
+	if not has_inventory_item(ITEM_CLOCK):
+		add_inventory_item(ITEM_CLOCK)
+	if first_pickup:
+		clock_collected.emit()
 
 func collect_clock_hands() -> void:
 	has_clock_hands = true

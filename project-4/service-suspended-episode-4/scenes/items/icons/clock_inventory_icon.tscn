@@ -1,0 +1,13 @@
+[gd_scene format=3 uid="uid://byw3bkhr5vqrl"]
+
+[ext_resource type="Script" uid="uid://bkhmym8gm4qth" path="res://scenes/items/icons/clock_inventory_icon.gd" id="1_script"]
+[ext_resource type="Texture2D" uid="uid://dfhx1a7sf0fej" path="res://assets/ui/clock/icon_hands_inventory.png" id="3_hands"]
+
+[node name="ClockInventoryIcon" type="Node2D" unique_id=27267133]
+script = ExtResource("1_script")
+
+[node name="Base" type="Sprite2D" parent="." unique_id=1609600335]
+texture_filter = 1
+scale = Vector2(0.45, 0.45)
+texture = ExtResource("3_hands")
+offset = Vector2(-1.505188, -2.5031247)

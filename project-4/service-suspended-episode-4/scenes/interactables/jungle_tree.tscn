@@ -1,9 +1,19 @@
-[gd_scene load_steps=2 format=3]
+[gd_scene format=4 uid="uid://cmsm8b5lj64lk"]
 
-[ext_resource type="Script" path="res://scenes/interactables/jungle_tree.gd" id="1_script"]
+[ext_resource type="Script" uid="uid://bebbwlwga17hv" path="res://scenes/interactables/jungle_tree.gd" id="1_script"]
 
-[node name="JungleTree" type="Node2D"]
+[sub_resource type="RectangleShape2D" id="trunk_shape"]
+size = Vector2(24, 14)
+
+[node name="JungleTree" type="Node2D" unique_id=1826955063]
 script = ExtResource("1_script")
 
-[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
-texture_filter = 0
+[node name="StaticBody2D" type="StaticBody2D" parent="." unique_id=210262049]
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D" unique_id=585843242]
+position = Vector2(0, -2)
+shape = SubResource("trunk_shape")
+
+[node name="TreeMesh" type="MeshInstance2D" parent="." unique_id=1352628401]
+texture_filter = 1

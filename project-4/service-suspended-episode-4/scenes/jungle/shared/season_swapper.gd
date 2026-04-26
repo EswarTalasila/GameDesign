@@ -80,6 +80,14 @@ func swap_season(season: String, root: Node = null) -> void:
 	for layer in layers:
 		_swap_layer(layer, mapping, season)
 
+	# Swap tree seasons
+	for tree in _find_all_trees(target):
+		tree.set_season(season)
+
+	# Swap tile animation sources
+	for animator in _find_all_tile_animators(target):
+		animator.swap_source(season)
+
 	_current_season = season
 
 func _swap_layer(layer: TileMapLayer, mapping: Dictionary, season: String) -> void:
@@ -127,4 +135,20 @@ func _find_all_tilemaplayers(node: Node) -> Array[TileMapLayer]:
 		result.append(node)
 	for child in node.get_children():
 		result.append_array(_find_all_tilemaplayers(child))
+	return result
+
+func _find_all_trees(node: Node) -> Array:
+	var result := []
+	if node.has_method("set_season") and node.get_script() and "jungle_tree" in node.get_script().resource_path:
+		result.append(node)
+	for child in node.get_children():
+		result.append_array(_find_all_trees(child))
+	return result
+
+func _find_all_tile_animators(node: Node) -> Array:
+	var result := []
+	if node.has_method("swap_source") and node.get_script() and "tile_animator" in node.get_script().resource_path:
+		result.append(node)
+	for child in node.get_children():
+		result.append_array(_find_all_tile_animators(child))
 	return result

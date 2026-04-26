@@ -25,15 +25,24 @@ class_name JungleSection
 
 ## Season override for standalone testing. Set in inspector before running.
 @export_enum("jungle", "autumn", "winter", "wasteland") var season: String = "jungle"
+## Test helpers used only when running a variant scene directly.
+@export var standalone_spawn_player: bool = true
+@export var standalone_show_game_ui: bool = true
+@export var standalone_tick_trial_timer: bool = false
+## Floor2 can carry painted collision, such as blocking water edge tiles.
+@export var floor2_collision_enabled: bool = true
 
 var _tile_entities: Array = TileEntities.get_table()
 
 # --- Tilemap layers ---
 var _floor_layer: TileMapLayer
 var _floor2: TileMapLayer
+var _floor3: TileMapLayer
+var _floor4: TileMapLayer
 var _bottom_walls: TileMapLayer
 var _top_walls: TileMapLayer
 var _side_walls: TileMapLayer
+var _side_walls2: TileMapLayer
 var _furniture: TileMapLayer
 var _furniture2: TileMapLayer
 var _overhead: TileMapLayer
@@ -57,6 +66,7 @@ func _ready() -> void:
 	_setup_runtime_containers()
 	_setup_collision()
 	_setup_tile_entities()
+	_setup_tile_animations()
 	# Apply season swap (works in both standalone and coordinator modes)
 	if season != "jungle":
 		var swapper = SeasonSwapper.new()
@@ -74,7 +84,15 @@ func _bootstrap_standalone() -> void:
 	GameState.ensure_starting_special_tickets(6)
 	GameState.ensure_starting_voodoo_dolls(1)
 	GameState.ensure_statue_ritual_seeded()
-	# Spawn player at PlayerSpawn marker (or origin)
+	GameState.ensure_starting_clock()
+
+	if standalone_spawn_player:
+		_spawn_standalone_player()
+
+	if standalone_show_game_ui:
+		_spawn_standalone_game_ui()
+
+func _spawn_standalone_player() -> void:
 	var player_scene = preload("res://scenes/player/player.tscn")
 	var player = player_scene.instantiate()
 	var spawn = get_node_or_null("PlayerSpawn")
@@ -89,24 +107,69 @@ func _bootstrap_standalone() -> void:
 		cam.name = "Camera2D"
 		cam.make_current()
 		player.add_child(cam)
-	# Game UI (inventory panel + health bar, project-3 style)
+
+func _spawn_standalone_game_ui() -> void:
 	var game_ui = preload("res://scenes/ui/jungle_game_ui.tscn").instantiate()
 	add_child(game_ui)
 	var inventory_panel: Node = game_ui.get_node_or_null("UILayer/InventoryPanel")
 	if inventory_panel and inventory_panel.has_signal("pause_requested"):
 		inventory_panel.pause_requested.connect(_on_hud_pause_requested)
 
+var _clock_ui: CanvasLayer = null
+
 func _unhandled_input(event: InputEvent) -> void:
 	if not _standalone:
 		return
 	if event.is_action_pressed("ui_cancel"):
+		if _clock_ui:
+			_close_clock()
+			get_viewport().set_input_as_handled()
+			return
 		if _has_blocking_ui_overlay():
 			get_viewport().set_input_as_handled()
 			return
 		_toggle_pause()
+	# Toggle inventory opens/closes clock if player has it
+	if event.is_action_pressed("toggle_inventory") and GameState.has_clock:
+		if _clock_ui:
+			_close_clock()
+		else:
+			_open_clock()
+		get_viewport().set_input_as_handled()
+	# Clicking clock in inventory also opens it
+	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
+		if GameState.selected_inventory_item == GameState.ITEM_CLOCK and not _clock_ui:
+			GameState.toggle_selected_inventory_item(GameState.ITEM_CLOCK)  # deselect
+			_open_clock()
+			get_viewport().set_input_as_handled()
+
+func _open_clock() -> void:
+	if _clock_ui or _paused:
+		return
+	var scene = load("res://scenes/ui/clock_ui.tscn")
+	_clock_ui = scene.instantiate()
+	_clock_ui.clock_closed.connect(_on_clock_closed)
+	_clock_ui.variant_selected.connect(_on_clock_variant_selected)
+	add_child(_clock_ui)
+
+func _close_clock() -> void:
+	if _clock_ui:
+		if _clock_ui.has_method("close"):
+			_clock_ui.close()
+		else:
+			_on_clock_closed()
+
+func _on_clock_closed() -> void:
+	if _clock_ui:
+		_clock_ui.queue_free()
+	_clock_ui = null
+
+func _on_clock_variant_selected(variant: int) -> void:
+	GameState.current_variant = variant
+	_on_clock_closed()
 
 func _process(delta: float) -> void:
-	if _standalone and not _paused:
+	if _standalone and standalone_tick_trial_timer and not _paused:
 		GameState.tick_trial_time(delta)
 
 func _toggle_pause() -> void:
@@ -172,9 +235,12 @@ func _set_hud_pause_state(paused: bool) -> void:
 func _find_layers() -> void:
 	_floor_layer = get_node_or_null("Floor")
 	_floor2 = get_node_or_null("Floor2")
+	_floor3 = get_node_or_null("Floor3")
+	_floor4 = get_node_or_null("Floor4")
 	_bottom_walls = get_node_or_null("BottomWalls")
 	_top_walls = get_node_or_null("TopWalls")
 	_side_walls = get_node_or_null("SideWalls")
+	_side_walls2 = get_node_or_null("SideWalls2")
 	_furniture = get_node_or_null("Furniture")
 	_furniture2 = get_node_or_null("Furniture2")
 	_overhead = get_node_or_null("Overhead")
@@ -190,7 +256,15 @@ func _setup_layers() -> void:
 
 	if _floor2:
 		_floor2.z_index = -1
-		_floor2.collision_enabled = false
+		_floor2.collision_enabled = floor2_collision_enabled
+
+	if _floor3:
+		_floor3.z_index = -1
+		_floor3.collision_enabled = false
+
+	if _floor4:
+		_floor4.z_index = -1
+		_floor4.collision_enabled = false
 
 	if _bottom_walls:
 		_bottom_walls.collision_enabled = false
@@ -201,6 +275,9 @@ func _setup_layers() -> void:
 
 	if _side_walls:
 		_side_walls.collision_enabled = false
+
+	if _side_walls2:
+		_side_walls2.collision_enabled = false
 
 	if _furniture:
 		_furniture.y_sort_enabled = true
@@ -245,8 +322,13 @@ func _setup_runtime_containers() -> void:
 func _setup_collision() -> void:
 	_generate_collision(_bottom_walls)
 	_generate_collision(_side_walls)
+	_generate_collision(_side_walls2)
 	_generate_collision(_furniture)
 	_generate_collision(_furniture2)
+
+## Animation source IDs — tiles from these sources skip collision
+## (flowers/grass don't need it; torches get their own from tile_animator)
+const _ANIMS_SKIP_COLLISION := [3, 8]
 
 func _generate_collision(layer: TileMapLayer) -> void:
 	if layer == null:
@@ -265,6 +347,10 @@ func _generate_collision(layer: TileMapLayer) -> void:
 	body.global_position = layer.global_position
 
 	for cell in used_cells:
+		# Skip animated tiles — they handle their own collision
+		var src = layer.get_cell_source_id(cell)
+		if src in _ANIMS_SKIP_COLLISION:
+			continue
 		var pos = layer.map_to_local(cell)
 		var col = CollisionShape2D.new()
 		var shape = RectangleShape2D.new()
@@ -350,6 +436,17 @@ func _setup_tile_entities() -> void:
 
 		if count > 0:
 			print(entry.scene.resource_path.get_file(), " spawned: ", count)
+
+# ── Tile animations (flowers, torches, grass, glowing stones) ──
+
+func _setup_tile_animations() -> void:
+	var animator_script = load("res://scenes/jungle/shared/tile_animator.gd")
+	if not animator_script:
+		return
+	var animator = Node.new()
+	animator.name = "TileAnimator"
+	animator.set_script(animator_script)
+	add_child(animator)
 
 # ── Accessors ──
 

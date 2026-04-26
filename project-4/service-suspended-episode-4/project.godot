@@ -31,7 +31,7 @@ window/stretch/mode="canvas_items"
 
 [editor_plugins]
 
-enabled=PackedStringArray("res://addons/dialogue_manager/plugin.cfg", "res://addons/gdai-mcp-plugin-godot/plugin.cfg")
+enabled=PackedStringArray("res://addons/dialogue_manager/plugin.cfg", "res://addons/gdai-mcp-plugin-godot/plugin.cfg", "res://addons/tile_transform/plugin.cfg")
 
 [input]
 

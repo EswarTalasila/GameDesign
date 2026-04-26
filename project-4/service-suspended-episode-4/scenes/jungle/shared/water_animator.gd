@@ -68,7 +68,6 @@ func _ready() -> void:
 
 func _scan_water_cells() -> void:
 	_water_cells.clear()
-	var origin = FRAME_ORIGINS[0]
 
 	# Scan for water tiles from ANY water source
 	for cell in _tilemap.get_used_cells():

@@ -8,7 +8,8 @@ extends Node2D
 ##   - direction: which way the statue faces (updates texture live)
 ##   - fire_behind: whether flame renders behind or in front of statue
 ##   - statue_id: 1-8 for physical statue slot assignment
-##   - Fire child: right-click instance → Editable Children → move Fire node
+##   - auto_position_fire: keep the flame at the default directional offset
+##   - Fire child: disable auto_position_fire first if you want to place it manually
 ##
 ## Structure:
 ##   Statue (this node)
@@ -21,6 +22,16 @@ const BROKEN_SPRITE_PATH = "res://assets/sprites/statue/statue_broken_%s.png"
 const GEM_PATH = "res://assets/sprites/statue/statue_gem_%d.png"
 const GEM_FRAME_COUNT = 8
 const STATUE_UI_SCENE = preload("res://scenes/ui/statue_ui.tscn")
+const FIRE_ANCHOR_NAMES := {
+	"front": "Front",
+	"front_left": "FrontLeft",
+	"left": "Left",
+	"back_left": "BackLeft",
+	"back": "Back",
+	"back_right": "BackRight",
+	"right": "Right",
+	"front_right": "FrontRight",
+}
 
 @export_enum("front", "front_right", "right", "back_right",
 	"back", "back_left", "left", "front_left")
@@ -28,6 +39,8 @@ var direction: String = "front":
 	set(value):
 		direction = value
 		_update_texture()
+		if auto_position_fire:
+			_apply_fire_position()
 		if auto_layer_fire:
 			_auto_fire_layer()
 
@@ -44,6 +57,13 @@ var direction: String = "front":
 		auto_layer_fire = value
 		if auto_layer_fire:
 			_auto_fire_layer()
+
+## Automatically restore the directional fire placement used by the variant scenes.
+@export var auto_position_fire: bool = true:
+	set(value):
+		auto_position_fire = value
+		if auto_position_fire:
+			_apply_fire_position()
 
 ## Whether fire is lit. Toggle in inspector or call light_fire() / extinguish_fire().
 @export var fire_lit: bool = true:
@@ -96,6 +116,8 @@ func _ready() -> void:
 		_apply_broken_state()
 	else:
 		_apply_assigned_fire_color()
+	if auto_position_fire:
+		_apply_fire_position()
 	if auto_layer_fire:
 		_auto_fire_layer()
 	else:
@@ -159,11 +181,24 @@ func _update_fire_layer() -> void:
 	_fire.show_behind_parent = fire_behind
 	_fire.z_index = 0 if fire_behind else 1
 
+func _apply_fire_position() -> void:
+	if not _fire:
+		_fire = get_node_or_null("Fire")
+	if not _fire:
+		return
+	var anchor := _get_fire_anchor(direction)
+	if anchor:
+		_fire.position = anchor.position
+
 func _auto_fire_layer() -> void:
 	## Front-facing directions: statue is "closer" so fire goes behind.
 	## Back-facing directions: statue faces away so fire shows in front.
 	var behind_directions = ["front", "front_right", "front_left"]
 	fire_behind = direction in behind_directions
+
+func _get_fire_anchor(dir: String) -> Node2D:
+	var anchor_name: String = FIRE_ANCHOR_NAMES.get(dir, FIRE_ANCHOR_NAMES["front"])
+	return get_node_or_null("FireAnchors/%s" % anchor_name) as Node2D
 
 func _setup_gem_animation() -> void:
 	if not _gem_sprite:

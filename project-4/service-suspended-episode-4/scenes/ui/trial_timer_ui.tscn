@@ -9,7 +9,7 @@ layer = 11
 script = ExtResource("1_script")
 
 [node name="TimerAnchor" type="Node2D" parent="." unique_id=1649223812]
-position = Vector2(960, 28)
+position = Vector2(960, 40)
 scale = Vector2(4, 4)
 
 [node name="Base" type="Sprite2D" parent="TimerAnchor" unique_id=68266378]

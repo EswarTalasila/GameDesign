@@ -10,6 +10,7 @@ const COUNT_Z_INDEX := 100
 const COUNTER_DIGITS_SCENE := preload("res://scenes/ui/counter_digits.tscn")
 const SPECIAL_TICKET_ICON_SCENE := preload("res://scenes/items/icons/special_ticket_inventory_icon.tscn")
 const VOODOO_ICON_SCENE := preload("res://scenes/items/icons/voodoo_doll_inventory_icon.tscn")
+const CLOCK_ICON_SCENE := preload("res://scenes/items/icons/clock_inventory_icon.tscn")
 const PAUSE_NORMAL := preload("res://assets/ui/buttons/play_pause/pause_normal.png")
 const PAUSE_PRESSED := preload("res://assets/ui/buttons/play_pause/pause_pressed.png")
 const PLAY_NORMAL := preload("res://assets/ui/buttons/play_pause/play_normal.png")
@@ -19,6 +20,7 @@ var _slot_icon_roots: Dictionary[Node2D, Node2D] = {}
 var _slot_base_scales: Dictionary[Node2D, Vector2] = {}
 var _slot_special_icons: Dictionary[Node2D, Node2D] = {}
 var _slot_voodoo_icons: Dictionary[Node2D, Node2D] = {}
+var _slot_clock_icons: Dictionary[Node2D, Node2D] = {}
 var _ritual_focus_active: bool = false
 var _ritual_focus_item: String = ""
 var _pulse_tween: Tween = null
@@ -82,21 +84,16 @@ func _configure_slot(slot: Node2D) -> void:
 	_slot_base_scales[slot] = icon_root.scale
 	_slot_special_icons[slot] = _get_or_create_scene_icon(slot, "SpecialTicketInventoryIcon", SPECIAL_TICKET_ICON_SCENE)
 	_slot_voodoo_icons[slot] = _get_or_create_scene_icon(slot, "VoodooDollInventoryIcon", VOODOO_ICON_SCENE)
+	_slot_clock_icons[slot] = _get_or_create_scene_icon(slot, "ClockInventoryIcon", CLOCK_ICON_SCENE)
 
 func _refresh() -> void:
 	var slots: Array[Node2D] = _get_slots()
 	for i in range(slots.size()):
 		var slot: Node2D = slots[i]
 		var item_id: String = GameState.get_inventory_slot_item(i)
-		if item_id == GameState.ITEM_SPECIAL_TICKET:
-			_set_slot_scene_icon_visible(_slot_special_icons, slot, true)
-			_set_slot_scene_icon_visible(_slot_voodoo_icons, slot, false)
-		elif item_id == GameState.ITEM_VOODOO_DOLL:
-			_set_slot_scene_icon_visible(_slot_special_icons, slot, false)
-			_set_slot_scene_icon_visible(_slot_voodoo_icons, slot, true)
-		else:
-			_set_slot_scene_icon_visible(_slot_special_icons, slot, false)
-			_set_slot_scene_icon_visible(_slot_voodoo_icons, slot, false)
+		_set_slot_scene_icon_visible(_slot_special_icons, slot, item_id == GameState.ITEM_SPECIAL_TICKET)
+		_set_slot_scene_icon_visible(_slot_voodoo_icons, slot, item_id == GameState.ITEM_VOODOO_DOLL)
+		_set_slot_scene_icon_visible(_slot_clock_icons, slot, item_id == GameState.ITEM_CLOCK)
 		_update_count_sprite(slot, item_id)
 	_update_slot_visuals()
 
@@ -251,6 +248,9 @@ func _get_visible_slot_scene_icon(slot: Node2D) -> Node2D:
 	var voodoo_icon: Node2D = _slot_voodoo_icons.get(slot) as Node2D
 	if voodoo_icon != null and voodoo_icon.visible:
 		return voodoo_icon
+	var clock_icon: Node2D = _slot_clock_icons.get(slot) as Node2D
+	if clock_icon != null and clock_icon.visible:
+		return clock_icon
 	return null
 
 func _has_visible_item(slot: Node2D) -> bool:

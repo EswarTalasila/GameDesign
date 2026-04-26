@@ -51,6 +51,7 @@ var _clock_running: bool = false
 var _paused: bool = false
 var _pause_menu: CanvasLayer = null
 var _death_screen: CanvasLayer = null
+var _clock_ui: CanvasLayer = null
 
 # ── Signals ──
 signal variant_changed(variant_index: int)
@@ -63,6 +64,7 @@ func _ready() -> void:
 	GameState.ensure_starting_special_tickets(6)
 	GameState.ensure_starting_voodoo_dolls(1)
 	GameState.ensure_statue_ritual_seeded()
+	GameState.ensure_starting_clock()
 	_season_swapper = SeasonSwapper.new()
 	add_child(_season_swapper)
 	_clock_remaining = clock_duration
@@ -85,10 +87,20 @@ func _process(delta: float) -> void:
 
 func _unhandled_input(event: InputEvent) -> void:
 	if event.is_action_pressed("ui_cancel"):
+		if _clock_ui:
+			_close_clock()
+			get_viewport().set_input_as_handled()
+			return
 		if _has_blocking_ui_overlay():
 			get_viewport().set_input_as_handled()
 			return
 		_toggle_pause()
+	if event.is_action_pressed("toggle_inventory") and GameState.has_clock:
+		if _clock_ui:
+			_close_clock()
+		else:
+			_open_clock()
+		get_viewport().set_input_as_handled()
 
 # ── Variant loading ──
 
@@ -125,6 +137,7 @@ func _load_variant(index: int) -> void:
 	_attach_player_to_active_section()
 
 	variant_changed.emit(index)
+	GameState.current_variant = index + 1
 
 func _detach_player_from_active_section() -> void:
 	if not player:
@@ -170,6 +183,8 @@ func set_season(new_season: String) -> void:
 		var effective = new_season if new_season != "auto" else "jungle"
 		_active_section.season = effective
 		_season_swapper.swap_season(effective, _active_section)
+		if _active_section.has_method("refresh_weather"):
+			_active_section.refresh_weather()
 
 # ── Clock / fire of time ──
 
@@ -196,6 +211,8 @@ func _setup_pause() -> void:
 		inventory_panel.pause_requested.connect(_on_hud_pause_requested)
 
 func _has_blocking_ui_overlay() -> bool:
+	if _clock_ui:
+		return true
 	for group in ["statue_ui_overlay", "campfire_ui_overlay", "boon_ui_overlay"]:
 		for node in get_tree().get_nodes_in_group(group):
 			if node.has_method("is_blocking_pause") and node.is_blocking_pause():
@@ -257,6 +274,39 @@ func _set_hud_pause_state(paused: bool) -> void:
 func _connect_signals() -> void:
 	if not GameState.player_died.is_connected(_on_player_died):
 		GameState.player_died.connect(_on_player_died)
+	if not GameState.inventory_selection_changed.is_connected(_on_inventory_selection_changed):
+		GameState.inventory_selection_changed.connect(_on_inventory_selection_changed)
+
+func _on_inventory_selection_changed(item_id: String) -> void:
+	if item_id != GameState.ITEM_CLOCK:
+		return
+	GameState.clear_selected_inventory_item()
+	_open_clock()
+
+func _open_clock() -> void:
+	if _clock_ui or _paused:
+		return
+	var scene: PackedScene = load("res://scenes/ui/clock_ui.tscn")
+	_clock_ui = scene.instantiate()
+	_clock_ui.clock_closed.connect(_on_clock_closed)
+	_clock_ui.variant_selected.connect(_on_clock_variant_selected)
+	add_child(_clock_ui)
+
+func _close_clock() -> void:
+	if _clock_ui:
+		if _clock_ui.has_method("close"):
+			_clock_ui.close()
+		else:
+			_on_clock_closed()
+
+func _on_clock_closed() -> void:
+	if _clock_ui:
+		_clock_ui.queue_free()
+	_clock_ui = null
+
+func _on_clock_variant_selected(variant: int) -> void:
+	switch_variant(variant - 1)
+	_on_clock_closed()
 
 func _on_player_died() -> void:
 	_clock_running = false
