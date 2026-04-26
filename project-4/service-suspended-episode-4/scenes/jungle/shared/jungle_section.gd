@@ -29,10 +29,14 @@ class_name JungleSection
 @export var standalone_spawn_player: bool = true
 @export var standalone_show_game_ui: bool = true
 @export var standalone_tick_trial_timer: bool = false
+@export var standalone_trial_duration: float = 15.0
 ## Floor2 can carry painted collision, such as blocking water edge tiles.
 @export var floor2_collision_enabled: bool = true
 
 var _tile_entities: Array = TileEntities.get_table()
+var _ghost_death_scene := preload("res://scenes/ui/ghost_hands_death.tscn")
+var _death_screen_scene := preload("res://scenes/ui/death_screen.tscn")
+var _loading_screen_scene := preload("res://scenes/ui/loading_screen.tscn")
 
 # --- Tilemap layers ---
 var _floor_layer: TileMapLayer
@@ -58,6 +62,8 @@ var _traps: Node2D
 var _standalone: bool = false
 var _paused: bool = false
 var _pause_menu: CanvasLayer = null
+var _standalone_player = null
+var _standalone_death_screen = null
 
 func _ready() -> void:
 	y_sort_enabled = true
@@ -81,16 +87,25 @@ func _bootstrap_standalone() -> void:
 	_standalone = true
 	# Reset cursor to default (project-3 scene-based cursor)
 	CustomCursor.reset_cursor()
+	GameState.reset_health()
 	GameState.ensure_starting_special_tickets(6)
 	GameState.ensure_starting_voodoo_dolls(1)
+	GameState.ensure_starting_wood(5)
 	GameState.ensure_statue_ritual_seeded()
 	GameState.ensure_starting_clock()
+	if standalone_tick_trial_timer:
+		GameState.trial_start = false
+		GameState.trial_time_remaining = 0.0
+		GameState.start_trial(standalone_trial_duration)
 
 	if standalone_spawn_player:
 		_spawn_standalone_player()
 
 	if standalone_show_game_ui:
 		_spawn_standalone_game_ui()
+
+	if not GameState.player_died.is_connected(_on_standalone_player_died):
+		GameState.player_died.connect(_on_standalone_player_died)
 
 func _spawn_standalone_player() -> void:
 	var player_scene = preload("res://scenes/player/player.tscn")
@@ -101,6 +116,7 @@ func _spawn_standalone_player() -> void:
 	else:
 		player.position = Vector2(100, 100)
 	add_child(player)
+	_standalone_player = player
 	# Add a camera to the player if it doesn't have one
 	if not player.get_node_or_null("Camera2D"):
 		var cam = Camera2D.new()
@@ -119,6 +135,9 @@ var _clock_ui: CanvasLayer = null
 
 func _unhandled_input(event: InputEvent) -> void:
 	if not _standalone:
+		return
+	if _ghost_death_active:
+		get_viewport().set_input_as_handled()
 		return
 	if event.is_action_pressed("ui_cancel"):
 		if _clock_ui:
@@ -168,9 +187,76 @@ func _on_clock_variant_selected(variant: int) -> void:
 	GameState.current_variant = variant
 	_on_clock_closed()
 
+var _ghost_death_active: bool = false
+
 func _process(delta: float) -> void:
-	if _standalone and standalone_tick_trial_timer and not _paused:
-		GameState.tick_trial_time(delta)
+	if _standalone and not _paused:
+		if standalone_tick_trial_timer:
+			GameState.tick_trial_time(delta)
+		GameState.tick_campfire(delta)
+		if GameState.trial_time_remaining <= 0.0 and GameState.trial_start:
+			trigger_ghost_death_preview()
+
+func start_ghost_death_sequence(player: CharacterBody2D) -> bool:
+	if _ghost_death_active or not is_instance_valid(player):
+		return false
+	_ghost_death_active = true
+	var ghost_death = _ghost_death_scene.instantiate()
+	add_child(ghost_death)
+	ghost_death.start(player)
+	return true
+
+func trigger_ghost_death_preview() -> bool:
+	return start_ghost_death_sequence(_find_section_player())
+
+func get_section_player() -> CharacterBody2D:
+	return _find_section_player()
+
+func _find_section_player() -> CharacterBody2D:
+	if is_instance_valid(_standalone_player) and _standalone_player is CharacterBody2D:
+		return _standalone_player
+	for child in get_children():
+		if child is CharacterBody2D:
+			return child
+	return null
+
+func _on_standalone_player_died() -> void:
+	if not _standalone or _standalone_death_screen:
+		return
+	var player := _find_section_player()
+	if is_instance_valid(player):
+		player.visible = false
+		player.collision_layer = 0
+		player.collision_mask = 0
+	var death_screen = _death_screen_scene.instantiate()
+	_standalone_death_screen = death_screen
+	add_child(death_screen)
+	death_screen.reload_requested.connect(_on_standalone_death_reload.bind(death_screen))
+	if death_screen.has_signal("exit_requested"):
+		death_screen.exit_requested.connect(_on_standalone_death_exit.bind(death_screen))
+
+func _on_standalone_death_reload(death_screen: CanvasLayer) -> void:
+	if death_screen:
+		death_screen.queue_free()
+	_standalone_death_screen = null
+	_paused = false
+	get_tree().paused = false
+	GameState.reset()
+	_transition_with_loading(get_tree().current_scene.scene_file_path)
+
+func _on_standalone_death_exit(death_screen: CanvasLayer) -> void:
+	if death_screen:
+		death_screen.queue_free()
+	_standalone_death_screen = null
+	_paused = false
+	get_tree().paused = false
+	GameState.reset()
+	get_tree().change_scene_to_file("res://scenes/ui/main_menu.tscn")
+
+func _transition_with_loading(scene_path: String) -> void:
+	var loading_screen = _loading_screen_scene.instantiate()
+	get_tree().root.add_child(loading_screen)
+	loading_screen.transition_to(scene_path)
 
 func _toggle_pause() -> void:
 	if _paused:
@@ -185,7 +271,7 @@ func _on_hud_pause_requested() -> void:
 		_pause()
 
 func _has_blocking_ui_overlay() -> bool:
-	for group in ["statue_ui_overlay", "campfire_ui_overlay", "boon_ui_overlay"]:
+	for group in ["statue_ui_overlay", "campfire_ui_overlay", "campfire_relight_ui_overlay", "boon_ui_overlay"]:
 		for node in get_tree().get_nodes_in_group(group):
 			if node.has_method("is_blocking_pause") and node.is_blocking_pause():
 				return true

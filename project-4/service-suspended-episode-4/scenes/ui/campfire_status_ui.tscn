@@ -1,0 +1,20 @@
+[gd_scene format=3 uid="uid://dnjdapcwcvcoa"]
+
+[ext_resource type="Script" uid="uid://cmlopscpm1p2w" path="res://scenes/ui/campfire_status_ui.gd" id="1_script"]
+[ext_resource type="Texture2D" uid="uid://rjd82y0uorha" path="res://assets/sprites/ui/campfire_status/campfire_status_sheet.png" id="2_sheet"]
+[ext_resource type="PackedScene" uid="uid://bq4keu3laopew" path="res://scenes/interactables/fire.tscn" id="3_fire"]
+
+[node name="CampfireStatusUI" type="Node2D" unique_id=1430105023]
+script = ExtResource("1_script")
+
+[node name="StatusSprite" type="Sprite2D" parent="." unique_id=1787439394]
+texture_filter = 1
+position = Vector2(0.38549805, 0)
+texture = ExtResource("2_sheet")
+centered = false
+hframes = 11
+
+[node name="Fire" parent="." unique_id=2036400011 instance=ExtResource("3_fire")]
+position = Vector2(42.84967, 33.27118)
+scale = Vector2(1.75, 1.75)
+fire_variation = 5

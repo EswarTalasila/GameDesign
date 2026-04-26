@@ -1,0 +1,23 @@
+[gd_resource type="SpriteFrames" format=3]
+
+[ext_resource type="Texture2D" path="res://assets/sprites/ghost_hands/hand_open.png" id="1_open"]
+[ext_resource type="Texture2D" path="res://assets/sprites/ghost_hands/hand_grab.png" id="2_grab"]
+
+[resource]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("1_open")
+}],
+"loop": false,
+"name": &"open",
+"speed": 1.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("2_grab")
+}],
+"loop": false,
+"name": &"grab",
+"speed": 1.0
+}]

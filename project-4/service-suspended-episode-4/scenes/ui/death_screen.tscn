@@ -67,9 +67,3 @@ scale = Vector2(4, 4)
 sprite_frames = SubResource("SpriteFrames_1")
 animation = &"death"
 autoplay = "death"
-
-[node name="ReloadButton" type="TextureButton" parent="." unique_id=1228282763]
-visible = false
-
-[node name="RespawnButton" type="TextureButton" parent="." unique_id=1423519984]
-visible = false

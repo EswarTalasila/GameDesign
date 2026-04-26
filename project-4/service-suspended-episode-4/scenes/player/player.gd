@@ -30,10 +30,13 @@ const _dir_vectors = {
 	"south_east": Vector2(0.707, 0.707), "south_west": Vector2(-0.707, 0.707),
 }
 
+var _attack_hit_bodies: Array = []
+
 func _ready() -> void:
 	animated_sprite.animation_finished.connect(_on_animation_finished)
 	_hitbox.monitoring = false
 	_hitbox.monitorable = false
+	_hitbox.body_entered.connect(_on_attack_body_entered)
 	if vision_overlay_enabled:
 		_setup_vision_overlay()
 	GameState.conductor_watching_changed.connect(_on_conductor_watching_changed)
@@ -185,10 +188,22 @@ func _unhandled_input(event: InputEvent) -> void:
 
 func _start_attack() -> void:
 	_attacking = true
+	_attack_hit_bodies.clear()
 	velocity = Vector2.ZERO
 	_hitbox.monitoring = true
 	_update_hitbox_position()
 	_play_animation("attack_" + last_direction, true)
+
+func _on_attack_body_entered(body: Node2D) -> void:
+	if not _attacking:
+		return
+	if body in _attack_hit_bodies:
+		return
+	_attack_hit_bodies.append(body)
+	if body.has_method("take_damage"):
+		body.take_damage(attack_damage)
+	elif body.get_parent() and body.get_parent().has_method("take_damage"):
+		body.get_parent().take_damage(attack_damage)
 
 func _update_hitbox_position() -> void:
 	var offsets = {
@@ -200,6 +215,24 @@ func _update_hitbox_position() -> void:
 	# The sprite renders 12 px above the player root, so keep the attack collider
 	# aligned with the visible hands/body instead of the old centered art position.
 	$AttackHitBox/CollisionShape2D.position = offsets.get(last_direction, Vector2(0, 12)) + Vector2(0, -12)
+
+func set_preview_direction(direction_name: String) -> void:
+	if not _dir_vectors.has(direction_name):
+		return
+	direction = Vector2.ZERO
+	velocity = Vector2.ZERO
+	last_direction = direction_name
+	_play_animation("idle_" + last_direction, true)
+
+func hold_current_animation_last_frame() -> void:
+	if animated_sprite == null or animated_sprite.sprite_frames == null:
+		return
+	var frame_count := animated_sprite.sprite_frames.get_frame_count(animated_sprite.animation)
+	if frame_count <= 0:
+		return
+	animated_sprite.stop()
+	animated_sprite.frame = frame_count - 1
+	animated_sprite.frame_progress = 0.0
 
 func pickup(item_id: String, amount: int = 1) -> bool:
 	return GameState.pickup_inventory_item(item_id, amount)
@@ -296,9 +329,7 @@ func _start_iframes() -> void:
 func _on_animation_finished() -> void:
 	if _attacking:
 		_attacking = false
-		for body in _hitbox.get_overlapping_bodies():
-			if body.has_method("take_damage"):
-				body.take_damage(attack_damage)
+		_attack_hit_bodies.clear()
 		_hitbox.monitoring = false
 	if _hit_stunned:
 		_hit_stunned = false

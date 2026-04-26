@@ -27,13 +27,17 @@ signal map_assembled_signal
 signal inventory_changed
 signal inventory_selection_changed(item_id: String)
 signal ritual_focus_changed(active: bool, item_id: String)
+signal ritual_focus_items_changed(items)
 signal trial_started
 signal trial_time_changed(remaining_seconds: float)
 signal trial_time_adjusted(delta_seconds: float)
+signal campfire_state_changed(lit: bool)
+signal campfire_burn_changed(remaining_seconds: float, duration_seconds: float)
 
 const ITEM_SPECIAL_TICKET := "special_ticket"
 const ITEM_VOODOO_DOLL := "voodoo_doll"
 const ITEM_CLOCK := "clock"
+const ITEM_WOOD := "wood"
 const INVENTORY_SLOT_COUNT := 4
 const STATUE_SLOT_COUNT := 8
 const BROKEN_STATUE_COUNT := 2
@@ -59,8 +63,10 @@ var inventory_slots: Array[String] = ["", "", "", ""]
 var inventory_counts: Dictionary = {}
 var selected_inventory_item: String = ""
 var ritual_focus_item: String = ""
+var ritual_focus_items: Array[String] = []
 var special_ticket_supply_seeded: bool = false
 var voodoo_doll_supply_seeded: bool = false
+var wood_supply_seeded: bool = false
 var statue_colors_by_id: Dictionary = {}
 var broken_statue_ids: Array[int] = []
 var statue_offering_order: Array[int] = []
@@ -83,6 +89,10 @@ var campfire_intro_played: bool = false
 var trial_start: bool = false
 var trial_time_remaining: float = 0.0
 var trial_time_limit: float = 120.0
+var campfire_status_active: bool = false
+var campfire_lit: bool = false
+var campfire_burn_remaining: float = 0.0
+var campfire_burn_duration: float = 60.0
 
 # Dialogue replay flags — tracks whether NPC dialogue has been heard
 var lady_section_1_heard: bool = false
@@ -251,6 +261,12 @@ func ensure_starting_voodoo_dolls(count: int = 1) -> void:
 	if add_inventory_item(ITEM_VOODOO_DOLL, count):
 		voodoo_doll_supply_seeded = true
 
+func ensure_starting_wood(count: int = 5) -> void:
+	if wood_supply_seeded:
+		return
+	if add_inventory_item(ITEM_WOOD, count):
+		wood_supply_seeded = true
+
 func ensure_starting_clock() -> void:
 	has_clock = true
 	has_clock_hands = true
@@ -279,6 +295,42 @@ func adjust_trial_time(delta_seconds: float) -> void:
 	trial_time_adjusted.emit(delta_seconds)
 	trial_time_changed.emit(trial_time_remaining)
 
+func configure_campfire(duration_seconds: float) -> void:
+	if duration_seconds > 0.0:
+		campfire_burn_duration = duration_seconds
+		if campfire_burn_remaining > campfire_burn_duration:
+			campfire_burn_remaining = campfire_burn_duration
+	campfire_burn_changed.emit(campfire_burn_remaining, campfire_burn_duration)
+
+func ignite_campfire(duration_seconds: float = -1.0) -> void:
+	if duration_seconds > 0.0:
+		campfire_burn_duration = duration_seconds
+	var refill_to := campfire_burn_duration if duration_seconds <= 0.0 else duration_seconds
+	campfire_burn_remaining = max(0.0, refill_to)
+	campfire_status_active = true
+	var changed := not campfire_lit
+	campfire_lit = true
+	if changed:
+		campfire_state_changed.emit(true)
+	campfire_burn_changed.emit(campfire_burn_remaining, campfire_burn_duration)
+
+func extinguish_campfire() -> void:
+	campfire_burn_remaining = 0.0
+	var changed := campfire_lit
+	campfire_lit = false
+	if changed:
+		campfire_state_changed.emit(false)
+	campfire_burn_changed.emit(campfire_burn_remaining, campfire_burn_duration)
+
+func tick_campfire(delta: float) -> void:
+	if not campfire_lit or campfire_burn_remaining <= 0.0:
+		return
+	campfire_burn_remaining = max(0.0, campfire_burn_remaining - delta)
+	if campfire_burn_remaining <= 0.0:
+		extinguish_campfire()
+	else:
+		campfire_burn_changed.emit(campfire_burn_remaining, campfire_burn_duration)
+
 func set_selected_inventory_item(item_id: String) -> void:
 	if item_id.is_empty():
 		clear_selected_inventory_item()
@@ -304,14 +356,29 @@ func toggle_selected_inventory_item(item_id: String) -> void:
 		set_selected_inventory_item(item_id)
 
 func set_ritual_focus_item(item_id: String) -> void:
-	ritual_focus_item = item_id
-	ritual_focus_changed.emit(not item_id.is_empty(), item_id)
+	set_ritual_focus_items([item_id])
 
 func clear_ritual_focus_item() -> void:
-	if ritual_focus_item.is_empty():
+	clear_ritual_focus_items()
+
+func set_ritual_focus_items(item_ids: Array[String]) -> void:
+	var filtered: Array[String] = []
+	for item_id: String in item_ids:
+		if item_id.is_empty() or filtered.has(item_id):
+			continue
+		filtered.append(item_id)
+	ritual_focus_items = filtered
+	ritual_focus_item = ritual_focus_items[0] if not ritual_focus_items.is_empty() else ""
+	ritual_focus_changed.emit(not ritual_focus_item.is_empty(), ritual_focus_item)
+	ritual_focus_items_changed.emit(ritual_focus_items.duplicate())
+
+func clear_ritual_focus_items() -> void:
+	if ritual_focus_items.is_empty() and ritual_focus_item.is_empty():
 		return
 	ritual_focus_item = ""
+	ritual_focus_items.clear()
 	ritual_focus_changed.emit(false, "")
+	ritual_focus_items_changed.emit([])
 
 func ensure_statue_ritual_seeded() -> void:
 	if statue_ritual_seeded:
@@ -542,16 +609,26 @@ func reset() -> void:
 	inventory_counts.clear()
 	selected_inventory_item = ""
 	ritual_focus_item = ""
+	ritual_focus_items.clear()
 	special_ticket_supply_seeded = false
 	voodoo_doll_supply_seeded = false
+	wood_supply_seeded = false
+	intro_played = false
 	campfire_intro_played = false
 	trial_start = false
 	trial_time_remaining = 0.0
+	campfire_status_active = false
+	campfire_lit = false
+	campfire_burn_remaining = 0.0
+	campfire_burn_duration = 60.0
 	statue_colors_by_id.clear()
 	broken_statue_ids.clear()
 	statue_offering_order.clear()
 	statue_order_progress = 0
 	statue_ritual_seeded = false
+	reset_health()
+	campfire_state_changed.emit(campfire_lit)
+	campfire_burn_changed.emit(campfire_burn_remaining, campfire_burn_duration)
 	_apply_inventory_cursor()
 	_init_section_variants()
 
@@ -578,5 +655,7 @@ func _apply_inventory_cursor() -> void:
 		CustomCursor.set_cursor_scene(preload("res://scenes/items/cursors/special_ticket_cursor.tscn"))
 	elif selected_inventory_item == ITEM_VOODOO_DOLL:
 		CustomCursor.set_cursor_scene(preload("res://scenes/items/cursors/voodoo_doll_cursor.tscn"))
+	elif selected_inventory_item == ITEM_WOOD:
+		CustomCursor.set_cursor_scene(preload("res://scenes/items/cursors/wood_cursor.tscn"))
 	else:
 		CustomCursor.reset_cursor()

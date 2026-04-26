@@ -1,0 +1,13 @@
+[gd_scene format=3 uid="uid://c3e5h2vbj825j"]
+
+[ext_resource type="Script" uid="uid://j2ugj83lqfs" path="res://scenes/items/icons/wood_inventory_icon.gd" id="1_script"]
+[ext_resource type="Texture2D" uid="uid://dba4q3yaxr67h" path="res://assets/items/icons/wood/inventory_icon.png" id="2_icon"]
+
+[node name="WoodInventoryIcon" type="Node2D" unique_id=539697775]
+scale = Vector2(0.72, 0.72)
+script = ExtResource("1_script")
+
+[node name="Base" type="Sprite2D" parent="." unique_id=135687395]
+texture_filter = 1
+scale = Vector2(0.75, 0.75)
+texture = ExtResource("2_icon")

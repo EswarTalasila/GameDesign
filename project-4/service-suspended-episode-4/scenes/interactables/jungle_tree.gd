@@ -49,6 +49,10 @@ extends Node2D
 		sway_canopy_bottom = value
 		_queue_material_refresh()
 
+@export_range(1, 9, 1) var wood_per_hit: int = 1
+@export var wood_drop_offset: Vector2 = Vector2(0, 10)
+@export var wood_drop_spread: Vector2 = Vector2(8, 4)
+
 const TREE_W := 64.0
 const TREE_H := 80.0
 const TREE_HALF_W := TREE_W * 0.5
@@ -56,6 +60,7 @@ const TREE_TOP_Y := -70.0
 const TREE_BOTTOM_Y := TREE_TOP_Y + TREE_H
 const MESH_ROW_COUNT := 12
 const TREE_MATERIAL := preload("res://assets/shaders/tree_shader.tres")
+const WOOD_PICKUP_SCENE := preload("res://scenes/pickups/wood_pickup.tscn")
 
 const SEASON_PATH := {
 	"jungle": "res://assets/tilesets/jungle/godot/RA_Jungle.png",
@@ -264,3 +269,27 @@ func _update_visual() -> void:
 
 func set_season(new_season: String) -> void:
 	season = new_season
+
+func take_damage(_amount: int = 1) -> void:
+	if Engine.is_editor_hint():
+		return
+	_spawn_wood_pickup()
+
+func _spawn_wood_pickup() -> void:
+	if WOOD_PICKUP_SCENE == null:
+		return
+	var wood_pickup := WOOD_PICKUP_SCENE.instantiate()
+	if wood_pickup == null:
+		return
+	wood_pickup.set("amount", wood_per_hit)
+	var parent := get_parent()
+	if parent == null:
+		parent = get_tree().current_scene
+	if parent == null:
+		return
+	parent.add_child(wood_pickup)
+	var random_offset := Vector2(
+		randf_range(-wood_drop_spread.x, wood_drop_spread.x),
+		randf_range(-wood_drop_spread.y, wood_drop_spread.y)
+	)
+	wood_pickup.global_position = global_position + wood_drop_offset + random_offset

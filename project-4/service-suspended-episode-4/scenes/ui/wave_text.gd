@@ -21,6 +21,26 @@ extends Control
 		letter_spacing = value
 		_rebuild()
 
+@export var font_color: Color = Color.WHITE:
+	set(value):
+		font_color = value
+		_rebuild()
+
+@export var shadow_color: Color = Color(0, 0, 0, 0):
+	set(value):
+		shadow_color = value
+		_rebuild()
+
+@export var shadow_offset_x: int = 0:
+	set(value):
+		shadow_offset_x = value
+		_rebuild()
+
+@export var shadow_offset_y: int = 0:
+	set(value):
+		shadow_offset_y = value
+		_rebuild()
+
 @export var wave_amplitude: float = 3.0
 @export var wave_speed: float = 2.4
 @export var wave_step: float = 0.52
@@ -76,6 +96,10 @@ func _rebuild() -> void:
 		label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		label.add_theme_font_override("font", font)
 		label.add_theme_font_size_override("font_size", font_size)
+		label.add_theme_color_override("font_color", font_color)
+		label.add_theme_color_override("font_shadow_color", shadow_color)
+		label.add_theme_constant_override("shadow_offset_x", shadow_offset_x)
+		label.add_theme_constant_override("shadow_offset_y", shadow_offset_y)
 		label.text = character
 		label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER

@@ -1,0 +1,9 @@
+[gd_scene format=3 uid="uid://dopd3ddr75fd2"]
+
+[ext_resource type="Texture2D" uid="uid://d4e2p5yn0qv38" path="res://assets/ui/cursors/wood.png" id="1_wood"]
+
+[node name="WoodCursor" type="Sprite2D" unique_id=1196253337]
+texture_filter = 1
+position = Vector2(32.00566, 32.005653)
+texture = ExtResource("1_wood")
+metadata/click_texture = ExtResource("1_wood")

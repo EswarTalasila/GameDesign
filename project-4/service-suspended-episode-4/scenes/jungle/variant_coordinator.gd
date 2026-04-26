@@ -52,6 +52,7 @@ var _paused: bool = false
 var _pause_menu: CanvasLayer = null
 var _death_screen: CanvasLayer = null
 var _clock_ui: CanvasLayer = null
+var _ghost_death_active: bool = false
 
 # ── Signals ──
 signal variant_changed(variant_index: int)
@@ -63,6 +64,7 @@ func _ready() -> void:
 	CustomCursor.reset_cursor()
 	GameState.ensure_starting_special_tickets(6)
 	GameState.ensure_starting_voodoo_dolls(1)
+	GameState.ensure_starting_wood(5)
 	GameState.ensure_statue_ritual_seeded()
 	GameState.ensure_starting_clock()
 	_season_swapper = SeasonSwapper.new()
@@ -84,8 +86,14 @@ func _process(delta: float) -> void:
 			fire_died.emit()
 			_on_fire_died()
 	GameState.tick_trial_time(delta)
+	GameState.tick_campfire(delta)
+	if GameState.trial_start and GameState.trial_time_remaining <= 0.0 and not _ghost_death_active:
+		trigger_ghost_death_preview()
 
 func _unhandled_input(event: InputEvent) -> void:
+	if _ghost_death_active:
+		get_viewport().set_input_as_handled()
+		return
 	if event.is_action_pressed("ui_cancel"):
 		if _clock_ui:
 			_close_clock()
@@ -203,6 +211,16 @@ func _on_fire_died() -> void:
 	if GameState.has_method("damage_player"):
 		GameState.damage_player(GameState.player_health)
 
+func trigger_ghost_death_preview() -> bool:
+	if _ghost_death_active or player == null:
+		return false
+	if _active_section and _active_section.has_method("trigger_ghost_death_preview"):
+		_ghost_death_active = bool(_active_section.call("trigger_ghost_death_preview"))
+		return _ghost_death_active
+	if _active_section and _active_section.has_method("start_ghost_death_sequence"):
+		_ghost_death_active = bool(_active_section.call("start_ghost_death_sequence", player))
+	return _ghost_death_active
+
 # ── Pause ──
 
 func _setup_pause() -> void:
@@ -213,7 +231,7 @@ func _setup_pause() -> void:
 func _has_blocking_ui_overlay() -> bool:
 	if _clock_ui:
 		return true
-	for group in ["statue_ui_overlay", "campfire_ui_overlay", "boon_ui_overlay"]:
+	for group in ["statue_ui_overlay", "campfire_ui_overlay", "campfire_relight_ui_overlay", "boon_ui_overlay"]:
 		for node in get_tree().get_nodes_in_group(group):
 			if node.has_method("is_blocking_pause") and node.is_blocking_pause():
 				return true
@@ -310,5 +328,27 @@ func _on_clock_variant_selected(variant: int) -> void:
 
 func _on_player_died() -> void:
 	_clock_running = false
+	if _death_screen:
+		return
 	_death_screen = _death_screen_scene.instantiate()
 	add_child(_death_screen)
+	if _death_screen.has_signal("reload_requested"):
+		_death_screen.reload_requested.connect(_on_death_reload)
+	if _death_screen.has_signal("exit_requested"):
+		_death_screen.exit_requested.connect(_on_death_exit)
+
+func _on_death_reload() -> void:
+	if _death_screen:
+		_death_screen.queue_free()
+		_death_screen = null
+	GameState.reset()
+	_transition_with_loading(get_tree().current_scene.scene_file_path)
+
+func _on_death_exit() -> void:
+	GameState.reset()
+	get_tree().change_scene_to_file("res://scenes/ui/main_menu.tscn")
+
+func _transition_with_loading(scene_path: String) -> void:
+	var loading_screen = _loading_screen_scene.instantiate()
+	get_tree().root.add_child(loading_screen)
+	loading_screen.transition_to(scene_path)

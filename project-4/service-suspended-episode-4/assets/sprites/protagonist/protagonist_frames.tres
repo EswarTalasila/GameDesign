@@ -1,5 +1,37 @@
 [gd_resource type="SpriteFrames" format=3 uid="uid://6vibko1pckob"]
 
+[ext_resource type="Texture2D" uid="uid://b3etnjhdwigve" path="res://assets/sprites/protagonist/animations/foot-grab/east/frame_000.png" id="41_spvdh"]
+[ext_resource type="Texture2D" uid="uid://boe4j3f81g1e8" path="res://assets/sprites/protagonist/animations/foot-grab/east/frame_001.png" id="42_2aao6"]
+[ext_resource type="Texture2D" uid="uid://c4qvv76h8rjxd" path="res://assets/sprites/protagonist/animations/foot-grab/east/frame_002.png" id="43_nxuk7"]
+[ext_resource type="Texture2D" uid="uid://doqs6enkigk2w" path="res://assets/sprites/protagonist/animations/foot-grab/east/frame_003.png" id="44_ngeiv"]
+[ext_resource type="Texture2D" uid="uid://b6yffnlr1tt6c" path="res://assets/sprites/protagonist/animations/foot-grab/north/frame_000.png" id="45_vegba"]
+[ext_resource type="Texture2D" uid="uid://jify5kt2m3p7" path="res://assets/sprites/protagonist/animations/foot-grab/north/frame_001.png" id="46_1hfaa"]
+[ext_resource type="Texture2D" uid="uid://b75dt3t4r35au" path="res://assets/sprites/protagonist/animations/foot-grab/north/frame_002.png" id="47_ituh7"]
+[ext_resource type="Texture2D" uid="uid://dim4q2x361kps" path="res://assets/sprites/protagonist/animations/foot-grab/north/frame_003.png" id="48_b8j86"]
+[ext_resource type="Texture2D" uid="uid://bymw87g88ie5c" path="res://assets/sprites/protagonist/animations/foot-grab/north_east/frame_000.png" id="49_6trfx"]
+[ext_resource type="Texture2D" uid="uid://bh7am4looolfm" path="res://assets/sprites/protagonist/animations/foot-grab/north_east/frame_001.png" id="50_fwy48"]
+[ext_resource type="Texture2D" uid="uid://dhyevat3clcwa" path="res://assets/sprites/protagonist/animations/foot-grab/north_east/frame_002.png" id="51_mv60y"]
+[ext_resource type="Texture2D" uid="uid://ucs7yrtgttl3" path="res://assets/sprites/protagonist/animations/foot-grab/north_east/frame_003.png" id="52_0ik4s"]
+[ext_resource type="Texture2D" uid="uid://c027qld7tqfyg" path="res://assets/sprites/protagonist/animations/foot-grab/north_west/frame_000.png" id="53_7fisr"]
+[ext_resource type="Texture2D" uid="uid://mn0ql7lxd6lj" path="res://assets/sprites/protagonist/animations/foot-grab/north_west/frame_001.png" id="54_8xebg"]
+[ext_resource type="Texture2D" uid="uid://dyiw2xialebmb" path="res://assets/sprites/protagonist/animations/foot-grab/north_west/frame_002.png" id="55_bfjai"]
+[ext_resource type="Texture2D" uid="uid://dsaihe21bbl4a" path="res://assets/sprites/protagonist/animations/foot-grab/north_west/frame_003.png" id="56_admyu"]
+[ext_resource type="Texture2D" uid="uid://opr6iyikr4w8" path="res://assets/sprites/protagonist/animations/foot-grab/south/frame_000.png" id="57_cyemk"]
+[ext_resource type="Texture2D" uid="uid://btccng6lpqip1" path="res://assets/sprites/protagonist/animations/foot-grab/south/frame_001.png" id="58_hpt3n"]
+[ext_resource type="Texture2D" uid="uid://uqg38rqdljwa" path="res://assets/sprites/protagonist/animations/foot-grab/south/frame_002.png" id="59_uhx75"]
+[ext_resource type="Texture2D" uid="uid://8pu073l81mjg" path="res://assets/sprites/protagonist/animations/foot-grab/south/frame_003.png" id="60_lb3is"]
+[ext_resource type="Texture2D" uid="uid://cw03chekwhfrq" path="res://assets/sprites/protagonist/animations/foot-grab/south_east/frame_000.png" id="61_oos20"]
+[ext_resource type="Texture2D" uid="uid://lecbltdru3wa" path="res://assets/sprites/protagonist/animations/foot-grab/south_east/frame_001.png" id="62_6g8fq"]
+[ext_resource type="Texture2D" uid="uid://ccs5qmdetw382" path="res://assets/sprites/protagonist/animations/foot-grab/south_east/frame_002.png" id="63_56opm"]
+[ext_resource type="Texture2D" uid="uid://gvcx5wsr3gsp" path="res://assets/sprites/protagonist/animations/foot-grab/south_east/frame_003.png" id="64_yksoh"]
+[ext_resource type="Texture2D" uid="uid://bcilxu2ny8scg" path="res://assets/sprites/protagonist/animations/foot-grab/south_west/frame_000.png" id="65_f1j0m"]
+[ext_resource type="Texture2D" uid="uid://brst2fpjymhs" path="res://assets/sprites/protagonist/animations/foot-grab/south_west/frame_001.png" id="66_furti"]
+[ext_resource type="Texture2D" uid="uid://0lr73nl2bsbt" path="res://assets/sprites/protagonist/animations/foot-grab/south_west/frame_002.png" id="67_3xqnr"]
+[ext_resource type="Texture2D" uid="uid://c62vd465kt7vj" path="res://assets/sprites/protagonist/animations/foot-grab/south_west/frame_003.png" id="68_xdupk"]
+[ext_resource type="Texture2D" uid="uid://hjthvj6jrehe" path="res://assets/sprites/protagonist/animations/foot-grab/west/frame_000.png" id="69_5howv"]
+[ext_resource type="Texture2D" uid="uid://bqp1drprcwppr" path="res://assets/sprites/protagonist/animations/foot-grab/west/frame_001.png" id="70_chrsb"]
+[ext_resource type="Texture2D" uid="uid://bsgc4sgln3tkw" path="res://assets/sprites/protagonist/animations/foot-grab/west/frame_002.png" id="71_3io1a"]
+[ext_resource type="Texture2D" uid="uid://d3of7l370ffbw" path="res://assets/sprites/protagonist/animations/foot-grab/west/frame_003.png" id="72_qsefs"]
 [ext_resource type="Texture2D" uid="uid://cgsur3ywka7im" path="res://assets/sprites/protagonist/animations/attack/east/frame_000.png" id="attack_79"]
 [ext_resource type="Texture2D" uid="uid://cnut1veh7fhom" path="res://assets/sprites/protagonist/animations/attack/east/frame_001.png" id="attack_80"]
 [ext_resource type="Texture2D" uid="uid://c8kd650xwhw5b" path="res://assets/sprites/protagonist/animations/attack/east/frame_002.png" id="attack_81"]
@@ -296,6 +328,142 @@ animations = [{
 "loop": false,
 "name": &"attack_west",
 "speed": 10.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("41_spvdh")
+}, {
+"duration": 1.0,
+"texture": ExtResource("42_2aao6")
+}, {
+"duration": 1.0,
+"texture": ExtResource("43_nxuk7")
+}, {
+"duration": 1.0,
+"texture": ExtResource("44_ngeiv")
+}],
+"loop": false,
+"name": &"foot_grab_east",
+"speed": 7.142857
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("45_vegba")
+}, {
+"duration": 1.0,
+"texture": ExtResource("46_1hfaa")
+}, {
+"duration": 1.0,
+"texture": ExtResource("47_ituh7")
+}, {
+"duration": 1.0,
+"texture": ExtResource("48_b8j86")
+}],
+"loop": false,
+"name": &"foot_grab_north",
+"speed": 7.142857
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("49_6trfx")
+}, {
+"duration": 1.0,
+"texture": ExtResource("50_fwy48")
+}, {
+"duration": 1.0,
+"texture": ExtResource("51_mv60y")
+}, {
+"duration": 1.0,
+"texture": ExtResource("52_0ik4s")
+}],
+"loop": false,
+"name": &"foot_grab_north_east",
+"speed": 7.142857
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("53_7fisr")
+}, {
+"duration": 1.0,
+"texture": ExtResource("54_8xebg")
+}, {
+"duration": 1.0,
+"texture": ExtResource("55_bfjai")
+}, {
+"duration": 1.0,
+"texture": ExtResource("56_admyu")
+}],
+"loop": false,
+"name": &"foot_grab_north_west",
+"speed": 7.142857
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("57_cyemk")
+}, {
+"duration": 1.0,
+"texture": ExtResource("58_hpt3n")
+}, {
+"duration": 1.0,
+"texture": ExtResource("59_uhx75")
+}, {
+"duration": 1.0,
+"texture": ExtResource("60_lb3is")
+}],
+"loop": false,
+"name": &"foot_grab_south",
+"speed": 7.142857
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("61_oos20")
+}, {
+"duration": 1.0,
+"texture": ExtResource("62_6g8fq")
+}, {
+"duration": 1.0,
+"texture": ExtResource("63_56opm")
+}, {
+"duration": 1.0,
+"texture": ExtResource("64_yksoh")
+}],
+"loop": false,
+"name": &"foot_grab_south_east",
+"speed": 7.142857
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("65_f1j0m")
+}, {
+"duration": 1.0,
+"texture": ExtResource("66_furti")
+}, {
+"duration": 1.0,
+"texture": ExtResource("67_3xqnr")
+}, {
+"duration": 1.0,
+"texture": ExtResource("68_xdupk")
+}],
+"loop": false,
+"name": &"foot_grab_south_west",
+"speed": 7.142857
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("69_5howv")
+}, {
+"duration": 1.0,
+"texture": ExtResource("70_chrsb")
+}, {
+"duration": 1.0,
+"texture": ExtResource("71_3io1a")
+}, {
+"duration": 1.0,
+"texture": ExtResource("72_qsefs")
+}],
+"loop": false,
+"name": &"foot_grab_west",
+"speed": 7.142857
 }, {
 "frames": [{
 "duration": 1.0,

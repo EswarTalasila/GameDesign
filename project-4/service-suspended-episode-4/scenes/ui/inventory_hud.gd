@@ -11,6 +11,7 @@ const COUNTER_DIGITS_SCENE := preload("res://scenes/ui/counter_digits.tscn")
 const SPECIAL_TICKET_ICON_SCENE := preload("res://scenes/items/icons/special_ticket_inventory_icon.tscn")
 const VOODOO_ICON_SCENE := preload("res://scenes/items/icons/voodoo_doll_inventory_icon.tscn")
 const CLOCK_ICON_SCENE := preload("res://scenes/items/icons/clock_inventory_icon.tscn")
+const WOOD_ICON_SCENE := preload("res://scenes/items/icons/wood_inventory_icon.tscn")
 const PAUSE_NORMAL := preload("res://assets/ui/buttons/play_pause/pause_normal.png")
 const PAUSE_PRESSED := preload("res://assets/ui/buttons/play_pause/pause_pressed.png")
 const PLAY_NORMAL := preload("res://assets/ui/buttons/play_pause/play_normal.png")
@@ -21,10 +22,10 @@ var _slot_base_scales: Dictionary[Node2D, Vector2] = {}
 var _slot_special_icons: Dictionary[Node2D, Node2D] = {}
 var _slot_voodoo_icons: Dictionary[Node2D, Node2D] = {}
 var _slot_clock_icons: Dictionary[Node2D, Node2D] = {}
+var _slot_wood_icons: Dictionary[Node2D, Node2D] = {}
 var _ritual_focus_active: bool = false
-var _ritual_focus_item: String = ""
-var _pulse_tween: Tween = null
-var _pulse_target: Node2D = null
+var _ritual_focus_items: Array[String] = []
+var _pulse_tweens: Dictionary[Node2D, Tween] = {}
 var _pause_visual_pressed: bool = false
 
 @onready var slot_1: Node2D = $Slot1
@@ -38,9 +39,9 @@ func _ready() -> void:
 		_configure_slot(slot)
 	GameState.inventory_changed.connect(_refresh)
 	GameState.inventory_selection_changed.connect(_on_selection_changed)
-	GameState.ritual_focus_changed.connect(_on_ritual_focus_changed)
+	GameState.ritual_focus_items_changed.connect(_on_ritual_focus_items_changed)
 	_refresh()
-	_on_ritual_focus_changed(not GameState.ritual_focus_item.is_empty(), GameState.ritual_focus_item)
+	_on_ritual_focus_items_changed(GameState.ritual_focus_items)
 	_on_selection_changed(GameState.selected_inventory_item)
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -85,6 +86,7 @@ func _configure_slot(slot: Node2D) -> void:
 	_slot_special_icons[slot] = _get_or_create_scene_icon(slot, "SpecialTicketInventoryIcon", SPECIAL_TICKET_ICON_SCENE)
 	_slot_voodoo_icons[slot] = _get_or_create_scene_icon(slot, "VoodooDollInventoryIcon", VOODOO_ICON_SCENE)
 	_slot_clock_icons[slot] = _get_or_create_scene_icon(slot, "ClockInventoryIcon", CLOCK_ICON_SCENE)
+	_slot_wood_icons[slot] = _get_or_create_scene_icon(slot, "WoodInventoryIcon", WOOD_ICON_SCENE)
 
 func _refresh() -> void:
 	var slots: Array[Node2D] = _get_slots()
@@ -94,6 +96,7 @@ func _refresh() -> void:
 		_set_slot_scene_icon_visible(_slot_special_icons, slot, item_id == GameState.ITEM_SPECIAL_TICKET)
 		_set_slot_scene_icon_visible(_slot_voodoo_icons, slot, item_id == GameState.ITEM_VOODOO_DOLL)
 		_set_slot_scene_icon_visible(_slot_clock_icons, slot, item_id == GameState.ITEM_CLOCK)
+		_set_slot_scene_icon_visible(_slot_wood_icons, slot, item_id == GameState.ITEM_WOOD)
 		_update_count_sprite(slot, item_id)
 	_update_slot_visuals()
 
@@ -114,9 +117,12 @@ func _update_count_sprite(slot: Node2D, item_id: String) -> void:
 func _on_selection_changed(_item_id: String) -> void:
 	_update_slot_visuals()
 
-func _on_ritual_focus_changed(active: bool, item_id: String) -> void:
-	_ritual_focus_active = active and not item_id.is_empty()
-	_ritual_focus_item = item_id if _ritual_focus_active else ""
+func _on_ritual_focus_items_changed(items: Array) -> void:
+	_ritual_focus_items.clear()
+	for item in items:
+		if item is String and not String(item).is_empty() and not _ritual_focus_items.has(String(item)):
+			_ritual_focus_items.append(String(item))
+	_ritual_focus_active = not _ritual_focus_items.is_empty()
 	_update_slot_visuals()
 
 func _find_clicked_slot_index(mouse_pos: Vector2) -> int:
@@ -156,24 +162,23 @@ func _update_slot_visuals() -> void:
 	_update_ritual_focus_pulse()
 
 func _update_ritual_focus_pulse() -> void:
-	if _pulse_tween:
-		_pulse_tween.kill()
-		_pulse_tween = null
-	if _pulse_target:
-		_apply_static_slot_visual(_pulse_target)
-		_pulse_target = null
-	var target: Node2D = _get_ritual_focus_slot()
-	if target == null or not _has_visible_item(target):
-		return
-	var icon_root: Node2D = _slot_icon_roots.get(target) as Node2D
-	if icon_root == null:
-		return
-	var target_item: String = _get_slot_item(target)
-	var selected: bool = GameState.selected_inventory_item == target_item and not target_item.is_empty()
-	var scene_scale: Vector2 = _get_slot_base_scale(target)
-	var base_scale: Vector2 = scene_scale * SLOT_SELECTED_MULT if selected else scene_scale
-	var base_modulate: Color = Color.WHITE
-	if _ritual_focus_active:
+	for slot: Node2D in _pulse_tweens.keys():
+		var tween: Tween = _pulse_tweens.get(slot) as Tween
+		if tween:
+			tween.kill()
+		_apply_static_slot_visual(slot)
+	_pulse_tweens.clear()
+	for target: Node2D in _get_ritual_focus_slots():
+		if target == null or not _has_visible_item(target):
+			continue
+		var icon_root: Node2D = _slot_icon_roots.get(target) as Node2D
+		if icon_root == null:
+			continue
+		var target_item: String = _get_slot_item(target)
+		var selected: bool = GameState.selected_inventory_item == target_item and not target_item.is_empty()
+		var scene_scale: Vector2 = _get_slot_base_scale(target)
+		var base_scale: Vector2 = scene_scale * SLOT_SELECTED_MULT if selected else scene_scale
+		var base_modulate: Color = Color.WHITE
 		icon_root.scale = base_scale
 		icon_root.modulate = base_modulate
 		var peak_modulate: Color = Color(
@@ -182,13 +187,13 @@ func _update_ritual_focus_pulse() -> void:
 			base_modulate.b * SLOT_PULSE_BRIGHT,
 			base_modulate.a
 		)
-		_pulse_target = target
-		_pulse_tween = create_tween().set_loops(0)
-		_pulse_tween.set_pause_mode(Tween.TWEEN_PAUSE_PROCESS)
-		_pulse_tween.tween_property(icon_root, "scale", base_scale * SLOT_PULSE_MULT, SLOT_PULSE_TIME).set_ease(Tween.EASE_IN_OUT).set_trans(Tween.TRANS_SINE)
-		_pulse_tween.parallel().tween_property(icon_root, "modulate", peak_modulate, SLOT_PULSE_TIME).set_ease(Tween.EASE_IN_OUT).set_trans(Tween.TRANS_SINE)
-		_pulse_tween.tween_property(icon_root, "scale", base_scale, SLOT_PULSE_TIME).set_ease(Tween.EASE_IN_OUT).set_trans(Tween.TRANS_SINE)
-		_pulse_tween.parallel().tween_property(icon_root, "modulate", base_modulate, SLOT_PULSE_TIME).set_ease(Tween.EASE_IN_OUT).set_trans(Tween.TRANS_SINE)
+		var pulse_tween: Tween = create_tween().set_loops(0)
+		pulse_tween.set_pause_mode(Tween.TWEEN_PAUSE_PROCESS)
+		pulse_tween.tween_property(icon_root, "scale", base_scale * SLOT_PULSE_MULT, SLOT_PULSE_TIME).set_ease(Tween.EASE_IN_OUT).set_trans(Tween.TRANS_SINE)
+		pulse_tween.parallel().tween_property(icon_root, "modulate", peak_modulate, SLOT_PULSE_TIME).set_ease(Tween.EASE_IN_OUT).set_trans(Tween.TRANS_SINE)
+		pulse_tween.tween_property(icon_root, "scale", base_scale, SLOT_PULSE_TIME).set_ease(Tween.EASE_IN_OUT).set_trans(Tween.TRANS_SINE)
+		pulse_tween.parallel().tween_property(icon_root, "modulate", base_modulate, SLOT_PULSE_TIME).set_ease(Tween.EASE_IN_OUT).set_trans(Tween.TRANS_SINE)
+		_pulse_tweens[target] = pulse_tween
 
 func _apply_static_slot_visual(slot: Node2D) -> void:
 	var icon_root: Node2D = _slot_icon_roots.get(slot) as Node2D
@@ -202,14 +207,15 @@ func _apply_static_slot_visual(slot: Node2D) -> void:
 func _get_slots() -> Array[Node2D]:
 	return [slot_1, slot_2, slot_3, slot_4]
 
-func _get_ritual_focus_slot() -> Node2D:
-	if _ritual_focus_item.is_empty():
-		return null
+func _get_ritual_focus_slots() -> Array[Node2D]:
+	var focused_slots: Array[Node2D] = []
+	if _ritual_focus_items.is_empty():
+		return focused_slots
 	var slots: Array[Node2D] = _get_slots()
 	for i in range(slots.size()):
-		if GameState.get_inventory_slot_item(i) == _ritual_focus_item:
-			return slots[i]
-	return null
+		if _ritual_focus_items.has(GameState.get_inventory_slot_item(i)):
+			focused_slots.append(slots[i])
+	return focused_slots
 
 func _get_slot_base_scale(slot: Node2D) -> Vector2:
 	if _slot_base_scales.has(slot):
@@ -251,6 +257,9 @@ func _get_visible_slot_scene_icon(slot: Node2D) -> Node2D:
 	var clock_icon: Node2D = _slot_clock_icons.get(slot) as Node2D
 	if clock_icon != null and clock_icon.visible:
 		return clock_icon
+	var wood_icon: Node2D = _slot_wood_icons.get(slot) as Node2D
+	if wood_icon != null and wood_icon.visible:
+		return wood_icon
 	return null
 
 func _has_visible_item(slot: Node2D) -> bool:

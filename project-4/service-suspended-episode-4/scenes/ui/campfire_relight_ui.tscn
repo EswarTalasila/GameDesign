@@ -1,0 +1,104 @@
+[gd_scene format=3 uid="uid://bxky0os2e1k6r"]
+
+[ext_resource type="Script" path="res://scenes/ui/campfire_relight_ui.gd" id="1_script"]
+[ext_resource type="FontFile" path="res://assets/fonts/DotGothic16-Regular.ttf" id="2_font"]
+[ext_resource type="Script" path="res://scenes/ui/wave_text.gd" id="3_wave"]
+[ext_resource type="PackedScene" path="res://scenes/ui/boon_choice_button.tscn" id="4_button"]
+
+[node name="CampfireRelightUI" type="CanvasLayer"]
+layer = 40
+script = ExtResource("1_script")
+
+[node name="Dimmer" type="ColorRect" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0.05, 0.04, 0.08, 1)
+
+[node name="Panel" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -480.0
+offset_top = -128.0
+offset_right = 480.0
+offset_bottom = 128.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Title" type="Control" parent="Panel"]
+process_mode = 3
+anchors_preset = 0
+anchor_right = 1.0
+offset_bottom = 72.0
+grow_horizontal = 2
+mouse_filter = 2
+script = ExtResource("3_wave")
+text = "Do you wish to relight the fire?"
+font = ExtResource("2_font")
+font_size = 36
+font_color = Color(0.96, 0.93, 0.88, 1)
+shadow_color = Color(0, 0, 0, 0.85)
+shadow_offset_x = 1
+shadow_offset_y = 1
+wave_amplitude = 2.5
+wave_speed = 6.2
+wave_step = 0.38
+
+[node name="Choices" type="HBoxContainer" parent="Panel"]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = 88.0
+offset_bottom = 196.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 50
+alignment = 1
+
+[node name="YesChoice" parent="Panel/Choices" instance=ExtResource("4_button")]
+custom_minimum_size = Vector2(248, 108)
+layout_mode = 2
+size_flags_horizontal = 4
+pressed_text_offset = Vector2(0, 0)
+
+[node name="Label" parent="Panel/Choices/YesChoice/TextRoot"]
+offset_top = -3.0
+offset_bottom = -3.0
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 30
+text = "Yes"
+
+[node name="NoChoice" parent="Panel/Choices" instance=ExtResource("4_button")]
+custom_minimum_size = Vector2(248, 108)
+layout_mode = 2
+size_flags_horizontal = 4
+pressed_text_offset = Vector2(0, 0)
+
+[node name="Label" parent="Panel/Choices/NoChoice/TextRoot"]
+offset_top = -3.0
+offset_bottom = -3.0
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 30
+text = "No"
+
+[node name="CostTooltip" type="Label" parent="Panel"]
+visible = false
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = 204.0
+offset_bottom = 240.0
+grow_horizontal = 2
+grow_vertical = 0
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[editable path="Panel/Choices/YesChoice"]
+[editable path="Panel/Choices/NoChoice"]

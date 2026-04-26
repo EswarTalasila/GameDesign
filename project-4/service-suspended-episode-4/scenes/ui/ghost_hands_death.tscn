@@ -1,0 +1,46 @@
+[gd_scene format=3 uid="uid://c4s5uk3yedk4i"]
+
+[ext_resource type="Script" uid="uid://6jyy1kndw3g8" path="res://scenes/ui/ghost_hands_death.gd" id="1_script"]
+[ext_resource type="FontFile" uid="uid://l121oiwf8wys" path="res://assets/fonts/DotGothic16-Regular.ttf" id="2_font"]
+[ext_resource type="Script" uid="uid://ecsxoh3mbop0" path="res://scenes/ui/wave_text.gd" id="3_wave"]
+
+[node name="GhostHandsDeath" type="CanvasLayer" unique_id=1274651208]
+layer = 40
+script = ExtResource("1_script")
+orbit_radius_min = 110.0
+orbit_radius_max = 130.0
+camera_zoom_multiplier = 1.5
+
+[node name="Vignette" type="ColorRect" parent="." unique_id=294302615]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0, 0, 0, 0)
+
+[node name="TimesUp" type="Control" parent="." unique_id=1635998958]
+process_mode = 3
+modulate = Color(1, 1, 1, 0)
+layout_mode = 3
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -340.0
+offset_top = 112.0
+offset_right = 340.0
+offset_bottom = 196.0
+grow_horizontal = 2
+mouse_filter = 2
+script = ExtResource("3_wave")
+text = "Times Up"
+font = ExtResource("2_font")
+font_size = 48
+font_color = Color(0.88, 0.18, 0.18, 1)
+shadow_color = Color(0, 0, 0, 0.9)
+shadow_offset_x = 2
+shadow_offset_y = 2
+wave_amplitude = 2.5
+wave_speed = 6.2
+wave_step = 0.38

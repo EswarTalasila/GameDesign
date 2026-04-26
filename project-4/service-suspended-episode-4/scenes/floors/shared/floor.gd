@@ -745,10 +745,8 @@ func _on_player_died() -> void:
 	var death = preload("res://scenes/ui/death_screen.tscn").instantiate()
 	get_tree().root.add_child(death)
 	death.reload_requested.connect(_on_death_reload.bind(death))
-	death.respawn_requested.connect(_on_death_respawn.bind(death))
-	if GameState.tickets_held < 3:
-		death.respawn_btn.disabled = true
-		death.respawn_btn.modulate = Color(1, 1, 1, 0.4)
+	if death.has_signal("exit_requested"):
+		death.exit_requested.connect(_on_death_exit.bind(death))
 
 func _on_death_reload(death_screen) -> void:
 	is_animating = true
@@ -766,6 +764,12 @@ func _on_death_reload(death_screen) -> void:
 	if death_screen:
 		death_screen.queue_free()
 	loading_screen.transition_to(floor_path)
+
+func _on_death_exit(death_screen: CanvasLayer) -> void:
+	if death_screen:
+		death_screen.queue_free()
+	GameState.reset()
+	get_tree().change_scene_to_file("res://scenes/ui/main_menu.tscn")
 
 func _on_death_respawn(death_screen: CanvasLayer) -> void:
 	# Free death screen so UI layer is visible for ticket animation

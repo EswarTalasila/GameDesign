@@ -3,7 +3,7 @@ extends CanvasLayer
 signal opened
 signal closed
 
-const BURN_SHADER := preload("res://assets/shaders/statue_ticket_burn.gdshader")
+const BURN_SHADER := preload("res://assets/shaders/offering_burn_center.gdshader")
 const BURN_SOUND := preload("res://assets/sounds/ticket_burn.mp3")
 const STATUE_OFFERING_DIALOGUE := preload("res://dialogues/statue_offering.dialogue")
 
@@ -16,15 +16,17 @@ const STATUE_OFFERING_DIALOGUE := preload("res://dialogues/statue_offering.dialo
 @export var close_time: float = 0.14
 @export var breathing_fps: float = 8.0
 @export var offering_scale_multiplier: float = 1.0
-@export var offering_hold_time: float = 0.55
-@export var offering_burn_time: float = 3.8
-@export var offering_burn_radius_end: float = 1.08
+@export var offering_hold_time: float = 0.44
+@export var offering_burn_time: float = 3.35
+@export_range(1.0, 1.5, 0.01) var offering_burn_size: float = 1.3
 @export var post_burn_close_delay: float = 0.0
 @export_range(0.0, 1.0) var dim_alpha: float = 0.42
 @export_range(0.0, 1.0) var glow_peak_strength: float = 0.38
 @export_range(0.0, 1.0) var glow_idle_strength: float = 0.18
 @export var glow_radius: float = 0.16
 @export var glow_feather: float = 0.2
+@export var burn_base_color: Color = Color(0.9, 0.4, 0.1, 1.0)
+@export var burn_hot_color: Color = Color(1.0, 0.76, 0.18, 1.0)
 
 @onready var dimmer: ColorRect = $DimLayer/Dimmer
 @onready var glow: ColorRect = $ContentLayer/Glow
@@ -207,20 +209,10 @@ void fragment() {
 func _setup_offering_material() -> void:
 	var material := ShaderMaterial.new()
 	material.shader = BURN_SHADER
-	var noise := FastNoiseLite.new()
-	noise.noise_type = FastNoiseLite.TYPE_PERLIN
-	noise.frequency = 0.03
-	var noise_tex := NoiseTexture2D.new()
-	noise_tex.noise = noise
-	material.set_shader_parameter("position", Vector2(0.5, 0.5))
-	material.set_shader_parameter("radius", 0.0)
-	material.set_shader_parameter("borderWidth", 0.2)
-	material.set_shader_parameter("burnMult", 0.34)
-	material.set_shader_parameter("noiseTexture", noise_tex)
-	material.set_shader_parameter("burnColor", Color(1.0, 0.58, 0.12, 1.0))
-	material.set_shader_parameter("pixel_size", 0.004)
-	material.set_shader_parameter("blend_steps", 8.5)
-	material.set_shader_parameter("colorCurve", _make_burn_color_curve())
+	material.set_shader_parameter("noise_texture", _make_noise_texture())
+	material.set_shader_parameter("burn_texture", _make_burn_texture())
+	material.set_shader_parameter("integrity", 1.0)
+	material.set_shader_parameter("burn_size", offering_burn_size)
 	offering_icon.material = material
 
 func _get_target_position() -> Vector2:
@@ -248,11 +240,11 @@ func _offer_special_ticket() -> void:
 	offering_icon.modulate = Color.WHITE
 	var material := offering_icon.material as ShaderMaterial
 	if material:
-		material.set_shader_parameter("radius", 0.0)
+		material.set_shader_parameter("integrity", 1.0)
 	_play_sfx(BURN_SOUND)
 	await get_tree().create_timer(offering_hold_time).timeout
 	var burn_tween := create_tween()
-	burn_tween.tween_method(_set_offering_burn_radius, 0.0, offering_burn_radius_end, offering_burn_time)
+	burn_tween.tween_method(_set_offering_burn_integrity, 1.0, 0.0, offering_burn_time)
 	await burn_tween.finished
 	if post_burn_close_delay > 0.0:
 		await get_tree().create_timer(post_burn_close_delay).timeout
@@ -265,10 +257,10 @@ func _offer_special_ticket() -> void:
 	await close()
 	await _show_result_dialog("accepted" if accepted else "refused")
 
-func _set_offering_burn_radius(value: float) -> void:
+func _set_offering_burn_integrity(value: float) -> void:
 	var material := offering_icon.material as ShaderMaterial
 	if material:
-		material.set_shader_parameter("radius", value)
+		material.set_shader_parameter("integrity", value)
 
 func _is_point_inside_sprite(point: Vector2, sprite: Sprite2D) -> bool:
 	if sprite.texture == null or sprite.modulate.a <= 0.0:
@@ -291,20 +283,31 @@ func _play_sfx(stream: AudioStream) -> void:
 	sfx.play()
 	sfx.finished.connect(sfx.queue_free)
 
-func _make_burn_color_curve() -> GradientTexture1D:
+func _make_burn_texture() -> GradientTexture1D:
 	var gradient := Gradient.new()
 	gradient.colors = PackedColorArray([
-		Color(0.06, 0.03, 0.02, 1.0),
-		Color(0.27, 0.08, 0.03, 1.0),
-		Color(0.72, 0.19, 0.03, 1.0),
-		Color(1.0, 0.64, 0.18, 1.0),
-		Color(1.0, 0.92, 0.72, 1.0),
+		Color(0.05, 0.02, 0.01, 0.0),
+		burn_base_color.darkened(0.65),
+		burn_base_color,
+		burn_base_color.lerp(burn_hot_color, 0.7),
+		burn_hot_color,
 	])
-	gradient.offsets = PackedFloat32Array([0.0, 0.2, 0.45, 0.72, 1.0])
+	gradient.offsets = PackedFloat32Array([0.0, 0.18, 0.45, 0.75, 1.0])
 	var texture := GradientTexture1D.new()
 	texture.gradient = gradient
 	texture.width = 256
 	return texture
+
+func _make_noise_texture() -> ImageTexture:
+	var noise := FastNoiseLite.new()
+	noise.noise_type = FastNoiseLite.TYPE_PERLIN
+	noise.frequency = 0.03
+	var image := Image.create(128, 128, false, Image.FORMAT_RGBA8)
+	for y in range(image.get_height()):
+		for x in range(image.get_width()):
+			var value := noise.get_noise_2d(float(x), float(y)) * 0.5 + 0.5
+			image.set_pixel(x, y, Color(value, value, value, 1.0))
+	return ImageTexture.create_from_image(image)
 
 func _reset_visual_state() -> void:
 	visible = false

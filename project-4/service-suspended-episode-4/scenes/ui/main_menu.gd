@@ -1,5 +1,8 @@
 extends Control
 
+const LOADING_SCREEN_SCENE := preload("res://scenes/ui/loading_screen.tscn")
+const START_SCENE_PATH := "res://scenes/jungle/jungle.tscn"
+
 @onready var _bg: TextureRect = $Background
 @onready var _exit_region: Control = $ExitRegion
 @onready var _play_region: Control = $PlayRegion
@@ -53,6 +56,7 @@ func _on_exit_unhover() -> void:
 func _on_exit_input(event: InputEvent) -> void:
 	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
 		_bg.texture = _clicked_exit_tex
+		_stop_menu_music()
 		_click_sound.play()
 		await get_tree().create_timer(0.15).timeout
 		get_tree().quit()
@@ -74,10 +78,13 @@ func _on_play_unhover() -> void:
 func _on_play_input(event: InputEvent) -> void:
 	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
 		_bg.texture = _clicked_play_tex
+		_stop_menu_music()
 		_click_sound.play()
 		GameState.reset()
 		await get_tree().create_timer(0.15).timeout
-		get_tree().change_scene_to_file("res://scenes/jungle/jungle.tscn")
+		var loading_screen = LOADING_SCREEN_SCENE.instantiate()
+		get_tree().root.add_child(loading_screen)
+		loading_screen.transition_to(START_SCENE_PATH)
 
 
 func _hold_then_base() -> void:
@@ -90,6 +97,12 @@ func _cancel_hold() -> void:
 	if _hold_tween and _hold_tween.is_valid():
 		_hold_tween.kill()
 	_hold_tween = null
+
+
+func _stop_menu_music() -> void:
+	_hover_sound.stop()
+	if _music.playing:
+		_music.stop()
 
 
 func _on_mute_pressed() -> void:
