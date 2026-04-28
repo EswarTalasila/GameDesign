@@ -11,7 +11,9 @@ const COUNTER_DIGITS_SCENE := preload("res://scenes/ui/counter_digits.tscn")
 const SPECIAL_TICKET_ICON_SCENE := preload("res://scenes/items/icons/special_ticket_inventory_icon.tscn")
 const VOODOO_ICON_SCENE := preload("res://scenes/items/icons/voodoo_doll_inventory_icon.tscn")
 const CLOCK_ICON_SCENE := preload("res://scenes/items/icons/clock_inventory_icon.tscn")
+const KEY_ICON_SCENE := preload("res://scenes/items/icons/key_inventory_icon.tscn")
 const WOOD_ICON_SCENE := preload("res://scenes/items/icons/wood_inventory_icon.tscn")
+const MAP_ICON_SCENE := preload("res://scenes/items/icons/map_icon.tscn")
 const PAUSE_NORMAL := preload("res://assets/ui/buttons/play_pause/pause_normal.png")
 const PAUSE_PRESSED := preload("res://assets/ui/buttons/play_pause/pause_pressed.png")
 const PLAY_NORMAL := preload("res://assets/ui/buttons/play_pause/play_normal.png")
@@ -22,7 +24,9 @@ var _slot_base_scales: Dictionary[Node2D, Vector2] = {}
 var _slot_special_icons: Dictionary[Node2D, Node2D] = {}
 var _slot_voodoo_icons: Dictionary[Node2D, Node2D] = {}
 var _slot_clock_icons: Dictionary[Node2D, Node2D] = {}
+var _slot_key_icons: Dictionary[Node2D, Node2D] = {}
 var _slot_wood_icons: Dictionary[Node2D, Node2D] = {}
+var _slot_map_icons: Dictionary[Node2D, Node2D] = {}
 var _ritual_focus_active: bool = false
 var _ritual_focus_items: Array[String] = []
 var _pulse_tweens: Dictionary[Node2D, Tween] = {}
@@ -86,7 +90,9 @@ func _configure_slot(slot: Node2D) -> void:
 	_slot_special_icons[slot] = _get_or_create_scene_icon(slot, "SpecialTicketInventoryIcon", SPECIAL_TICKET_ICON_SCENE)
 	_slot_voodoo_icons[slot] = _get_or_create_scene_icon(slot, "VoodooDollInventoryIcon", VOODOO_ICON_SCENE)
 	_slot_clock_icons[slot] = _get_or_create_scene_icon(slot, "ClockInventoryIcon", CLOCK_ICON_SCENE)
+	_slot_key_icons[slot] = _get_or_create_scene_icon(slot, "KeyInventoryIcon", KEY_ICON_SCENE)
 	_slot_wood_icons[slot] = _get_or_create_scene_icon(slot, "WoodInventoryIcon", WOOD_ICON_SCENE)
+	_slot_map_icons[slot] = _get_or_create_scene_icon(slot, "MapInventoryIcon", MAP_ICON_SCENE)
 
 func _refresh() -> void:
 	var slots: Array[Node2D] = _get_slots()
@@ -96,7 +102,9 @@ func _refresh() -> void:
 		_set_slot_scene_icon_visible(_slot_special_icons, slot, item_id == GameState.ITEM_SPECIAL_TICKET)
 		_set_slot_scene_icon_visible(_slot_voodoo_icons, slot, item_id == GameState.ITEM_VOODOO_DOLL)
 		_set_slot_scene_icon_visible(_slot_clock_icons, slot, item_id == GameState.ITEM_CLOCK)
+		_set_slot_scene_icon_visible(_slot_key_icons, slot, item_id == GameState.ITEM_KEY)
 		_set_slot_scene_icon_visible(_slot_wood_icons, slot, item_id == GameState.ITEM_WOOD)
+		_set_slot_scene_icon_visible(_slot_map_icons, slot, item_id == GameState.ITEM_MAP)
 		_update_count_sprite(slot, item_id)
 	_update_slot_visuals()
 
@@ -257,9 +265,15 @@ func _get_visible_slot_scene_icon(slot: Node2D) -> Node2D:
 	var clock_icon: Node2D = _slot_clock_icons.get(slot) as Node2D
 	if clock_icon != null and clock_icon.visible:
 		return clock_icon
+	var key_icon: Node2D = _slot_key_icons.get(slot) as Node2D
+	if key_icon != null and key_icon.visible:
+		return key_icon
 	var wood_icon: Node2D = _slot_wood_icons.get(slot) as Node2D
 	if wood_icon != null and wood_icon.visible:
 		return wood_icon
+	var map_icon: Node2D = _slot_map_icons.get(slot) as Node2D
+	if map_icon != null and map_icon.visible:
+		return map_icon
 	return null
 
 func _has_visible_item(slot: Node2D) -> bool:

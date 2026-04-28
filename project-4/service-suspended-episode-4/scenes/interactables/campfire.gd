@@ -5,6 +5,7 @@ signal ignited
 const CAMPFIRE_UI_SCENE := preload("res://scenes/ui/campfire_ui.tscn")
 const CAMPFIRE_RELIGHT_UI_SCENE := preload("res://scenes/ui/campfire_relight_ui.tscn")
 const TRIAL_DIALOGUE := preload("res://dialogues/campfire_trial.dialogue")
+const INTERACTION_PRIORITY := 1
 
 @export var lit: bool = false:
 	set(value):
@@ -25,11 +26,13 @@ const TRIAL_DIALOGUE := preload("res://dialogues/campfire_trial.dialogue")
 @onready var interact_zone: Area2D = $InteractZone
 
 var _player_nearby: bool = false
+var _player_body: CharacterBody2D = null
 var _intro_running: bool = false
 var _base_fire_scale: Vector2 = Vector2.ONE
 
 func _ready() -> void:
 	add_to_group("campfire")
+	add_to_group("priority_interactable")
 	GameState.configure_campfire(burn_duration_seconds)
 	_base_fire_scale = fire.scale
 	lit = GameState.campfire_lit
@@ -41,10 +44,17 @@ func _ready() -> void:
 	if not GameState.campfire_burn_changed.is_connected(_on_campfire_burn_changed):
 		GameState.campfire_burn_changed.connect(_on_campfire_burn_changed)
 
+func _process(_delta: float) -> void:
+	if _player_nearby:
+		_update_prompt()
+
 func _input(event: InputEvent) -> void:
 	if not _player_nearby or _intro_running:
 		return
 	if event.is_action_pressed("interact"):
+		if is_instance_valid(_player_body) and not _is_primary_interaction_target(_player_body):
+			return
+		get_viewport().set_input_as_handled()
 		_open_interaction_ui()
 
 func ignite() -> void:
@@ -105,6 +115,7 @@ func _on_body_entered(body: Node2D) -> void:
 	if not body is CharacterBody2D:
 		return
 	_player_nearby = true
+	_player_body = body
 	if not lit and not GameState.campfire_intro_played and not _intro_running:
 		_play_intro_and_ignite()
 	else:
@@ -113,6 +124,8 @@ func _on_body_entered(body: Node2D) -> void:
 func _on_body_exited(body: Node2D) -> void:
 	if body is CharacterBody2D:
 		_player_nearby = false
+		if body == _player_body:
+			_player_body = null
 		_update_prompt()
 
 func _play_intro_and_ignite() -> void:
@@ -121,6 +134,9 @@ func _play_intro_and_ignite() -> void:
 	DialogueManager.show_dialogue_balloon(TRIAL_DIALOGUE, "start")
 	await DialogueManager.dialogue_ended
 	ignite()
+	QuestManager.complete("explore")
+	QuestManager.set_primary("escape", "Find a way to escape the dungeon")
+	QuestManager.add_sub("use_clock_variant_2", "Use the clock to travel to Variant 2", "escape")
 	_intro_running = false
 	_update_prompt()
 
@@ -159,7 +175,39 @@ func _apply_fire_scale() -> void:
 
 func _update_prompt() -> void:
 	if prompt:
-		prompt.visible = _player_nearby and not _intro_running
+		var has_priority := not is_instance_valid(_player_body) or _is_primary_interaction_target(_player_body)
+		prompt.visible = has_priority and _player_nearby and not _intro_running
+
+func can_claim_priority_interaction(player: CharacterBody2D) -> bool:
+	return is_instance_valid(player) and player == _player_body and _player_nearby and not _intro_running
+
+func get_interaction_priority_point() -> Vector2:
+	return interact_zone.global_position
+
+func get_interaction_priority_rank() -> int:
+	return INTERACTION_PRIORITY
+
+func _is_primary_interaction_target(player: CharacterBody2D) -> bool:
+	if not is_instance_valid(player):
+		return false
+	var best_node: Node = null
+	var best_distance := INF
+	var best_priority := INF
+	for candidate in get_tree().get_nodes_in_group("priority_interactable"):
+		if not is_instance_valid(candidate) or not candidate.has_method("can_claim_priority_interaction"):
+			continue
+		if not bool(candidate.call("can_claim_priority_interaction", player)):
+			continue
+		if not candidate.has_method("get_interaction_priority_point") or not candidate.has_method("get_interaction_priority_rank"):
+			continue
+		var point: Vector2 = candidate.call("get_interaction_priority_point")
+		var priority: int = int(candidate.call("get_interaction_priority_rank"))
+		var distance := player.global_position.distance_squared_to(point)
+		if best_node == null or distance < best_distance or (is_equal_approx(distance, best_distance) and priority < best_priority):
+			best_node = candidate
+			best_distance = distance
+			best_priority = priority
+	return best_node == self
 
 func _get_or_create_overlay(group_name: String, scene: PackedScene) -> Node:
 	var ui: Node = get_tree().get_first_node_in_group(group_name)

@@ -1,0 +1,13 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scenes/items/icons/key_inventory_icon.gd" id="1_script"]
+[ext_resource type="Texture2D" path="res://assets/items/icons/key/inventory_icon.png" id="2_icon"]
+
+[node name="KeyInventoryIcon" type="Node2D"]
+scale = Vector2(0.72, 0.72)
+script = ExtResource("1_script")
+
+[node name="Base" type="Sprite2D" parent="."]
+texture_filter = 1
+scale = Vector2(0.75, 0.75)
+texture = ExtResource("2_icon")

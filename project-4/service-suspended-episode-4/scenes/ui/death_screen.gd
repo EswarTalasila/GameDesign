@@ -28,6 +28,7 @@ var _reload_btn: TextureButton
 var _exit_btn: TextureButton
 var _reload_tooltip: Label
 var _exit_tooltip: Label
+var _reload_tooltip_text: String = "Restart the run from the beginning.\nNo checkpoints."
 
 func _ready() -> void:
 	var viewport_size = get_viewport().get_visible_rect().size
@@ -65,7 +66,7 @@ func _build_buttons(viewport_size: Vector2) -> void:
 	add_child(_exit_btn)
 
 	_reload_tooltip = _create_tooltip(
-		"Restart the run from the beginning.\nNo checkpoints.",
+		_reload_tooltip_text,
 		_reload_btn
 	)
 	_exit_tooltip = _create_tooltip(
@@ -150,3 +151,8 @@ func _set_buttons_disabled(disabled: bool) -> void:
 		_reload_btn.disabled = disabled
 	if _exit_btn:
 		_exit_btn.disabled = disabled
+
+func set_reload_tooltip_text(text: String) -> void:
+	_reload_tooltip_text = text
+	if _reload_tooltip:
+		_reload_tooltip.text = text

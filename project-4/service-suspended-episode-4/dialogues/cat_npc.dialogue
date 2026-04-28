@@ -1,0 +1,27 @@
+~ start
+Cat: I can help you escape this dungeon, but first you need to get me out of these chains.
+=> END
+
+~ return
+Cat: The chain is still on.
+=> END
+
+~ freed
+Cat: Thank you for helping me. Follow me.
+=> END
+
+~ campfire
+Cat: Bring me the four map pieces. I can piece the rest together here.
+=> END
+
+~ map_ready
+Cat: Good. These are the pieces I needed. Take this map and use the clock on it.
+=> END
+
+~ map_after
+Cat: Open the map and use the clock. The colored trees will show you the burn order.
+=> END
+
+~ hands_full
+Cat: Your hands are full. Make room and speak to me again.
+=> END

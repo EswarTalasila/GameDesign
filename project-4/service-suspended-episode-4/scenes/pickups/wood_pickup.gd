@@ -1,5 +1,7 @@
 extends Area2D
 
+const PickupSorting = preload("res://scripts/pickup_sorting.gd")
+
 var _pickup_sound = preload("res://assets/sounds/key_pickup.mp3")
 
 @export var amount: int = 1
@@ -7,6 +9,7 @@ var _pickup_sound = preload("res://assets/sounds/key_pickup.mp3")
 @onready var sprite: AnimatedSprite2D = $AnimatedSprite2D
 
 func _ready() -> void:
+	PickupSorting.sync_from_collision(self)
 	add_to_group("wood_pickup")
 	collision_layer = 4
 	collision_mask = 1

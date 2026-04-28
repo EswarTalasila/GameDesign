@@ -1,8 +1,8 @@
-[gd_scene load_steps=15 format=4]
+[gd_scene format=3 uid="uid://ba1oxmm4yk5i0"]
 
-[ext_resource type="Script" path="res://scenes/pickups/wood_pickup.gd" id="1_script"]
-[ext_resource type="Texture2D" path="res://assets/sprites/pickups/wood/wood_pickup_float.png" id="2_sheet"]
-[ext_resource type="Shader" path="res://assets/shaders/outline_glow.gdshader" id="3_glow"]
+[ext_resource type="Script" uid="uid://c0u0clw05t0lj" path="res://scenes/pickups/wood_pickup.gd" id="1_script"]
+[ext_resource type="Texture2D" uid="uid://byri8ubtn53kw" path="res://assets/sprites/pickups/wood/wood_pickup_float.png" id="2_sheet"]
+[ext_resource type="Shader" uid="uid://chgfab2d1w2mn" path="res://assets/shaders/outline_glow.gdshader" id="3_glow"]
 
 [sub_resource type="ShaderMaterial" id="glow_mat"]
 shader = ExtResource("3_glow")
@@ -78,19 +78,17 @@ animations = [{
 [sub_resource type="RectangleShape2D" id="col_shape"]
 size = Vector2(28, 14)
 
-[node name="WoodPickup" type="Area2D"]
-y_sort_origin = 32
+[node name="WoodPickup" type="Area2D" unique_id=1416543880]
 collision_layer = 4
-collision_mask = 1
 script = ExtResource("1_script")
 
-[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=676117527]
 material = SubResource("glow_mat")
-texture_filter = 0
+scale = Vector2(0.5, 0.5)
 sprite_frames = SubResource("sprite_frames")
 animation = &"float"
 autoplay = "float"
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1566487880]
 position = Vector2(0, 10)
 shape = SubResource("col_shape")

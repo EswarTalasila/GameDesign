@@ -15,7 +15,10 @@ class_name SeasonSwapper
 ##   jungle:    ground=0, main=1, extras=2, anims=3, water=4, rocks=5
 ##   autumn:    ground=6, main=7, anims=8, water=9
 ##   winter:    ground=10, main=11, water=12
-##   wasteland: main=13, ground=14, water=15
+##   wasteland: main=13, ground=14, water=15, blood_water=16
+
+const WASTELAND_WATER_SOURCE := 15
+const WASTELAND_BLOOD_WATER_SOURCE := 16
 
 const SEASON_MAP = {
 	"jungle": {
@@ -40,14 +43,14 @@ const SEASON_MAP = {
 		"ground": 14,
 		"main": 13,
 		"anims": -1,
-		"water": 15,
+		"water": WASTELAND_WATER_SOURCE,
 	},
 }
 
 const GROUND_SOURCES = [0, 6, 10, 14]
 const MAIN_SOURCES = [1, 7, 11, 13]
 const ANIMS_SOURCES = [3, 8]
-const WATER_SOURCES = [4, 9, 12, 15]
+const WATER_SOURCES = [4, 9, 12, WASTELAND_WATER_SOURCE, WASTELAND_BLOOD_WATER_SOURCE]
 
 ## Rocks atlas (Source 5): 4 seasonal columns, 3 tiles wide each, with gaps.
 ## Layout: wasteland(4-6), jungle(8-10), winter(12-14), autumn(16-18).
@@ -74,7 +77,7 @@ func swap_season(season: String, root: Node = null) -> void:
 		return
 
 	var target = root if root else get_parent()
-	var mapping = SEASON_MAP[season]
+	var mapping = _resolve_mapping(season, target)
 	var layers = _find_all_tilemaplayers(target)
 
 	for layer in layers:
@@ -89,6 +92,19 @@ func swap_season(season: String, root: Node = null) -> void:
 		animator.swap_source(season)
 
 	_current_season = season
+
+func _resolve_mapping(season: String, target: Node) -> Dictionary:
+	var mapping: Dictionary = SEASON_MAP[season].duplicate()
+	if season == "wasteland":
+		mapping["water"] = _resolve_wasteland_water_source(target)
+	return mapping
+
+func _resolve_wasteland_water_source(target: Node) -> int:
+	if target and "wasteland_water_style" in target:
+		var style := String(target.get("wasteland_water_style"))
+		if style == "blood":
+			return WASTELAND_BLOOD_WATER_SOURCE
+	return WASTELAND_WATER_SOURCE
 
 func _swap_layer(layer: TileMapLayer, mapping: Dictionary, season: String) -> void:
 	var cells = layer.get_used_cells()

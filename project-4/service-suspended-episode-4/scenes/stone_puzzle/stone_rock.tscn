@@ -1,0 +1,13 @@
+[gd_scene format=3 uid="uid://d3rrmemg6u73c"]
+
+[ext_resource type="Script" uid="uid://c387qa67ma6xu" path="res://scenes/stone_puzzle/stone_rock.gd" id="1_script"]
+[ext_resource type="Texture2D" uid="uid://317g5nip4ke3" path="res://assets/sprites/stone_puzzle/stones/black_stone.png" id="2_neex5"]
+
+[node name="StoneRock" type="Node2D" unique_id=277380625]
+script = ExtResource("1_script")
+rock_color = "black"
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=749604649]
+texture_filter = 1
+scale = Vector2(0.75, 0.75)
+texture = ExtResource("2_neex5")

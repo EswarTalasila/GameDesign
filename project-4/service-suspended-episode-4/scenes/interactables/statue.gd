@@ -79,6 +79,8 @@ var direction: String = "front":
 
 ## Physical statue slot index (1-8). Two random slots are broken each run.
 @export_range(1, 8) var statue_id: int = 1
+## Force this placed statue to stay broken regardless of the ritual seed.
+@export var force_broken: bool = false
 
 ## Whether this statue's ticket has been burned correctly.
 var ticket_burned: bool = false
@@ -109,13 +111,16 @@ func _ready() -> void:
 		_prompt.visible = false
 	if not Engine.is_editor_hint():
 		GameState.ensure_statue_ritual_seeded()
-	_is_broken = not Engine.is_editor_hint() and GameState.is_statue_broken(statue_id)
+	_is_broken = force_broken or (not Engine.is_editor_hint() and GameState.is_statue_broken(statue_id))
+	completed = not Engine.is_editor_hint() and GameState.has_completed_statue_offering(statue_id)
 	_update_texture()
 	_setup_gem_animation()
 	if _is_broken:
 		_apply_broken_state()
 	else:
 		_apply_assigned_fire_color()
+		if completed:
+			_apply_completed_state()
 	if auto_position_fire:
 		_apply_fire_position()
 	if auto_layer_fire:
@@ -169,6 +174,17 @@ func _apply_broken_state() -> void:
 		_prompt.visible = false
 	if _zone:
 		_zone.monitoring = false
+	if _gem_sprite:
+		_gem_sprite.visible = false
+
+func _apply_completed_state() -> void:
+	completed = true
+	fire_lit = false
+	show_ui_on_interact = false
+	toggle_fire_on_interact = false
+	_player_nearby = false
+	if _prompt:
+		_prompt.visible = false
 	if _gem_sprite:
 		_gem_sprite.visible = false
 
@@ -288,18 +304,13 @@ func is_correct_offering(expected_index: int) -> bool:
 func resolve_special_ticket_offering() -> bool:
 	if _is_broken:
 		return false
-	if completed:
+	if completed or GameState.has_completed_statue_offering(statue_id):
+		_apply_completed_state()
 		return true
 	var accepted := GameState.resolve_statue_offering(statue_id)
 	if accepted:
-		completed = true
-		burn_ticket()
-		extinguish_fire()
-		show_ui_on_interact = false
-		toggle_fire_on_interact = false
-		if _prompt:
-			_prompt.visible = false
-		_player_nearby = false
+		GameState.mark_statue_offering_completed(statue_id)
+		_apply_completed_state()
 	else:
 		# TODO: apply the time penalty and recovery path for refused offerings.
 		light_fire()

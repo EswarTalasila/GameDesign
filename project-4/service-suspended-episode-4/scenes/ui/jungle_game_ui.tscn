@@ -4,6 +4,7 @@
 [ext_resource type="PackedScene" path="res://scenes/ui/health_bar.tscn" id="2_health"]
 [ext_resource type="PackedScene" uid="uid://ch3b8wsehps15" path="res://scenes/ui/trial_timer_ui.tscn" id="3_timer"]
 [ext_resource type="PackedScene" uid="uid://dnjdapcwcvcoa" path="res://scenes/ui/campfire_status_ui.tscn" id="4_status"]
+[ext_resource type="PackedScene" path="res://scenes/ui/quest_widget.tscn" id="5_objective_panel"]
 
 [node name="GameUI" type="Node" unique_id=1105785333]
 
@@ -20,5 +21,12 @@ scale = Vector2(2.59, 2.59)
 
 [node name="CampfireStatusUI" parent="UILayer" unique_id=896970012 instance=ExtResource("4_status")]
 position = Vector2(1583.8713, 764.3613)
+
+[node name="ObjectivePanel" parent="UILayer" unique_id=1357223876 instance=ExtResource("5_objective_panel")]
+offset_left = -0.015867174
+offset_top = 0.032167554
+offset_right = 319.98413
+offset_bottom = 154.03217
+scale = Vector2(1.4, 1.4)
 
 [node name="TrialTimerUI" parent="." unique_id=357595803 instance=ExtResource("3_timer")]

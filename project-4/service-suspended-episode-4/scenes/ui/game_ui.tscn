@@ -2,6 +2,7 @@
 
 [ext_resource type="PackedScene" path="res://scenes/ui/inventory_hud.tscn" id="1_inv"]
 [ext_resource type="PackedScene" path="res://scenes/ui/health_bar.tscn" id="2_health"]
+[ext_resource type="PackedScene" path="res://scenes/ui/quest_widget.tscn" id="3_objective_panel"]
 
 [node name="GameUI" type="Node"]
 
@@ -16,3 +17,7 @@ scale = Vector2(1.48, 1.48)
 position = Vector2(1622, 179)
 scale = Vector2(2.59, 2.59)
 centered = false
+
+[node name="ObjectivePanel" parent="UILayer" instance=ExtResource("3_objective_panel")]
+position = Vector2(66, 120)
+scale = Vector2(1.4, 1.4)

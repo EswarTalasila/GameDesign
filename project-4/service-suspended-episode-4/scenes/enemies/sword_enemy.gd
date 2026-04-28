@@ -1,5 +1,7 @@
 extends CharacterBody2D
 
+signal defeated(enemy: CharacterBody2D)
+
 enum State { DORMANT, SPAWNING, IDLE, WALKING, ATTACKING, HIT, DYING, DEAD }
 
 @export var move_speed: float = 50.0
@@ -10,18 +12,41 @@ enum State { DORMANT, SPAWNING, IDLE, WALKING, ATTACKING, HIT, DYING, DEAD }
 @export var health: int = 2
 
 var _shadow_hit_sound = preload("res://assets/sounds/shadow_hit.mp3")
+var _health_pickup_scene = preload("res://scenes/pickups/health_pickup.tscn")
+var _voodoo_pickup_scene = preload("res://scenes/pickups/voodoo_doll_pickup.tscn")
+
+const HEALTH_DROP_SCENE_PATH := "res://scenes/pickups/health_pickup.tscn"
+const VOODOO_DROP_SCENE_PATH := "res://scenes/pickups/voodoo_doll_pickup.tscn"
+const HEALTH_DROP_CHANCE := 0.5
+const VOODOO_DROP_CHANCE := 0.25
 
 var _state: State = State.DORMANT
 var _player: CharacterBody2D = null
 var _idle_timer: float = 0.0
 var _hit_frames_dealt: Array[int] = []  # tracks which damage frames already fired
 var _facing_east: bool = true  # default facing direction
+var _persistent_section: Node2D = null
+var _persistent_section_path: String = ""
+var _persistent_enemy_id: String = ""
+var _drops_spawned: bool = false
+var _defeat_emitted: bool = false
 
 @onready var _sprite: AnimatedSprite2D = $AnimatedSprite2D
 @onready var _detection: Area2D = $DetectionZone
 @onready var _hitbox: Area2D = $HitBox
 
 func _ready() -> void:
+	add_to_group("jungle_hunt_target")
+	_persistent_section = _get_persistent_section()
+	if _persistent_section:
+		_persistent_section_path = _persistent_section.scene_file_path
+		_persistent_enemy_id = GameState.make_jungle_enemy_id(
+			_persistent_section_path,
+			_persistent_section.to_local(global_position)
+		)
+		if GameState.is_jungle_enemy_defeated(_persistent_enemy_id):
+			queue_free()
+			return
 	_sprite.play("dormant")
 	_hitbox.monitoring = false
 	_hitbox.monitorable = false
@@ -166,6 +191,7 @@ func _on_animation_finished() -> void:
 			else:
 				_change_state(State.IDLE)
 		State.DYING:
+			_spawn_death_drops()
 			_change_state(State.DEAD)
 
 func _play_sfx(stream: AudioStream) -> void:
@@ -184,3 +210,75 @@ func take_damage(amount: int = 1) -> void:
 	_hitbox.monitoring = false
 	_play_sfx(_shadow_hit_sound)
 	_play_directional("hit")
+
+func _spawn_death_drops() -> void:
+	if _drops_spawned:
+		return
+	_drops_spawned = true
+	_emit_defeated()
+	if not _persistent_enemy_id.is_empty():
+		GameState.mark_jungle_enemy_defeated(_persistent_enemy_id)
+	var drops: Array[Dictionary] = []
+	if randf() < HEALTH_DROP_CHANCE:
+		drops.append({
+			"scene": _health_pickup_scene,
+			"scene_path": HEALTH_DROP_SCENE_PATH,
+		})
+	if randf() < VOODOO_DROP_CHANCE:
+		drops.append({
+			"scene": _voodoo_pickup_scene,
+			"scene_path": VOODOO_DROP_SCENE_PATH,
+		})
+	var offsets := _get_drop_offsets(drops.size())
+	for i in range(drops.size()):
+		_spawn_drop(drops[i], offsets[i])
+
+func _spawn_drop(drop_data: Dictionary, offset: Vector2) -> void:
+	var scene: PackedScene = drop_data.get("scene") as PackedScene
+	if scene == null:
+		return
+	var drop = scene.instantiate()
+	if drop == null:
+		return
+	var drop_position := global_position + offset
+	if not _persistent_section_path.is_empty() and _persistent_section != null:
+		var drop_id := GameState.add_jungle_persistent_enemy_drop(
+			_persistent_section_path,
+			String(drop_data.get("scene_path", "")),
+			_persistent_section.to_local(drop_position)
+		)
+		if "persistent_drop_id" in drop:
+			drop.set("persistent_drop_id", drop_id)
+	var parent := _get_drop_parent()
+	if parent == null:
+		return
+	parent.add_child(drop)
+	drop.global_position = drop_position
+
+func _get_drop_offsets(count: int) -> Array[Vector2]:
+	if count <= 0:
+		return []
+	if count == 1:
+		return [Vector2.ZERO]
+	return [Vector2(-8, 0), Vector2(8, 0)]
+
+func _emit_defeated() -> void:
+	if _defeat_emitted:
+		return
+	_defeat_emitted = true
+	defeated.emit(self)
+
+func _get_persistent_section() -> Node2D:
+	var node: Node = get_parent()
+	while node:
+		if node is JungleSection:
+			return node
+		node = node.get_parent()
+	return null
+
+func _get_drop_parent() -> Node:
+	if _persistent_section:
+		var entities := _persistent_section.get_node_or_null("Entities")
+		if entities:
+			return entities
+	return get_parent()

@@ -6,7 +6,7 @@
 size = Vector2(24, 14)
 
 [sub_resource type="RectangleShape2D" id="hit_shape"]
-size = Vector2(30, 28)
+size = Vector2(44, 56)
 
 [node name="JungleTree" type="Node2D" unique_id=1826955063]
 script = ExtResource("1_script")
@@ -24,7 +24,7 @@ collision_layer = 2
 collision_mask = 0
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="HitBody" unique_id=923263760]
-position = Vector2(0, -8)
+position = Vector2(0, -26)
 shape = SubResource("hit_shape")
 
 [node name="TreeMesh" type="MeshInstance2D" parent="." unique_id=1352628401]

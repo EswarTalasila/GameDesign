@@ -1,0 +1,59 @@
+[gd_scene format=3 uid="uid://r0fll4ox8y2l"]
+
+[ext_resource type="Script" path="res://scenes/pickups/map_piece_pickup.gd" id="1_script"]
+[ext_resource type="Texture2D" uid="uid://llqqfrve4643" path="res://assets/ui/map/pickup_1.png" id="2_f1"]
+[ext_resource type="Texture2D" uid="uid://dxhj1djqkhtfd" path="res://assets/ui/map/pickup_2.png" id="3_f2"]
+[ext_resource type="Texture2D" uid="uid://bu7a0hkbslofg" path="res://assets/ui/map/pickup_3.png" id="4_f3"]
+[ext_resource type="Texture2D" uid="uid://dtqbjb3p317ya" path="res://assets/ui/map/pickup_4.png" id="5_f4"]
+[ext_resource type="Texture2D" uid="uid://bg82qwqwgup42" path="res://assets/ui/map/pickup_5.png" id="6_f5"]
+[ext_resource type="Texture2D" uid="uid://uyvhxh3ddpj4" path="res://assets/ui/map/pickup_6.png" id="7_f6"]
+[ext_resource type="Texture2D" uid="uid://drcxralu57pyl" path="res://assets/ui/map/pickup_7.png" id="8_f7"]
+[ext_resource type="Texture2D" uid="uid://cqajun55057qw" path="res://assets/ui/map/pickup_8.png" id="9_f8"]
+
+[sub_resource type="SpriteFrames" id="pickup_frames"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("2_f1")
+}, {
+"duration": 1.0,
+"texture": ExtResource("3_f2")
+}, {
+"duration": 1.0,
+"texture": ExtResource("4_f3")
+}, {
+"duration": 1.0,
+"texture": ExtResource("5_f4")
+}, {
+"duration": 1.0,
+"texture": ExtResource("6_f5")
+}, {
+"duration": 1.0,
+"texture": ExtResource("7_f6")
+}, {
+"duration": 1.0,
+"texture": ExtResource("8_f7")
+}, {
+"duration": 1.0,
+"texture": ExtResource("9_f8")
+}],
+"loop": true,
+"name": &"default",
+"speed": 6.0
+}]
+
+[sub_resource type="CircleShape2D" id="pickup_shape"]
+radius = 16.0
+
+[node name="MapPiecePickup" type="Area2D" unique_id=1697910359]
+collision_layer = 0
+script = ExtResource("1_script")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=1440407370]
+texture_filter = 1
+scale = Vector2(0.75, 0.75)
+sprite_frames = SubResource("pickup_frames")
+autoplay = "default"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=2047890804]
+shape = SubResource("pickup_shape")

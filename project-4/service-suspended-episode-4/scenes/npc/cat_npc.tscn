@@ -1,0 +1,42 @@
+[gd_scene load_steps=7 format=4]
+
+[ext_resource type="Script" path="res://scenes/npc/cat_npc.gd" id="1_script"]
+[ext_resource type="PackedScene" path="res://scenes/ui/press_e_prompt.tscn" id="2_prompt"]
+[ext_resource type="PackedScene" path="res://scenes/ui/lock_prompt.tscn" id="3_lock_prompt"]
+[ext_resource type="Resource" path="res://dialogues/cat_npc.dialogue" id="4_dialogue"]
+
+[sub_resource type="RectangleShape2D" id="1_body_shape"]
+size = Vector2(18, 18)
+
+[sub_resource type="RectangleShape2D" id="2_interaction_shape"]
+size = Vector2(72, 84)
+
+[node name="CatNPC" type="CharacterBody2D"]
+collision_layer = 1
+collision_mask = 1
+script = ExtResource("1_script")
+dialogue_resource = ExtResource("4_dialogue")
+heard_flag = "cat_intro_heard"
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+position = Vector2(0, -32)
+texture_filter = 1
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0, -9)
+shape = SubResource("1_body_shape")
+
+[node name="InteractionArea" type="Area2D" parent="."]
+collision_layer = 0
+collision_mask = 1
+monitorable = false
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="InteractionArea"]
+position = Vector2(0, -34)
+shape = SubResource("2_interaction_shape")
+
+[node name="PromptSprite" parent="." instance=ExtResource("2_prompt")]
+position = Vector2(0, -74)
+
+[node name="LockPrompt" parent="." instance=ExtResource("3_lock_prompt")]
+position = Vector2(0, -74)

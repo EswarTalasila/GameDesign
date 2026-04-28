@@ -41,4 +41,9 @@ static func get_table() -> Array:
 		{ "source": 2, "marker": Vector2i(0, 0), "scene": preload("res://scenes/pickups/health_pickup.tscn"), "size": Vector2i(1, 1), "layer": "items" },
 		# Special ticket pickups — floor_managed: floor.gd picks 2 at random from all painted markers
 		{ "source": 3, "marker": Vector2i(0, 0), "scene": preload("res://scenes/pickups/special_ticket_pickup.tscn"), "size": Vector2i(1, 1), "layer": "items", "floor_managed": true },
+		# Map piece pickups (4 logical pieces)
+		{ "source": 4, "marker": Vector2i(0, 0), "scene": preload("res://scenes/pickups/map_piece_pickup.tscn"), "size": Vector2i(1, 1), "layer": "items", "props": { "piece_id": 1 } },
+		{ "source": 5, "marker": Vector2i(0, 0), "scene": preload("res://scenes/pickups/map_piece_pickup.tscn"), "size": Vector2i(1, 1), "layer": "items", "props": { "piece_id": 2 } },
+		{ "source": 6, "marker": Vector2i(0, 0), "scene": preload("res://scenes/pickups/map_piece_pickup.tscn"), "size": Vector2i(1, 1), "layer": "items", "props": { "piece_id": 3 } },
+		{ "source": 7, "marker": Vector2i(0, 0), "scene": preload("res://scenes/pickups/map_piece_pickup.tscn"), "size": Vector2i(1, 1), "layer": "items", "props": { "piece_id": 4 } },
 	]

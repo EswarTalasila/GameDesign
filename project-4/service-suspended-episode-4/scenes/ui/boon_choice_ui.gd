@@ -15,6 +15,7 @@ extends CanvasLayer
 @onready var ticket_choice: TextureButton = $Panel/Choices/TicketChoice
 
 var _open: bool = false
+@export var allow_cancel: bool = false
 
 func _ready() -> void:
 	_apply_button_gap()
@@ -59,7 +60,8 @@ func _input(event: InputEvent) -> void:
 		return
 	if event.is_action_pressed("ui_cancel"):
 		get_viewport().set_input_as_handled()
-		close()
+		if allow_cancel:
+			close()
 		return
 func _choose_time() -> void:
 	if not _open:

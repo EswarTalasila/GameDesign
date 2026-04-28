@@ -1,0 +1,10 @@
+[gd_scene format=3]
+
+[ext_resource type="Texture2D" path="res://assets/ui/cursors/key.png" id="1_key"]
+[ext_resource type="Texture2D" path="res://assets/ui/cursors/key_click.png" id="2_click"]
+
+[node name="KeyCursor" type="Sprite2D"]
+texture_filter = 1
+position = Vector2(32, 32)
+texture = ExtResource("1_key")
+metadata/click_texture = ExtResource("2_click")

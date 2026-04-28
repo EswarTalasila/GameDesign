@@ -1,10 +1,13 @@
 extends Area2D
 
+const PickupSorting = preload("res://scripts/pickup_sorting.gd")
+
 var _pickup_sound = preload("res://assets/sounds/golden_ticket_pickup.mp3")
 
 @onready var sprite: AnimatedSprite2D = $AnimatedSprite2D
 
 func _ready() -> void:
+	PickupSorting.sync_from_collision(self)
 	add_to_group("special_ticket")
 	collision_layer = 4   # layer 3
 	collision_mask = 1    # detect player (layer 1)

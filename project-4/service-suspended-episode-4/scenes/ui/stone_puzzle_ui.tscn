@@ -1,0 +1,51 @@
+[gd_scene format=3 uid="uid://cy0a3gbhy7ohh"]
+
+[ext_resource type="Script" uid="uid://bwa3sq3o8l4o0" path="res://scenes/ui/stone_puzzle_ui.gd" id="1_script"]
+[ext_resource type="Texture2D" uid="uid://b3jrxi65kx6xa" path="res://assets/sprites/stone_puzzle/ui/stone_puzzle_board.png" id="2_board"]
+
+[node name="StonePuzzleUI" type="CanvasLayer" unique_id=2114177627]
+layer = 20
+script = ExtResource("1_script")
+
+[node name="Dimmer" type="ColorRect" parent="." unique_id=1477208237]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+color = Color(0, 0, 0, 0.72)
+
+[node name="Content" type="Node2D" parent="." unique_id=378141020]
+
+[node name="Board" type="Sprite2D" parent="Content" unique_id=839454013]
+texture_filter = 1
+position = Vector2(2, 2)
+scale = Vector2(4, 4)
+texture = ExtResource("2_board")
+
+[node name="FloatingRocks" type="Node2D" parent="Content" unique_id=2119766151]
+scale = Vector2(1.25, 1.25)
+
+[node name="Slots" type="Node2D" parent="Content" unique_id=1579268818]
+
+[node name="North" type="Marker2D" parent="Content/Slots" unique_id=1118541320]
+position = Vector2(0, -172.55989)
+
+[node name="NorthEast" type="Marker2D" parent="Content/Slots" unique_id=1283549256]
+position = Vector2(156.52936, -120.28071)
+
+[node name="East" type="Marker2D" parent="Content/Slots" unique_id=474426747]
+position = Vector2(220.49275, 0.12204361)
+
+[node name="SouthEast" type="Marker2D" parent="Content/Slots" unique_id=502164733]
+position = Vector2(160.47675, 123.015305)
+
+[node name="South" type="Marker2D" parent="Content/Slots" unique_id=256716659]
+position = Vector2(0, 176.18611)
+
+[node name="SouthWest" type="Marker2D" parent="Content/Slots" unique_id=1618759617]
+position = Vector2(-155.75134, 123.35622)
+
+[node name="West" type="Marker2D" parent="Content/Slots" unique_id=68710332]
+position = Vector2(-215.30435, 0.009151459)
+
+[node name="NorthWest" type="Marker2D" parent="Content/Slots" unique_id=14284204]
+position = Vector2(-155.31914, -120.51756)

@@ -98,7 +98,11 @@ func _update_tooltip(variant: int) -> void:
 	if variant == 0:
 		_tooltip.visible = false
 		return
-	_tooltip.text = "Variant %d" % variant
+	var warning := GameState.get_jungle_clock_warning(variant)
+	if not warning.is_empty() and variant != GameState.current_variant:
+		_tooltip.text = "Variant %d Locked" % variant
+	else:
+		_tooltip.text = "Variant %d" % variant
 	_tooltip.visible = true
 
 func _process(_delta: float) -> void:
@@ -149,7 +153,11 @@ func _input(event: InputEvent) -> void:
 			if _hovered_variant == GameState.current_variant:
 				_show_message("You are already here.")
 			else:
-				_select_variant(_hovered_variant)
+				var warning := GameState.get_jungle_clock_warning(_hovered_variant)
+				if not warning.is_empty():
+					_show_message(warning)
+				else:
+					_select_variant(_hovered_variant)
 			get_viewport().set_input_as_handled()
 
 func _select_variant(variant: int) -> void:

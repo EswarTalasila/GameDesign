@@ -1,0 +1,16 @@
+[remap]
+
+importer="dialogue_manager"
+importer_version=15
+type="Resource"
+uid="uid://bqfyp6ph64au8"
+path="res://.godot/imported/stone_altar_intro.dialogue-4b80ef6290b560a32c92c0bd8650f8bb.tres"
+
+[deps]
+
+source_file="res://dialogues/stone_altar_intro.dialogue"
+dest_files=["res://.godot/imported/stone_altar_intro.dialogue-4b80ef6290b560a32c92c0bd8650f8bb.tres"]
+
+[params]
+
+defaults=true

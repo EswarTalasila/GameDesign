@@ -1,0 +1,69 @@
+[gd_scene format=3 uid="uid://b0fhju8d3mo8f"]
+
+[ext_resource type="Script" uid="uid://8l8eowo7cq5c" path="res://scenes/pickups/stone_rock_pickup.gd" id="1_script"]
+[ext_resource type="Shader" uid="uid://chgfab2d1w2mn" path="res://assets/shaders/outline_glow.gdshader" id="2_glow"]
+[ext_resource type="Texture2D" uid="uid://cqhxx8vqsns0k" path="res://assets/sprites/stone_puzzle/pickups/black_stone_pickup_1.png" id="3_toah0"]
+[ext_resource type="Texture2D" uid="uid://ccptajweto8g3" path="res://assets/sprites/stone_puzzle/pickups/black_stone_pickup_2.png" id="4_rqhbk"]
+[ext_resource type="Texture2D" uid="uid://cwkhlmky06j8v" path="res://assets/sprites/stone_puzzle/pickups/black_stone_pickup_3.png" id="5_ycd3a"]
+[ext_resource type="Texture2D" uid="uid://e02nnbvb3xqa" path="res://assets/sprites/stone_puzzle/pickups/black_stone_pickup_4.png" id="6_gtpxv"]
+[ext_resource type="Texture2D" uid="uid://cx0jkhrg3mjur" path="res://assets/sprites/stone_puzzle/pickups/black_stone_pickup_5.png" id="7_jtvkt"]
+[ext_resource type="Texture2D" uid="uid://box3iawq7f6gy" path="res://assets/sprites/stone_puzzle/pickups/black_stone_pickup_6.png" id="8_l4b7j"]
+[ext_resource type="Texture2D" uid="uid://ryo2dowowotn" path="res://assets/sprites/stone_puzzle/pickups/black_stone_pickup_7.png" id="9_aj542"]
+[ext_resource type="Texture2D" uid="uid://bdnrw3ns4wbyt" path="res://assets/sprites/stone_puzzle/pickups/black_stone_pickup_8.png" id="10_bwode"]
+
+[sub_resource type="ShaderMaterial" id="glow_mat"]
+shader = ExtResource("2_glow")
+shader_parameter/glow_enabled = true
+shader_parameter/glow_color = Color(1, 1, 1, 1)
+shader_parameter/glow_alpha = 0.6
+shader_parameter/outline_width = 1.0
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_ipfin"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("3_toah0")
+}, {
+"duration": 1.0,
+"texture": ExtResource("4_rqhbk")
+}, {
+"duration": 1.0,
+"texture": ExtResource("5_ycd3a")
+}, {
+"duration": 1.0,
+"texture": ExtResource("6_gtpxv")
+}, {
+"duration": 1.0,
+"texture": ExtResource("7_jtvkt")
+}, {
+"duration": 1.0,
+"texture": ExtResource("8_l4b7j")
+}, {
+"duration": 1.0,
+"texture": ExtResource("9_aj542")
+}, {
+"duration": 1.0,
+"texture": ExtResource("10_bwode")
+}],
+"loop": true,
+"name": &"float",
+"speed": 10.0
+}]
+
+[sub_resource type="CircleShape2D" id="col_shape"]
+radius = 16.0
+
+[node name="StoneRockPickup" type="Area2D" unique_id=1510358396]
+collision_layer = 4
+script = ExtResource("1_script")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=1497171045]
+texture_filter = 1
+material = SubResource("glow_mat")
+scale = Vector2(0.25, 0.25)
+sprite_frames = SubResource("SpriteFrames_ipfin")
+animation = &"float"
+frame_progress = 0.78466964
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=713671984]
+shape = SubResource("col_shape")

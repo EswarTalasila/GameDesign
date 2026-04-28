@@ -9,7 +9,8 @@ extends Node
 ## to the new source so you can preview different water colors in-game.
 
 ## Set to "auto" to inherit the season from the variant's JungleSection parent.
-@export_enum("auto", "jungle", "autumn", "winter", "wasteland") var water_style: String = "auto":
+## `wasteland_blood` is available for direct per-layer overrides when needed.
+@export_enum("auto", "jungle", "autumn", "winter", "wasteland", "wasteland_blood") var water_style: String = "auto":
 	set(value):
 		water_style = value
 		if _tilemap and not _water_cells.is_empty():
@@ -23,6 +24,7 @@ const WATER_SOURCES = {
 	"autumn": 9,
 	"winter": 12,
 	"wasteland": 15,
+	"wasteland_blood": 16,
 }
 
 ## Frame block origins — same layout for all water sheets (2×4 grid, 12×5 blocks).
@@ -52,6 +54,8 @@ func _resolve_style() -> String:
 	var node = get_parent()
 	while node:
 		if node is JungleSection:
+			if node.season == "wasteland" and "wasteland_water_style" in node:
+				return "wasteland_blood" if String(node.get("wasteland_water_style")) == "blood" else "wasteland"
 			return node.season
 		node = node.get_parent()
 	return "jungle"

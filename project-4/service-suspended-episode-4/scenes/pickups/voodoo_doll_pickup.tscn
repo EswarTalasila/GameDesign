@@ -1,0 +1,48 @@
+[gd_scene load_steps=7 format=4]
+
+[ext_resource type="Script" path="res://scenes/pickups/voodoo_doll_pickup.gd" id="1_script"]
+[ext_resource type="Texture2D" path="res://assets/items/icons/voodoo_doll/inventory_icon.png" id="2_icon"]
+[ext_resource type="Shader" path="res://assets/shaders/outline_glow.gdshader" id="3_glow"]
+
+[sub_resource type="ShaderMaterial" id="glow_mat"]
+shader = ExtResource("3_glow")
+shader_parameter/glow_enabled = true
+shader_parameter/glow_color = Color(1, 1, 1, 1)
+shader_parameter/glow_alpha = 0.6
+shader_parameter/outline_width = 1.0
+
+[sub_resource type="AtlasTexture" id="frame_0"]
+atlas = ExtResource("2_icon")
+region = Rect2(0, 0, 64, 64)
+
+[sub_resource type="SpriteFrames" id="sprite_frames"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("frame_0")
+}],
+"loop": true,
+"name": &"float",
+"speed": 1.0
+}]
+
+[sub_resource type="RectangleShape2D" id="col_shape"]
+size = Vector2(14, 14)
+
+[node name="VoodooDollPickup" type="Area2D"]
+y_sort_origin = 16
+collision_layer = 4
+collision_mask = 1
+script = ExtResource("1_script")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+material = SubResource("glow_mat")
+texture_filter = 0
+position = Vector2(0, -8)
+scale = Vector2(0.375, 0.375)
+sprite_frames = SubResource("sprite_frames")
+animation = &"float"
+autoplay = "float"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("col_shape")

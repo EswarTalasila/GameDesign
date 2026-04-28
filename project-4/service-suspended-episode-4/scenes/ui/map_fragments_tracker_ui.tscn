@@ -1,0 +1,50 @@
+[gd_scene load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://scenes/ui/map_fragments_tracker_ui.gd" id="1_script"]
+[ext_resource type="FontFile" uid="uid://l121oiwf8wys" path="res://assets/fonts/DotGothic16-Regular.ttf" id="2_font"]
+
+[sub_resource type="StyleBoxFlat" id="panel_style"]
+content_margin_left = 12.0
+content_margin_top = 8.0
+content_margin_right = 12.0
+content_margin_bottom = 8.0
+bg_color = Color(0.05, 0.05, 0.08, 0.75)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.78, 0.7, 0.48, 0.22)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+
+[node name="MapFragmentsTrackerUI" type="PanelContainer"]
+offset_right = 182.0
+offset_bottom = 66.0
+theme_override_styles/panel = SubResource("panel_style")
+script = ExtResource("1_script")
+
+[node name="VBox" type="VBoxContainer" parent="."]
+layout_mode = 2
+theme_override_constants/separation = 2
+
+[node name="TitleLabel" type="RichTextLabel" parent="VBox"]
+custom_minimum_size = Vector2(0, 18)
+layout_mode = 2
+theme_override_fonts/normal_font = ExtResource("2_font")
+theme_override_font_sizes/normal_font_size = 18
+bbcode_enabled = true
+scroll_active = false
+fit_content = true
+text = "[color=#f2e7c4]Map Fragments[/color]"
+
+[node name="CountLabel" type="RichTextLabel" parent="VBox"]
+custom_minimum_size = Vector2(0, 24)
+layout_mode = 2
+theme_override_fonts/normal_font = ExtResource("2_font")
+theme_override_font_sizes/normal_font_size = 24
+bbcode_enabled = true
+scroll_active = false
+fit_content = true
+text = "[color=#fff6da]0 / 4[/color]"

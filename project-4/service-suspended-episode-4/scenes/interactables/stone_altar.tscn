@@ -1,0 +1,77 @@
+[gd_scene format=3 uid="uid://cbdmb87ytpq1o"]
+
+[ext_resource type="Script" uid="uid://c32o066po8mfj" path="res://scenes/interactables/stone_altar.gd" id="1_script"]
+[ext_resource type="Texture2D" uid="uid://1id12tsblgci" path="res://assets/sprites/stone_puzzle/altar/stone_altar.png" id="2_texture"]
+[ext_resource type="PackedScene" path="res://scenes/ui/press_e_prompt.tscn" id="3_prompt"]
+
+[sub_resource type="RectangleShape2D" id="body_shape"]
+size = Vector2(24.486368, 23.68121)
+
+[sub_resource type="RectangleShape2D" id="interact_shape"]
+size = Vector2(78, 72)
+
+[node name="StoneAltar" type="Node2D" unique_id=1578765157]
+y_sort_enabled = true
+script = ExtResource("1_script")
+floating_rock_scale_multiplier = Vector2(0.2, 0.2)
+solved_rock_scale_multiplier = Vector2(0.03, 0.03)
+editor_preview_slot = "East"
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=558289919]
+texture_filter = 1
+scale = Vector2(0.25, 0.25)
+texture = ExtResource("2_texture")
+
+[node name="FloatingRocks" type="Node2D" parent="." unique_id=1340770337]
+
+[node name="SolvedRocks" type="Node2D" parent="." unique_id=873004611]
+z_index = 6
+
+[node name="PreviewRocks" type="Node2D" parent="." unique_id=1390466391]
+z_index = 7
+
+[node name="SolvedSlots" type="Node2D" parent="." unique_id=1005532678]
+
+[node name="North" type="Marker2D" parent="SolvedSlots" unique_id=654860274]
+position = Vector2(0, -10.15625)
+
+[node name="NorthEast" type="Marker2D" parent="SolvedSlots" unique_id=1230079329]
+position = Vector2(6.15625, -8.140625)
+
+[node name="East" type="Marker2D" parent="SolvedSlots" unique_id=715890106]
+position = Vector2(8.640625, -3.125)
+
+[node name="SouthEast" type="Marker2D" parent="SolvedSlots" unique_id=1332320309]
+position = Vector2(6.15625, 1.625)
+
+[node name="South" type="Marker2D" parent="SolvedSlots" unique_id=1516205579]
+position = Vector2(0.03125, 3.875)
+
+[node name="SouthWest" type="Marker2D" parent="SolvedSlots" unique_id=382397420]
+position = Vector2(-6.109375, 1.609375)
+
+[node name="West" type="Marker2D" parent="SolvedSlots" unique_id=752449451]
+position = Vector2(-8.609375, -3.125)
+
+[node name="NorthWest" type="Marker2D" parent="SolvedSlots" unique_id=752839256]
+position = Vector2(-6.109375, -8.140625)
+
+[node name="FloatAnchor" type="Marker2D" parent="." unique_id=2096684530]
+position = Vector2(0, -18)
+
+[node name="Body" type="StaticBody2D" parent="." unique_id=995493437]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Body" unique_id=538969381]
+position = Vector2(-0.0760622, 0.018290043)
+shape = SubResource("body_shape")
+
+[node name="InteractZone" type="Area2D" parent="." unique_id=347014052]
+position = Vector2(0, 8)
+collision_layer = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="InteractZone" unique_id=2146497437]
+position = Vector2(0, -7.9657593)
+shape = SubResource("interact_shape")
+
+[node name="PressEPrompt" parent="InteractZone" unique_id=804865779 instance=ExtResource("3_prompt")]
+position = Vector2(-0.4467163, -33.065166)

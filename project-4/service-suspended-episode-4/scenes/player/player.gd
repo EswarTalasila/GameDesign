@@ -3,6 +3,7 @@ extends CharacterBody2D
 @export var speed: float = 120.0
 @export var attack_damage: int = 1
 @export var vision_overlay_enabled: bool = false
+@export var attack_debug_logging: bool = false
 
 @onready var animated_sprite: AnimatedSprite2D = $AnimatedSprite2D
 @onready var _hitbox: Area2D = $AttackHitBox
@@ -192,18 +193,71 @@ func _start_attack() -> void:
 	velocity = Vector2.ZERO
 	_hitbox.monitoring = true
 	_update_hitbox_position()
+	if attack_debug_logging:
+		var shape := $AttackHitBox/CollisionShape2D.shape as CircleShape2D
+		var radius := shape.radius if shape else -1.0
+		print("[attack] start dir=%s hitbox_pos=%s radius=%.2f" % [last_direction, $AttackHitBox/CollisionShape2D.position, radius])
+		_debug_attack_shape_query()
 	_play_animation("attack_" + last_direction, true)
 
 func _on_attack_body_entered(body: Node2D) -> void:
-	if not _attacking:
+	if not _attacking or not attack_debug_logging:
 		return
-	if body in _attack_hit_bodies:
+	var parent_name: String = str(body.get_parent().name) if body.get_parent() else "<none>"
+	print("[attack] queued body=%s parent=%s" % [body.name, parent_name])
+
+func _apply_attack_overlap_hits() -> void:
+	for body in _hitbox.get_overlapping_bodies():
+		_apply_attack_hit(body)
+
+func _apply_attack_query_hits() -> void:
+	for body in _get_attack_query_bodies():
+		_apply_attack_hit(body)
+
+func _apply_attack_hit(body: Node2D) -> void:
+	if body == null or body in _attack_hit_bodies:
 		return
 	_attack_hit_bodies.append(body)
+	if attack_debug_logging:
+		var parent_name: String = str(body.get_parent().name) if body.get_parent() else "<none>"
+		print("[attack] hit body=%s parent=%s" % [body.name, parent_name])
 	if body.has_method("take_damage"):
 		body.take_damage(attack_damage)
 	elif body.get_parent() and body.get_parent().has_method("take_damage"):
 		body.get_parent().take_damage(attack_damage)
+
+func _debug_attack_shape_query() -> void:
+	var results := _get_attack_query_results()
+	var body_names: Array[String] = []
+	for result in results:
+		var collider: Variant = result.get("collider")
+		if collider is Node:
+			var node := collider as Node
+			var parent_name := str(node.get_parent().name) if node.get_parent() else "<none>"
+			body_names.append("%s(parent=%s)" % [node.name, parent_name])
+	print("[attack] direct query count=%d hits=%s" % [results.size(), body_names])
+
+func _get_attack_query_bodies() -> Array[Node2D]:
+	var bodies: Array[Node2D] = []
+	for result in _get_attack_query_results():
+		var collider: Variant = result.get("collider")
+		if collider is Node2D:
+			bodies.append(collider as Node2D)
+	return bodies
+
+func _get_attack_query_results() -> Array[Dictionary]:
+	var collision_shape := $AttackHitBox/CollisionShape2D
+	if collision_shape == null or collision_shape.shape == null:
+		if attack_debug_logging:
+			print("[attack] query unavailable: missing collision shape")
+		return []
+	var query := PhysicsShapeQueryParameters2D.new()
+	query.shape = collision_shape.shape
+	query.transform = collision_shape.global_transform
+	query.collision_mask = _hitbox.collision_mask
+	query.collide_with_bodies = true
+	query.collide_with_areas = false
+	return get_world_2d().direct_space_state.intersect_shape(query, 8)
 
 func _update_hitbox_position() -> void:
 	var offsets = {
@@ -212,9 +266,7 @@ func _update_hitbox_position() -> void:
 		"north_east": Vector2(9, -9), "north_west": Vector2(-9, -9),
 		"south_east": Vector2(9, 9), "south_west": Vector2(-9, 9),
 	}
-	# The sprite renders 12 px above the player root, so keep the attack collider
-	# aligned with the visible hands/body instead of the old centered art position.
-	$AttackHitBox/CollisionShape2D.position = offsets.get(last_direction, Vector2(0, 12)) + Vector2(0, -12)
+	$AttackHitBox/CollisionShape2D.position = offsets.get(last_direction, Vector2(0, 12))
 
 func set_preview_direction(direction_name: String) -> void:
 	if not _dir_vectors.has(direction_name):
@@ -303,12 +355,19 @@ func _play_sfx(stream: AudioStream) -> void:
 	sfx.play()
 	sfx.finished.connect(sfx.queue_free)
 
+func _resolve_attack_hits() -> bool:
+	var hit_count_before := _attack_hit_bodies.size()
+	_apply_attack_query_hits()
+	_apply_attack_overlap_hits()
+	return _attack_hit_bodies.size() > hit_count_before
+
 func take_hit(damage: int = 1) -> void:
 	if _invincible or _dead:
 		return
 	_hit_stunned = true
 	_invincible = true
 	_attacking = false
+	_attack_hit_bodies.clear()
 	_hitbox.monitoring = false
 	_play_sfx(_hit_sound)
 	GameState.damage_player(damage)
@@ -328,6 +387,7 @@ func _start_iframes() -> void:
 
 func _on_animation_finished() -> void:
 	if _attacking:
+		_resolve_attack_hits()
 		_attacking = false
 		_attack_hit_bodies.clear()
 		_hitbox.monitoring = false

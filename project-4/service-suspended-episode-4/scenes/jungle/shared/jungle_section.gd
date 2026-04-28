@@ -25,6 +25,8 @@ class_name JungleSection
 
 ## Season override for standalone testing. Set in inspector before running.
 @export_enum("jungle", "autumn", "winter", "wasteland") var season: String = "jungle"
+## When the season is wasteland, choose between the default water and the blood-water sheet.
+@export_enum("normal", "blood") var wasteland_water_style: String = "normal"
 ## Test helpers used only when running a variant scene directly.
 @export var standalone_spawn_player: bool = true
 @export var standalone_show_game_ui: bool = true
@@ -37,6 +39,7 @@ var _tile_entities: Array = TileEntities.get_table()
 var _ghost_death_scene := preload("res://scenes/ui/ghost_hands_death.tscn")
 var _death_screen_scene := preload("res://scenes/ui/death_screen.tscn")
 var _loading_screen_scene := preload("res://scenes/ui/loading_screen.tscn")
+var _taped_map_ui_scene := preload("res://scenes/ui/taped_map_ui.tscn")
 
 # --- Tilemap layers ---
 var _floor_layer: TileMapLayer
@@ -90,9 +93,9 @@ func _bootstrap_standalone() -> void:
 	GameState.reset_health()
 	GameState.ensure_starting_special_tickets(6)
 	GameState.ensure_starting_voodoo_dolls(1)
-	GameState.ensure_starting_wood(5)
 	GameState.ensure_statue_ritual_seeded()
 	GameState.ensure_starting_clock()
+	GameState.ensure_starting_keys(1)
 	if standalone_tick_trial_timer:
 		GameState.trial_start = false
 		GameState.trial_time_remaining = 0.0
@@ -106,6 +109,8 @@ func _bootstrap_standalone() -> void:
 
 	if not GameState.player_died.is_connected(_on_standalone_player_died):
 		GameState.player_died.connect(_on_standalone_player_died)
+	if not GameState.inventory_selection_changed.is_connected(_on_inventory_selection_changed):
+		GameState.inventory_selection_changed.connect(_on_inventory_selection_changed)
 
 func _spawn_standalone_player() -> void:
 	var player_scene = preload("res://scenes/player/player.tscn")
@@ -132,6 +137,7 @@ func _spawn_standalone_game_ui() -> void:
 		inventory_panel.pause_requested.connect(_on_hud_pause_requested)
 
 var _clock_ui: CanvasLayer = null
+var _map_ui: CanvasLayer = null
 
 func _unhandled_input(event: InputEvent) -> void:
 	if not _standalone:
@@ -144,10 +150,17 @@ func _unhandled_input(event: InputEvent) -> void:
 			_close_clock()
 			get_viewport().set_input_as_handled()
 			return
+		if _map_ui:
+			_close_map()
+			get_viewport().set_input_as_handled()
+			return
 		if _has_blocking_ui_overlay():
 			get_viewport().set_input_as_handled()
 			return
 		_toggle_pause()
+	if _map_ui and event.is_action_pressed("toggle_inventory"):
+		get_viewport().set_input_as_handled()
+		return
 	# Toggle inventory opens/closes clock if player has it
 	if event.is_action_pressed("toggle_inventory") and GameState.has_clock:
 		if _clock_ui:
@@ -178,14 +191,58 @@ func _close_clock() -> void:
 		else:
 			_on_clock_closed()
 
+func _open_map() -> void:
+	if _map_ui or _paused:
+		return
+	if _clock_ui:
+		_close_clock()
+	var map_ui: CanvasLayer = _taped_map_ui_scene.instantiate()
+	_map_ui = map_ui
+	if _map_ui.has_signal("closed"):
+		_map_ui.closed.connect(_on_map_closed)
+	add_child(_map_ui)
+
+func _close_map() -> void:
+	if _map_ui:
+		if _map_ui.has_method("close"):
+			_map_ui.close()
+		else:
+			_on_map_closed()
+
 func _on_clock_closed() -> void:
 	if _clock_ui:
 		_clock_ui.queue_free()
 	_clock_ui = null
 
+func _on_map_closed() -> void:
+	if _map_ui:
+		_map_ui.queue_free()
+	_map_ui = null
+
 func _on_clock_variant_selected(variant: int) -> void:
+	if not GameState.trial_start and variant != GameState.current_variant:
+		return
 	GameState.current_variant = variant
 	_on_clock_closed()
+
+func _on_inventory_selection_changed(item_id: String) -> void:
+	if not _standalone:
+		return
+	if item_id == GameState.ITEM_MAP:
+		GameState.clear_selected_inventory_item()
+		if _map_ui:
+			_close_map()
+		else:
+			_open_map()
+		return
+	if item_id != GameState.ITEM_CLOCK:
+		return
+	GameState.clear_selected_inventory_item()
+	if _map_ui:
+		if _map_ui.has_method("can_accept_clock_from_inventory") and _map_ui.can_accept_clock_from_inventory():
+			_map_ui.place_clock_from_inventory()
+		return
+	_open_clock()
 
 var _ghost_death_active: bool = false
 
@@ -271,7 +328,7 @@ func _on_hud_pause_requested() -> void:
 		_pause()
 
 func _has_blocking_ui_overlay() -> bool:
-	for group in ["statue_ui_overlay", "campfire_ui_overlay", "campfire_relight_ui_overlay", "boon_ui_overlay"]:
+	for group in ["statue_ui_overlay", "campfire_ui_overlay", "campfire_relight_ui_overlay", "boon_ui_overlay", "map_ui_overlay", "stone_puzzle_ui_overlay"]:
 		for node in get_tree().get_nodes_in_group(group):
 			if node.has_method("is_blocking_pause") and node.is_blocking_pause():
 				return true
@@ -342,7 +399,9 @@ func _setup_layers() -> void:
 
 	if _floor2:
 		_floor2.z_index = -1
-		_floor2.collision_enabled = floor2_collision_enabled
+		# Floor2 is used for painted water tiles. Generate explicit blockers so
+		# collision survives runtime season swaps and water animation updates.
+		_floor2.collision_enabled = false
 
 	if _floor3:
 		_floor3.z_index = -1
@@ -406,6 +465,8 @@ func _setup_runtime_containers() -> void:
 # ── Collision generation (StaticBody per layer) ──
 
 func _setup_collision() -> void:
+	if floor2_collision_enabled:
+		_generate_collision(_floor2, true)
 	_generate_collision(_bottom_walls)
 	_generate_collision(_side_walls)
 	_generate_collision(_side_walls2)
@@ -416,7 +477,7 @@ func _setup_collision() -> void:
 ## (flowers/grass don't need it; torches get their own from tile_animator)
 const _ANIMS_SKIP_COLLISION := [3, 8]
 
-func _generate_collision(layer: TileMapLayer) -> void:
+func _generate_collision(layer: TileMapLayer, use_tile_shapes: bool = false) -> void:
 	if layer == null:
 		return
 	var ts = layer.tile_set
@@ -431,19 +492,45 @@ func _generate_collision(layer: TileMapLayer) -> void:
 	body.collision_layer = 1
 	add_child(body)
 	body.global_position = layer.global_position
+	var added_collision := false
 
 	for cell in used_cells:
 		# Skip animated tiles — they handle their own collision
 		var src = layer.get_cell_source_id(cell)
 		if src in _ANIMS_SKIP_COLLISION:
 			continue
+		# Skip wasteland animation tiles (src 13, rows >= 13 are the animation section)
+		if src == 13 and layer.get_cell_atlas_coords(cell).y >= 13:
+			continue
 		var pos = layer.map_to_local(cell)
+		if use_tile_shapes:
+			var tile_data = layer.get_cell_tile_data(cell)
+			if tile_data == null:
+				continue
+			var polygon_count := tile_data.get_collision_polygons_count(0)
+			if polygon_count == 0:
+				continue
+			for polygon_index in range(polygon_count):
+				var points: PackedVector2Array = tile_data.get_collision_polygon_points(0, polygon_index)
+				if points.is_empty():
+					continue
+				var col_poly = CollisionPolygon2D.new()
+				col_poly.polygon = points
+				col_poly.position = pos
+				body.add_child(col_poly)
+				added_collision = true
+			continue
+
 		var col = CollisionShape2D.new()
 		var shape = RectangleShape2D.new()
 		shape.size = tile_size
 		col.shape = shape
 		col.position = pos
 		body.add_child(col)
+		added_collision = true
+
+	if not added_collision:
+		body.queue_free()
 
 # ── Entity spawning from marker tiles (project-2 style) ──
 
@@ -527,12 +614,18 @@ func _setup_tile_entities() -> void:
 
 func _setup_tile_animations() -> void:
 	var animator_script = load("res://scenes/jungle/shared/tile_animator.gd")
-	if not animator_script:
-		return
-	var animator = Node.new()
-	animator.name = "TileAnimator"
-	animator.set_script(animator_script)
-	add_child(animator)
+	if animator_script:
+		var animator = Node.new()
+		animator.name = "TileAnimator"
+		animator.set_script(animator_script)
+		add_child(animator)
+
+	var wasteland_anim_script = load("res://scenes/jungle/shared/wasteland_tile_animator.gd")
+	if wasteland_anim_script:
+		var wasteland_animator = Node.new()
+		wasteland_animator.name = "WastelandTileAnimator"
+		wasteland_animator.set_script(wasteland_anim_script)
+		add_child(wasteland_animator)
 
 # ── Accessors ──
 

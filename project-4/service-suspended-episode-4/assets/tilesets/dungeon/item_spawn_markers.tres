@@ -4,6 +4,10 @@
 [ext_resource type="Texture2D" uid="uid://bk6uscbcjunun" path="res://assets/sprites/pickups/key/key_spawn_marker.png" id="2_key"]
 [ext_resource type="Texture2D" uid="uid://ct6nk0b08f1v4" path="res://assets/sprites/pickups/health/health_spawn_marker.png" id="3_health"]
 [ext_resource type="Texture2D" uid="uid://ddodvjd8lsmmy" path="res://assets/sprites/pickups/special_ticket/special_ticket_spawn_marker.png" id="4_special"]
+[ext_resource type="Texture2D" uid="uid://n3hrtmst7t47" path="res://assets/sprites/pickups/map_piece_1/spawn_marker.png" id="5_map_1"]
+[ext_resource type="Texture2D" uid="uid://dqlbyauvixuyh" path="res://assets/sprites/pickups/map_piece_2/spawn_marker.png" id="6_map_2"]
+[ext_resource type="Texture2D" uid="uid://chx4tldd0tc7" path="res://assets/sprites/pickups/map_piece_3/spawn_marker.png" id="7_map_3"]
+[ext_resource type="Texture2D" uid="uid://3olc628ggs0e" path="res://assets/sprites/pickups/map_piece_4/spawn_marker.png" id="8_map_4"]
 
 [sub_resource type="TileSetAtlasSource" id="1"]
 texture = ExtResource("1_ticket")
@@ -25,8 +29,32 @@ texture = ExtResource("4_special")
 texture_region_size = Vector2i(16, 32)
 0:0/0 = 0
 
+[sub_resource type="TileSetAtlasSource" id="5"]
+texture = ExtResource("5_map_1")
+texture_region_size = Vector2i(16, 32)
+0:0/0 = 0
+
+[sub_resource type="TileSetAtlasSource" id="6"]
+texture = ExtResource("6_map_2")
+texture_region_size = Vector2i(16, 32)
+0:0/0 = 0
+
+[sub_resource type="TileSetAtlasSource" id="7"]
+texture = ExtResource("7_map_3")
+texture_region_size = Vector2i(16, 32)
+0:0/0 = 0
+
+[sub_resource type="TileSetAtlasSource" id="8"]
+texture = ExtResource("8_map_4")
+texture_region_size = Vector2i(16, 32)
+0:0/0 = 0
+
 [resource]
 sources/0 = SubResource("1")
 sources/1 = SubResource("2")
 sources/2 = SubResource("3")
 sources/3 = SubResource("4")
+sources/4 = SubResource("5")
+sources/5 = SubResource("6")
+sources/6 = SubResource("7")
+sources/7 = SubResource("8")

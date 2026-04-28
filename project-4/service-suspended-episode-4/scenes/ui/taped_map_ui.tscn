@@ -1,0 +1,21 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://scenes/ui/taped_map_ui.gd" id="1_script"]
+
+[node name="TapedMapUI" type="CanvasLayer"]
+script = ExtResource("1_script")
+
+[node name="DimLayer" type="CanvasLayer" parent="."]
+
+[node name="Dimmer" type="ColorRect" parent="DimLayer"]
+mouse_filter = 2
+
+[node name="ContentLayer" type="CanvasLayer" parent="."]
+
+[node name="MapSprite" type="Sprite2D" parent="ContentLayer"]
+texture_filter = 1
+
+[node name="ClockSprite" type="Sprite2D" parent="ContentLayer"]
+texture_filter = 1
+
+[node name="RevealRoot" type="Node2D" parent="ContentLayer"]

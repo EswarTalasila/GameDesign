@@ -20,6 +20,7 @@ config/icon="res://icon.svg"
 GDAIMCPRuntime="*res://addons/gdai-mcp-plugin-godot/gdai_mcp_runtime.gd"
 CustomCursor="*res://scripts/custom_cursor.gd"
 GameState="*res://scripts/game_state.gd"
+QuestManager="*res://scripts/quest_manager.gd"
 DialogueManager="*res://addons/dialogue_manager/dialogue_manager.gd"
 
 [display]
@@ -73,7 +74,7 @@ toggle_inventory={
 
 [internationalization]
 
-locale/translations_pot_files=PackedStringArray("res://dialogues/statue_offering.dialogue", "res://dialogues/Lady_in_red_2.dialogue", "res://dialogues/Lady_in_red.dialogue", "res://dialogues/conductor.dialogue", "res://dialogues/campfire_trial.dialogue")
+locale/translations_pot_files=PackedStringArray("res://dialogues/statue_offering.dialogue", "res://dialogues/Lady_in_red_2.dialogue", "res://dialogues/Lady_in_red.dialogue", "res://dialogues/conductor.dialogue", "res://dialogues/campfire_trial.dialogue", "res://dialogues/cat_npc.dialogue", "res://dialogues/stone_altar_intro.dialogue")
 
 [physics]
 

@@ -18,7 +18,6 @@ const VARIANT_PATHS: Array[String] = [
 	"res://scenes/jungle/variants/variant_4.tscn",
 	"res://scenes/jungle/variants/variant_5.tscn",
 	"res://scenes/jungle/variants/variant_6.tscn",
-	"res://scenes/jungle/variants/variant_7.tscn",
 ]
 
 # ── Preloaded UI / audio ──
@@ -26,6 +25,7 @@ var _pause_menu_scene = preload("res://scenes/ui/pause_menu.tscn")
 var _loading_screen_scene = preload("res://scenes/ui/loading_screen.tscn")
 var _death_screen_scene = preload("res://scenes/ui/death_screen.tscn")
 var _saving_icon_scene = preload("res://scenes/ui/saving_icon.tscn")
+var _taped_map_ui_scene = preload("res://scenes/ui/taped_map_ui.tscn")
 
 var _ambience_stream = preload("res://assets/sounds/dungeon_ambience.mp3")
 var _ambience_stream_2 = preload("res://assets/sounds/dungeon_ambience_2.mp3")
@@ -52,6 +52,7 @@ var _paused: bool = false
 var _pause_menu: CanvasLayer = null
 var _death_screen: CanvasLayer = null
 var _clock_ui: CanvasLayer = null
+var _map_ui: CanvasLayer = null
 var _ghost_death_active: bool = false
 
 # ── Signals ──
@@ -64,15 +65,18 @@ func _ready() -> void:
 	CustomCursor.reset_cursor()
 	GameState.ensure_starting_special_tickets(6)
 	GameState.ensure_starting_voodoo_dolls(1)
-	GameState.ensure_starting_wood(5)
 	GameState.ensure_statue_ritual_seeded()
 	GameState.ensure_starting_clock()
+	GameState.ensure_starting_keys(1)
 	_season_swapper = SeasonSwapper.new()
 	add_child(_season_swapper)
 	_clock_remaining = clock_duration
-	_load_variant(starting_variant)
+	_load_variant(_resolve_boot_variant())
 	_setup_pause()
 	_connect_signals()
+	if not QuestManager.has_primary():
+		QuestManager.set_primary("explore", "Explore")
+	_refresh_death_reload_tooltip()
 
 func _process(delta: float) -> void:
 	if _paused:
@@ -99,10 +103,17 @@ func _unhandled_input(event: InputEvent) -> void:
 			_close_clock()
 			get_viewport().set_input_as_handled()
 			return
+		if _map_ui:
+			_close_map()
+			get_viewport().set_input_as_handled()
+			return
 		if _has_blocking_ui_overlay():
 			get_viewport().set_input_as_handled()
 			return
 		_toggle_pause()
+	if _map_ui and event.is_action_pressed("toggle_inventory"):
+		get_viewport().set_input_as_handled()
+		return
 	if event.is_action_pressed("toggle_inventory") and GameState.has_clock:
 		if _clock_ui:
 			_close_clock()
@@ -143,9 +154,11 @@ func _load_variant(index: int) -> void:
 		player.global_position = spawn.global_position
 
 	_attach_player_to_active_section()
+	_restore_persistent_enemy_drops()
 
 	variant_changed.emit(index)
 	GameState.current_variant = index + 1
+	_configure_active_variant_route()
 
 func _detach_player_from_active_section() -> void:
 	if not player:
@@ -173,8 +186,89 @@ func _attach_player_to_active_section() -> void:
 	_active_section.add_child(player)
 	player.global_position = global_pos
 
+func _restore_persistent_enemy_drops() -> void:
+	if not _active_section:
+		return
+	var section_path := _active_section.scene_file_path
+	if section_path.is_empty():
+		return
+	var drop_parent: Node = _active_section.get_node_or_null("Entities")
+	if drop_parent == null:
+		drop_parent = _active_section
+	for drop_data: Dictionary in GameState.get_jungle_persistent_enemy_drops(section_path):
+		var scene_path := String(drop_data.get("scene_path", ""))
+		if scene_path.is_empty():
+			continue
+		var scene := load(scene_path) as PackedScene
+		if scene == null:
+			continue
+		var drop = scene.instantiate()
+		if drop == null:
+			continue
+		if "persistent_drop_id" in drop:
+			drop.set("persistent_drop_id", String(drop_data.get("id", "")))
+		drop_parent.add_child(drop)
+		drop.position = Vector2(float(drop_data.get("x", 0.0)), float(drop_data.get("y", 0.0)))
+
+func _resolve_boot_variant() -> int:
+	if GameState.has_jungle_checkpoint():
+		return clampi(GameState.jungle_checkpoint_variant - 1, 0, VARIANT_PATHS.size() - 1)
+	return starting_variant
+
+func _configure_active_variant_route() -> void:
+	match current_variant:
+		0:
+			if GameState.jungle_route_phase == GameState.JUNGLE_ROUTE_RETURN:
+				GameState.complete_jungle_route_return()
+			elif not GameState.has_jungle_checkpoint():
+				GameState.capture_jungle_checkpoint(1, GameState.JUNGLE_CHECKPOINT_DUNGEON_START)
+		4:
+			_setup_variant_5_hunt()
+		5:
+			_setup_variant_6_boss()
+	_refresh_death_reload_tooltip()
+
+func _setup_variant_5_hunt() -> void:
+	var hunt_targets := _get_active_section_group_nodes("jungle_hunt_target")
+	GameState.begin_jungle_hunt(hunt_targets.size())
+	for enemy in hunt_targets:
+		_connect_enemy_defeated(enemy, Callable(self, "_on_variant_5_enemy_defeated"))
+
+func _setup_variant_6_boss() -> void:
+	GameState.enter_jungle_boss_room()
+	for boss in _get_active_section_group_nodes("jungle_boss_target"):
+		_connect_enemy_defeated(boss, Callable(self, "_on_variant_6_boss_defeated"))
+
+func _get_active_section_group_nodes(group_name: String) -> Array[Node]:
+	var nodes: Array[Node] = []
+	if _active_section == null:
+		return nodes
+	for node in get_tree().get_nodes_in_group(group_name):
+		if _active_section.is_ancestor_of(node):
+			nodes.append(node)
+	return nodes
+
+func _connect_enemy_defeated(enemy: Node, callback: Callable) -> void:
+	if enemy == null or not enemy.has_signal("defeated"):
+		return
+	if enemy.is_connected("defeated", callback):
+		return
+	enemy.connect("defeated", callback)
+
+func _on_variant_5_enemy_defeated(_enemy: CharacterBody2D) -> void:
+	if not GameState.record_jungle_hunt_kill():
+		return
+	_load_variant(5)
+
+func _on_variant_6_boss_defeated(_enemy: CharacterBody2D) -> void:
+	GameState.mark_jungle_boss_defeated()
+
 func switch_variant(index: int) -> void:
 	## Call this to change the active map variant (e.g., from clock interaction).
+	if not GameState.trial_start and current_variant != -1 and index != current_variant:
+		return
+	if not GameState.can_use_jungle_clock_variant(index + 1):
+		return
 	_load_variant(index)
 
 func advance_variant() -> void:
@@ -231,7 +325,7 @@ func _setup_pause() -> void:
 func _has_blocking_ui_overlay() -> bool:
 	if _clock_ui:
 		return true
-	for group in ["statue_ui_overlay", "campfire_ui_overlay", "campfire_relight_ui_overlay", "boon_ui_overlay"]:
+	for group in ["statue_ui_overlay", "campfire_ui_overlay", "campfire_relight_ui_overlay", "boon_ui_overlay", "map_ui_overlay", "stone_puzzle_ui_overlay"]:
 		for node in get_tree().get_nodes_in_group(group):
 			if node.has_method("is_blocking_pause") and node.is_blocking_pause():
 				return true
@@ -296,9 +390,20 @@ func _connect_signals() -> void:
 		GameState.inventory_selection_changed.connect(_on_inventory_selection_changed)
 
 func _on_inventory_selection_changed(item_id: String) -> void:
+	if item_id == GameState.ITEM_MAP:
+		GameState.clear_selected_inventory_item()
+		if _map_ui:
+			_close_map()
+		else:
+			_open_map()
+		return
 	if item_id != GameState.ITEM_CLOCK:
 		return
 	GameState.clear_selected_inventory_item()
+	if _map_ui:
+		if _map_ui.has_method("can_accept_clock_from_inventory") and _map_ui.can_accept_clock_from_inventory():
+			_map_ui.place_clock_from_inventory()
+		return
 	_open_clock()
 
 func _open_clock() -> void:
@@ -317,12 +422,40 @@ func _close_clock() -> void:
 		else:
 			_on_clock_closed()
 
+func _open_map() -> void:
+	if _map_ui or _paused:
+		return
+	if _clock_ui:
+		_close_clock()
+	var map_ui: CanvasLayer = _taped_map_ui_scene.instantiate()
+	_map_ui = map_ui
+	if _map_ui.has_signal("closed"):
+		_map_ui.closed.connect(_on_map_closed)
+	add_child(_map_ui)
+
+func _close_map() -> void:
+	if _map_ui:
+		if _map_ui.has_method("close"):
+			_map_ui.close()
+		else:
+			_on_map_closed()
+
 func _on_clock_closed() -> void:
 	if _clock_ui:
 		_clock_ui.queue_free()
 	_clock_ui = null
 
+func _on_map_closed() -> void:
+	if _map_ui:
+		_map_ui.queue_free()
+	_map_ui = null
+
 func _on_clock_variant_selected(variant: int) -> void:
+	if not GameState.can_use_jungle_clock_variant(variant):
+		return
+	if variant == 2 and QuestManager.has_objective("use_clock_variant_2"):
+		QuestManager.complete("use_clock_variant_2")
+		QuestManager.add_sub("explore_variant_2", "Explore Variant 2", "escape")
 	switch_variant(variant - 1)
 	_on_clock_closed()
 
@@ -332,6 +465,7 @@ func _on_player_died() -> void:
 		return
 	_death_screen = _death_screen_scene.instantiate()
 	add_child(_death_screen)
+	_refresh_death_reload_tooltip()
 	if _death_screen.has_signal("reload_requested"):
 		_death_screen.reload_requested.connect(_on_death_reload)
 	if _death_screen.has_signal("exit_requested"):
@@ -341,7 +475,10 @@ func _on_death_reload() -> void:
 	if _death_screen:
 		_death_screen.queue_free()
 		_death_screen = null
-	GameState.reset()
+	if GameState.has_jungle_checkpoint():
+		GameState.restore_jungle_checkpoint()
+	else:
+		GameState.reset()
 	_transition_with_loading(get_tree().current_scene.scene_file_path)
 
 func _on_death_exit() -> void:
@@ -352,3 +489,8 @@ func _transition_with_loading(scene_path: String) -> void:
 	var loading_screen = _loading_screen_scene.instantiate()
 	get_tree().root.add_child(loading_screen)
 	loading_screen.transition_to(scene_path)
+
+func _refresh_death_reload_tooltip() -> void:
+	if _death_screen == null or not _death_screen.has_method("set_reload_tooltip_text"):
+		return
+	_death_screen.call("set_reload_tooltip_text", GameState.get_jungle_reload_tooltip())
